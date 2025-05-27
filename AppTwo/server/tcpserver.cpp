@@ -17,14 +17,20 @@ TcpServer::TcpServer(QObject *parent)
 
 void TcpServer::disconnect()
 {
-    m_server->disconnect();
-
     if (m_socket) {
         m_socket->disconnect();
         m_socket->close();
     }
 
+    if (m_server->isListening()) {
+        m_server->close();
+    }
+
+    m_server->disconnect();
+
     m_socket = nullptr;
+
+    qInfo() <<"Сервер отключен";
 }
 
 void TcpServer::connectToServer(const QString &ip, const QString &port)
