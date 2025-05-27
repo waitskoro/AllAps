@@ -11,6 +11,11 @@ CONFIG += c++17
 SOURCES += \
     gui/connectionheader.cpp \
     gui/connectionheaderblock.cpp \
+    gui/graphs/graphsviewwidget.cpp \
+    gui/info/complexcounts.cpp \
+    gui/info/informationlist.cpp \
+    gui/info/informationlistdelegate.cpp \
+    gui/info/informationviewwidget.cpp \
     main.cpp \
     gui/mainwindow.cpp \
     server/sequentialidprovider.cpp \
@@ -20,6 +25,11 @@ SOURCES += \
 HEADERS += \
     gui/connectionheader.h \
     gui/connectionheaderblock.h \
+    gui/graphs/graphsviewwidget.h \
+    gui/info/complexcounts.h \
+    gui/info/informationlist.h \
+    gui/info/informationlistdelegate.h \
+    gui/info/informationviewwidget.h \
     gui/mainwindow.h \
     server/packet.h \
     server/tcpserver.h \

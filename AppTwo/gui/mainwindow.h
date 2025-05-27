@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QTabWidget>
 #include <QPushButton>
 #include <QMainWindow>
 
@@ -22,12 +23,11 @@ public:
 private:
     void paintEvent(QPaintEvent *e) override;
 
+    QTabWidget *m_tabWidget;
     ConnectionHeader *m_connectionHeader;
     QPushButton *m_menu;
 
     int m_iconRotationAngle = 90;
-
-    void onConnectTo(const QString &ip, const QString &port);
 
     Tcp::TcpServer *m_server;
 };

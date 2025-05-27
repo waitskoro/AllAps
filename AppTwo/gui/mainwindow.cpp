@@ -3,6 +3,9 @@
 #include "connectionheader.h"
 #include "server/tcpserver.h"
 
+#include "graphs/graphsviewwidget.h"
+#include "info/informationviewwidget.h"
+
 #include <QStyle>
 #include <QPainter>
 #include <QVBoxLayout>
@@ -11,6 +14,7 @@ using namespace View;
 
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
+    , m_tabWidget(new QTabWidget(this))
     , m_connectionHeader(new ConnectionHeader(this))
     , m_menu(new QPushButton(this))
     , m_server(new Tcp::TcpServer(this))
@@ -26,6 +30,17 @@ MainWindow::MainWindow(QWidget *parent)
                                 Qt::SmoothTransformation);
     m_menu->setIcon(QIcon(pixmap));
     m_menu->setText(QString(" ").repeated(190));
+
+    m_tabWidget->move(0, 40);
+    m_tabWidget->setFixedSize(700, 450);
+
+    InformationViewWidget *info = new InformationViewWidget(this);
+    m_tabWidget->addTab(info, "Информация об отсчетах");
+
+    GraphsViewWidget *graph = new GraphsViewWidget(this);
+    m_tabWidget->addTab(graph, "Графики");
+
+    m_menu->setStyleSheet(QString("background-color: #3C388D"));
 
     connect(m_menu,
             &QPushButton::clicked,
@@ -43,8 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_connectionHeader,
             &ConnectionHeader::connectTo,
-            this,
-            &MainWindow::onConnectTo);
+            m_server,
+            &Tcp::TcpServer::connectToServer);
 
     connect(m_connectionHeader,
             &ConnectionHeader::disconnect,
@@ -53,16 +68,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_server,
             &Tcp::TcpServer::connected,
-            this,
             [this](){
                 m_connectionHeader->setVisible(false);
                 m_connectionHeader->onConnected();
             });
-}
-
-void MainWindow::onConnectTo(const QString &ip, const QString &port)
-{
-    m_server->connectToServer(ip, port);
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
@@ -70,6 +79,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QPainter painter;
 
     painter.begin(this);
+
+    painter.fillRect(rect(), QColor(57, 57, 57, 30));
 
     painter.end();
 

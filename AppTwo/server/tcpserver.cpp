@@ -40,7 +40,7 @@ void TcpServer::connectToServer(const QString &ip, const QString &port)
         m_isServerStarted = m_server->listen(QHostAddress::Any, 5555);
     } else {
         m_isServerStarted = m_server->listen(QHostAddress(ip), port.toUShort());
-        qInfo() << QString("Запуск сервера с данными по умолчанию: %1:%2").arg(ip).arg(port);
+        qInfo() << QString("Запуск сервера с данными: %1:%2").arg(ip).arg(port);
     }
 
     if (!m_isServerStarted) {
