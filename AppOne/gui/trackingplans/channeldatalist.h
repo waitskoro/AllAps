@@ -12,6 +12,12 @@ class ChannelDataList : public QListView
 {
     Q_OBJECT
 public:
+
+    enum Roles {
+        ActiveChannelsCount  = Qt::UserRole + 1,
+        ChannelNumber
+    };
+
     explicit ChannelDataList(QWidget *parent = nullptr);
 
     void addMessage(const DataChannelMessage &);

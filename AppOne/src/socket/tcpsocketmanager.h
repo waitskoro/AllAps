@@ -5,6 +5,7 @@
 #include <QObject>
 
 #include "src/messagesinfo.h"
+#include "src/statemessage.h"
 #include "src/featuremanagment/targetdesignationsinfo.h"
 
 namespace Application {
@@ -38,7 +39,7 @@ signals:
     void connected();
 
     void receivingMessageEmpty();
-    void recieveState(RecieveState);
+    void recieveState(StateMessage &);
     void receivingMessage(ReceivingMessage);
     void recievedTrackingPlans(DataChannelMessage &);
     void executedTheCommandRecevied(ExecutedTheCommand result);

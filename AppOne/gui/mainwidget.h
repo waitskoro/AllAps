@@ -6,6 +6,7 @@
 #include <QPushButton>
 
 #include "src/messagesinfo.h"
+#include "src/statemessage.h"
 #include "src/featuremanagment/targetdesignationsinfo.h"
 
 namespace View {
@@ -43,7 +44,7 @@ signals:
     void sendRequestTrackingPlans();
     void sendTarget(Application::TargetDesignations target);
 
-    void recieveState(RecieveState);
+    void recieveState(StateMessage &);
     void executedTheCommandRecevied(ExecutedTheCommand result);
     void dataChannelMessagesRecieved(DataChannelMessage &messages);
 private:

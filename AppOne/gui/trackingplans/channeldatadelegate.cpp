@@ -1,4 +1,7 @@
 #include "channeldatadelegate.h"
+
+#include "channeldatalist.h"
+
 #include <QPainter>
 #include <QMouseEvent>
 
@@ -28,12 +31,16 @@ void ChannelDataDelegate::paint(QPainter *painter,
 
     painter->fillRect(*m_buttonView, Qt::white);
 
-    painter->drawText(option.rect.x() + 30, option.rect.y() + 25,
-                     "Номер канала данных");
+    painter->drawText(option.rect.x() + 30,
+                      option.rect.y() + 25,
+                      QString("Канал данных #%1")
+                          .arg(index.data(ChannelDataList::ChannelNumber).toString()));
 
     QRect textRect = option.rect.adjusted(30, 35, 80, 35);
-    painter->drawText(textRect, Qt::TextWordWrap,
-                     "Количество отрезков\nзапланированного сеанса слежения");
+    painter->drawText(textRect,
+                      Qt::TextWordWrap,
+                      QString("Количество отрезков\nзапланированного сеанса слежения: %1")
+                          .arg(index.data(ChannelDataList::ActiveChannelsCount).toString()));
 
     painter->drawText(*m_buttonView, Qt::AlignCenter, "Посмотреть");
 

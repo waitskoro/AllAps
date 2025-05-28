@@ -123,7 +123,7 @@ void TcpSocketManager::onSocketAcPacketReceived(Packet packet)
         }
     }
     if (packet.header.msg_type == 0x83) {
-        RecieveState result;
+        StateMessage result;
         stream >> result;
         emit recieveState(result);
     }

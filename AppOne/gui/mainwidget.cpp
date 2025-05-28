@@ -143,6 +143,11 @@ void MainWidget::onButtonMenuClicked(CurrentView nextView)
                     this,
                     &MainWidget::onGoBack);
 
+            connect(this,
+                    &MainWidget::recieveState,
+                    state,
+                    &StateWorkingWidget::addState);
+
             emit sendRequestState();
             break;
         }
@@ -159,12 +164,6 @@ void MainWidget::onButtonMenuClicked(CurrentView nextView)
                     &MainWidget::dataChannelMessagesRecieved,
                     trackingPlansWidget,
                     &TrackingPlansWidget::addMessage);
-//==========================================================
-            DataChannelMessage msg;
-            trackingPlansWidget->addMessage(msg);
-            trackingPlansWidget->addMessage(msg);
-            trackingPlansWidget->addMessage(msg);
- //==========================================================
 
             emit sendRequestTrackingPlans();
 

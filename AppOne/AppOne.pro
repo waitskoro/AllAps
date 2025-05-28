@@ -18,6 +18,8 @@ SOURCES += \
     gui/plansmanagment/planslist.cpp \
     gui/plansmanagment/planslistdelegate.cpp \
     gui/planswidget.cpp \
+    gui/state/stateworkingdelegate.cpp \
+    gui/state/stateworkinglist.cpp \
     gui/state/stateworkingwidget.cpp \
     gui/stopingplans/stopingplanswidget.cpp \
     gui/trackingplans/channeldatadelegate.cpp \
@@ -47,6 +49,8 @@ HEADERS += \
     gui/plansmanagment/planslist.h \
     gui/plansmanagment/planslistdelegate.h \
     gui/planswidget.h \
+    gui/state/stateworkingdelegate.h \
+    gui/state/stateworkinglist.h \
     gui/state/stateworkingwidget.h \
     gui/stopingplans/stopingplanswidget.h \
     gui/trackingplans/channeldatadelegate.h \
@@ -62,6 +66,7 @@ HEADERS += \
     src/socket/sequentialidprovider.h \
     src/socket/socketinfo.h \
     src/socket/tcpsocket.h \
-    src/socket/tcpsocketmanager.h
+    src/socket/tcpsocketmanager.h \
+    src/statemessage.h
 
 DISTFILES +=

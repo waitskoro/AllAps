@@ -12,16 +12,17 @@ ChannelDataList::ChannelDataList(QWidget *parent)
     setItemDelegate(delegate);
 
     setSpacing(5);
-
     setFixedSize(600, 400);
     setModel(m_model.get());
     setStyleSheet("background-color: #C3D7E4");
 }
 
-void ChannelDataList::addMessage(const DataChannelMessage &)
+void ChannelDataList::addMessage(const DataChannelMessage &msg)
 {
     auto *item = new QStandardItem();
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+
+    item->setData(msg.activeChannelsCount, ActiveChannelsCount);
 
     m_model->appendRow(item);
 }
