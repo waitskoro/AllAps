@@ -1,46 +1,53 @@
 #pragma once
 
-#include <QUrl>
-#include <QTimer>
-#include <QObject>
-#include <QTcpSocket>
-#include <QTcpServer>
-
 #include "packet.h"
 
-namespace Tcp {
+#include <QTimer>
+#include <QThread>
+#include <QObject>
+#include <QSettings>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QCoreApplication>
 
-class TcpSocket;
-
+struct c_pair{
+    qint8 I;
+    qint8 Q;
+};
 class TcpServer : public QObject
 {
     Q_OBJECT
 public:
     explicit TcpServer(QObject *parent = nullptr);
 
-    void disconnect();
-    void connectToServer(const QString &ip, const QString &port);
+    bool isStarted() const;
+    void startSending();
+
 signals:
     void connected();
-    void connecting();
-    void disconnected();
+    void clientConnected();
 
-    void messageReceived(const Packet &);
+    void dataRecieved(QByteArray);
 
 private slots:
-    void onClientConnected();
+    void onClientDataReady();
+    void onClientConnecting();
+    void onClientDisconnected();
+
+    void onMsgReceived(const Header&, const QByteArray&);
 
 private:
-    Header m_header;
-    qint64 m_dataSize;
-    QByteArray m_msgBytes;
-    QByteArray  m_headerBytes;
-
+    bool m_serverStarted;
     bool m_headerReaded;
-    bool m_isServerStarted;
 
-    TcpSocket *m_socket;
-    QTcpServer *m_server;
+    bool header_readed = false;
+    QByteArray header_bytes;
+    QByteArray msg_bytes;
+    Header header_;
+    int data_size;
+
+    QTcpServer* m_server;
+    QTcpSocket* m_socket;
+
+    Header deserializeHeader(QByteArray& data);
 };
-
-}

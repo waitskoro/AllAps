@@ -4,9 +4,7 @@
 #include <QPushButton>
 #include <QMainWindow>
 
-namespace Tcp {
 class TcpServer;
-}
 
 namespace View {
 
@@ -29,7 +27,7 @@ private:
 
     int m_iconRotationAngle = 90;
 
-    Tcp::TcpServer *m_server;
+    TcpServer *m_server;
 };
 
 }

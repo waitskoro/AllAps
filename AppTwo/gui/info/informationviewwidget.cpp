@@ -12,7 +12,9 @@ InformationViewWidget::InformationViewWidget(QWidget *parent)
 {
     m_infoList->move(20, 40);
     m_complexCounts->move(400, 40);
+}
 
-    m_infoList->addInfo();
-    m_infoList->addInfo();
+void InformationViewWidget::addChannelData(ChannelData &data)
+{
+    m_infoList->addInfo(data);
 }

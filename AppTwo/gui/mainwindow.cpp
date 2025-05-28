@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_tabWidget(new QTabWidget(this))
     , m_connectionHeader(new ConnectionHeader(this))
     , m_menu(new QPushButton(this))
-    , m_server(new Tcp::TcpServer(this))
+    , m_server(new TcpServer(this))
 {
     setFixedSize(700, 600);
     setStyleSheet("background-color: white");
@@ -56,22 +56,27 @@ MainWindow::MainWindow(QWidget *parent)
                 m_menu->setIcon(QIcon(pixmap));
             });
 
-    connect(m_connectionHeader,
-            &ConnectionHeader::connectTo,
-            m_server,
-            &Tcp::TcpServer::connectToServer);
+    // connect(m_connectionHeader,
+    //         &ConnectionHeader::connectTo,
+    //         m_server,
+    //         &TcpServer::connectToServer);
 
-    connect(m_connectionHeader,
-            &ConnectionHeader::disconnect,
-            m_server,
-            &Tcp::TcpServer::disconnect);
+    // connect(m_connectionHeader,
+    //         &ConnectionHeader::disconnect,
+    //         m_server,
+    //         &TcpServer::disconnect);
 
     connect(m_server,
-            &Tcp::TcpServer::connected,
+            &TcpServer::connected,
             [this](){
                 m_connectionHeader->setVisible(false);
                 m_connectionHeader->onConnected();
             });
+
+    // connect(m_server,
+    //         &TcpServer::channelDataReceived,
+    //         info,
+    //         &InformationViewWidget::addChannelData);
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)

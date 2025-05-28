@@ -17,7 +17,7 @@ InformationList::InformationList(QWidget *parent)
     setModel(m_model.get());
 }
 
-void InformationList::addInfo()
+void InformationList::addInfo(ChannelData &data)
 {
     auto *item = new QStandardItem();
     m_model->appendRow(item);

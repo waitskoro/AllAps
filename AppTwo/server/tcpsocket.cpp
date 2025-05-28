@@ -52,13 +52,18 @@ void TcpSocket::onReadyRead()
 
             Packet packet(m_header, m_msgBytes, id);
 
-            emit messageReceived(packet);
+            emit onChannelDataReceived(packet);
 
             m_msgBytes.clear();
             m_headerBytes.clear();
             m_headerReaded = false;
         }
     }
+}
+
+void TcpSocket::onChannelDataReceived(Packet &packet)
+{
+    qDebug() << packet.header.msgType;
 }
 
 Header TcpSocket::deserializeHeader(QByteArray &data)

@@ -16,7 +16,7 @@ signals:
     void connected();
     void disconnected();
 
-    void messageReceived(const Packet &);
+    void messageReceived(Packet &);
 
 private:
     void onReadyRead();
@@ -28,6 +28,7 @@ private:
 
     bool m_headerReaded;
 
+    void onChannelDataReceived(Packet &);
     Header deserializeHeader(QByteArray& data);
 };
 

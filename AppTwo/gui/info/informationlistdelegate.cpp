@@ -12,6 +12,8 @@ void InformationListDelegate::paint(QPainter *painter,
 {
     Q_UNUSED(index)
 
+    //===========================================
+
     painter->fillRect(option.rect, "#C3D7E4");
 
     int yPos = option.rect.top() + 20;
@@ -39,6 +41,8 @@ void InformationListDelegate::paint(QPainter *painter,
     painter->drawText(option.rect.left() + 25, yPos, QString("СОСТОЯНИЕ СИСТЕМЫ:"));
     yPos += 20;
     painter->drawText(option.rect.left() + 25, yPos, QString("    Нет синхронизации с UTC"));
+
+    //===========================================
 
     painter->save();
     painter->restore();

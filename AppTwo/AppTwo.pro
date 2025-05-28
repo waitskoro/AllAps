@@ -31,6 +31,7 @@ HEADERS += \
     gui/info/informationlistdelegate.h \
     gui/info/informationviewwidget.h \
     gui/mainwindow.h \
+    server/countmessage.h \
     server/packet.h \
     server/tcpserver.h \
     server/tcpsocket.h
