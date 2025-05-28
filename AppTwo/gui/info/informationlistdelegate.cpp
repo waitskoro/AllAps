@@ -7,40 +7,40 @@ InformationListDelegate::InformationListDelegate(QObject *parent)
 {}
 
 void InformationListDelegate::paint(QPainter *painter,
-                              const QStyleOptionViewItem &option,
-                              const QModelIndex &index) const
+                                    const QStyleOptionViewItem &option,
+                                    const QModelIndex &index) const
 {
     Q_UNUSED(index)
 
-    painter->fillRect(option.rect, "#3C388D");
+    painter->fillRect(option.rect, "#C3D7E4");
 
-    QPen pen;
-    pen.setWidth(2);
-    pen.setColor("#9FC53A");
-    painter->setPen(pen);
+    int yPos = option.rect.top() + 20;
 
-    painter->drawLine(5, 40, option.rect.right(), 40);
+    painter->drawText(option.rect.left() + 25, yPos, QString("КАНАЛ %1").arg("#08"));
+    painter->drawText(option.rect.left() + 130, yPos, QString("️КА - %1").arg("12"));
 
-    pen.setColor("white");
-    painter->setPen(pen);
+    yPos += 5;
+    painter->drawLine(option.rect.left() + 15, yPos, option.rect.right() - 15, yPos);
 
-    QFont font;
-    font.setBold(true);
-    font.setWeight(QFont::DemiBold);
-    painter->setFont(font);
+    yPos += 20;
+    painter->drawText(option.rect.left() + 25, yPos, QString("Время: %1").arg("15.03 14:22:17.843 UTC"));
 
-    painter->drawText(option.rect.adjusted(20, 10, 0, 0), "Канал данных");
+    yPos += 20;
+    painter->drawText(option.rect.left() + 25, yPos, QString("️Азимут: %1°").arg("153.7"));
+    painter->drawText(option.rect.left() + 160, yPos, QString("Угол места: %1°").arg("42.5"));
 
-    font.setBold(false);
-    painter->setFont(font);
+    yPos += 20;
+    painter->drawText(option.rect.left() + 25, yPos, QString("Отсчётов: %1 (компл.)").arg("2048"));
 
-    painter->drawText(25, 60, "Номер КА");
-    painter->drawText(25, 80, "Координаты");
-    painter->drawText(25, 100, "Состояние инфраструктуры АС");
-    painter->drawText(25, 130, "Время привязки первого отсчета");
+    yPos += 10;
+    painter->drawLine(option.rect.left() + 15, yPos, option.rect.right() - 15, yPos);
+
+    yPos += 20;
+    painter->drawText(option.rect.left() + 25, yPos, QString("СОСТОЯНИЕ СИСТЕМЫ:"));
+    yPos += 20;
+    painter->drawText(option.rect.left() + 25, yPos, QString("    Нет синхронизации с UTC"));
 
     painter->save();
-
     painter->restore();
 }
 

@@ -70,6 +70,11 @@ void ConnectionHeader::paintEvent(QPaintEvent *e)
     //Vertical Lines
     painter.drawLine(450, 30, 450, 149);
 
+    pen.setColor("black");
+    pen.setWidth(3);
+    painter.setPen(pen);
+    painter.drawLine(0, 148, 700, 148);
+
     //Text
     pen.setColor("white");
     painter.setPen(pen);

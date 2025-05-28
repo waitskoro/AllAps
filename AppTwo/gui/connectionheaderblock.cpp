@@ -1,6 +1,7 @@
 #include "connectionheaderblock.h"
 
 #include <QLabel>
+#include <QPainter>
 #include <QPushButton>
 
 using namespace View;
@@ -9,7 +10,7 @@ ConnectionHeaderBlock::ConnectionHeaderBlock(QWidget *parent)
     : QWidget(parent)
 {
     QWidget *widget = new QWidget(this);
-    widget->setFixedSize(449, 150);
+    widget->setFixedSize(449, 147);
     widget->setStyleSheet("background-color: #3C388D");
 
     QLabel *l = new QLabel(this);
