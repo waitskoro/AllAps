@@ -11,13 +11,24 @@ namespace View {
 class StateWorkingList : public QListView
 {
     Q_OBJECT
+
 public:
+    enum Cdo {
+        State,
+        Amperage,
+        Voltage,
+        Temperature,
+        CdoState,
+        CamCount
+    };
+
     explicit StateWorkingList(QWidget *parent = nullptr);
-    void addState(StateMessage &state);
+    void addState(CdoMessage &state);
+
+signals:
+    void itemClicked(int);
 
 private:
-    void paintEvent(QPaintEvent *event);
-
     QScopedPointer<QStandardItemModel> m_model;
 };
 

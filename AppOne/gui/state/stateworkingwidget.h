@@ -8,6 +8,7 @@
 
 namespace View {
 
+class StateCamList;
 class StateWorkingList;
 
 class StateWorkingWidget : public QWidget
@@ -17,8 +18,7 @@ class StateWorkingWidget : public QWidget
     enum StateRole {
         Computer,
         AC,
-        Switch_1,
-        Switch_2,
+        SwitchComputer,
         Frequency
     };
 
@@ -39,9 +39,12 @@ private:
 
     void initUI();
     void paintEvent(QPaintEvent *event);
-    void drawStates(StateRole, QPainter, QPoint, qint32 state);
+    void drawStates(StateRole, QPainter *, QPoint, qint32 state);
+
+    QColor colorOnState(int state);
 
     StateMessage m_state;
+    StateCamList *m_camList;
 
 };
 

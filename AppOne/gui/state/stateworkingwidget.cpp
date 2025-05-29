@@ -2,6 +2,7 @@
 
 #include <src/contants.h>
 #include "stateworkinglist.h"
+#include "cam/statecamlist.h"
 
 #include <QPainter>
 
@@ -13,6 +14,7 @@ StateWorkingWidget::StateWorkingWidget(QWidget *parent)
     , m_exit(new QPushButton(this))
     , m_headerLabel(new QLabel(this))
     , m_stateWorkingList(new StateWorkingList(this))
+    , m_camList(new StateCamList(this))
 {
     initUI();
     setFixedSize(Sizes::insideSize());
@@ -24,7 +26,23 @@ StateWorkingWidget::StateWorkingWidget(QWidget *parent)
 
     m_label->show();
     m_stateWorkingList->hide();
-    m_stateWorkingList->move(50, 230);
+    m_stateWorkingList->move(10, 245);
+
+    m_camList->hide();
+    m_camList->move(430, 265);
+
+    connect(m_stateWorkingList,
+            &StateWorkingList::itemClicked,
+            [this](int row){
+
+                auto cdo = m_state.cdoState[row];
+
+                m_camList->clear();
+
+                for (int i = 0; i < cdo.camCount; i++) {
+                    m_camList->addCam(cdo.camInfo[i]);
+                }
+            });
 }
 
 void StateWorkingWidget::addState(StateMessage &state)
@@ -32,8 +50,13 @@ void StateWorkingWidget::addState(StateMessage &state)
     m_state = state;
 
     m_label->hide();
+
+    m_camList->show();
     m_stateWorkingList->show();
-    m_stateWorkingList->addState(state);
+
+    for (int i = 0; i < state.sectorCount; i++) {
+        m_stateWorkingList->addState(state.cdoState[i]);
+    }
 }
 
 void StateWorkingWidget::initUI()
@@ -46,7 +69,7 @@ void StateWorkingWidget::initUI()
     //--------------------------------------------------------------
 
     m_label->setStyleSheet("background-color: transparent;"
-                           "font-size: 26px;");
+                           "font-size: 24px;");
     m_label->setText("Ожидание получения данных\n"
                      "  о текущем состоянии АС");
 
@@ -55,7 +78,7 @@ void StateWorkingWidget::initUI()
     //--------------------------------------------------------------
 
     m_headerLabel->setStyleSheet("background-color: transparent;"
-                                 "font-size: 30px;"
+                                 "font-size: 26px;"
                                  "font-weight: 600;");
     m_headerLabel->setText("Информация о текущем состоянии АС");
 
@@ -85,51 +108,128 @@ void StateWorkingWidget::paintEvent(QPaintEvent *event)
     font.setPixelSize(18);
     painter.setFont(font);
 
-    painter.drawText(50, 95, "Состояние работоспособности АС");
+    painter.drawText(50, 85, "Состояние работоспособности АС");
+    painter.drawText(20, 235, "Информация о текущем состоянии СЧ АС");
+    painter.drawText(440, 255, "Состояние ЦАМ: ");
 
     font.setPixelSize(16);
     painter.setFont(font);
 
-    painter.drawText(70, 130, QString("Состояние ЭВМ"));
-    painter.drawText(70, 150, QString("Состояние АС в целом"));
-    painter.drawText(70, 170, QString("Состояние коммутатора 1"));
-    painter.drawText(70, 190, QString("Состояние коммутатора 2"));
-    painter.drawText(70, 210, QString("Состояние стандарта частоты"));
+    painter.drawText(70, 120, QString("Состояние ЭВМ"));
+    painter.drawText(70, 140, QString("Состояние АС в целом"));
+    painter.drawText(70, 160, QString("Состояние коммутатора 1"));
+    painter.drawText(70, 180, QString("Состояние коммутатора 2"));
+    painter.drawText(70, 200, QString("Состояние стандарта частоты"));
 
-    painter.drawText(300, 130, "🟢");
-    painter.drawText(300, 150, "🟢");
-    painter.drawText(300, 170, "🟢");
-    painter.drawText(300, 190, "🟢");
-    painter.drawText(300, 210, "🟢");
 
-    painter.drawText(320, 130, "В норме");
-    painter.drawText(320, 150, "В норме");
-    painter.drawText(320, 170, "В норме");
-    painter.drawText(320, 190, "В норме");
-    painter.drawText(320, 210, "В норме");
+    pen.setColor(colorOnState(m_state.computerState));
+    painter.setPen(pen);
+    painter.drawText(300, 120, "🟢");
+
+    pen.setColor(colorOnState(m_state.acState));
+    painter.setPen(pen);
+    painter.drawText(300, 140, "🟢");
+
+    pen.setColor(colorOnState(m_state.switch1State));
+    painter.setPen(pen);
+    painter.drawText(300, 160, "🟢");
+
+    pen.setColor(colorOnState(m_state.switch2State));
+    painter.setPen(pen);
+    painter.drawText(300, 180, "🟢");
+
+    pen.setColor(colorOnState(m_state.frequencyState));
+    painter.setPen(pen);
+    painter.drawText(300, 200, "🟢");
+
+    pen.setColor("black");
+    painter.setPen(pen);
+
+    drawStates(SwitchComputer, &painter, QPoint(320, 119), m_state.computerState);
+    drawStates(AC, &painter, QPoint(320, 139), m_state.acState);
+    drawStates(SwitchComputer, &painter, QPoint(320, 159), m_state.switch1State);
+    drawStates(SwitchComputer, &painter, QPoint(320, 179), m_state.switch2State);
+    drawStates(Frequency, &painter, QPoint(320, 199), m_state.frequencyState);
 
     pen.setColor("#708086");
     painter.setPen(pen);
 
-    painter.drawLine(50, 105, 340, 105);
+    painter.drawLine(50, 95, 340, 95);
 }
 
-void StateWorkingWidget::drawStates(StateRole state, QPainter, QPoint, qint32 stateInfo)
+QColor StateWorkingWidget::colorOnState(int state)
 {
+    switch(state) {
+        case 0: return "green";
+        case 1:
+        case 2:
+        case 3:
+        case 4: return "yellow";
+        default: return "red";
+    }
+}
+
+void StateWorkingWidget::drawStates(StateRole state, QPainter *painter, QPoint point, qint32 stateInfo)
+{
+    QString result;
+
+    if (stateInfo == 0) {
+        result = "в норме";
+        painter->drawText(point, result);
+    }
+
     switch (state) {
-        case Computer:
-            break;
-
         case AC:
+            if (stateInfo == 1) {
+                result = "имеются самовосстанавливающиеся отказы (сбои)";
+
+            } else if (stateInfo == 2) {
+                result = "имеются некритичные отказы";
+
+            } else if (stateInfo == 3) {
+                result = "имеются критичные отказы";
+
+            } else if (stateInfo == 255) {
+                result = "полный отказ";
+            }
+
+            painter->drawText(point, result);
+
             break;
 
-        case Switch_1:
-            break;
-
-        case Switch_2:
-            break;
 
         case Frequency:
+            if (stateInfo == 1) {
+                result = "отсутствует привязка во времени к ГНСС";
+
+            } else if (stateInfo == 2) {
+                result = "отсутствует сигнал 1Гц";
+
+            } else if (stateInfo == 3) {
+                result = "отсутствует сигнал 10МГц";
+
+            } else if (stateInfo == 4) {
+                result = "отказ генератора";
+
+            } else if (stateInfo == 255) {
+                result = "недоступен";
+
+            }
+
+            painter->drawText(point, result);
+
+            break;
+
+
+        case SwitchComputer:
+            if (stateInfo == 1) {
+                result = "имеются проблемы";
+            } else if (stateInfo == 255) {
+                result = "недоступен";
+            }
+
+            painter->drawText(point, result);
+
             break;
 
         default:

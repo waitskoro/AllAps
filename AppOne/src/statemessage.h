@@ -18,8 +18,8 @@ struct Emmiter_state{
     }
 };
 
-struct CAM_state {
-    CAM_state() {}
+struct CamState {
+    CamState() {}
 
     quint8 camState = 1;
     float amperage = 1;
@@ -27,13 +27,15 @@ struct CAM_state {
     quint8 emmiterCount = 16;
     Emmiter_state* emmState ;
 
-    friend QDataStream &operator >> (QDataStream &stream, CAM_state &camState)
+    friend QDataStream &operator >> (QDataStream &stream, CamState &camState)
     {
         stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
-        stream << camState.camState
-               << camState.amperage
-               << camState.temperature
-               << camState.emmiterCount;
+        stream >> camState.camState
+               >> camState.amperage
+               >> camState.temperature
+               >> camState.emmiterCount;
+
+        camState.emmState = new Emmiter_state[camState.emmiterCount];
 
         for(int i = 0; i < camState.emmiterCount; ++i) {
             stream >> camState.emmState[i];
@@ -44,8 +46,8 @@ struct CAM_state {
 
 };
 
-struct CDO_state {
-    CDO_state() {}
+struct CdoMessage {
+    CdoMessage() {}
 
     quint8 state = 1;
     float amperage = 1;
@@ -53,55 +55,59 @@ struct CDO_state {
     float temperature = 1;
     quint8 cdoState = 1;
     quint8 camCount = 16;
-    CAM_state * camInfo;
+    CamState * camInfo;
 
-    friend QDataStream &operator >> (QDataStream &stream, CDO_state &cdoState)
+    friend QDataStream &operator >> (QDataStream &stream, CdoMessage &cdoState)
     {
         stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
         stream >> cdoState.state
-            >> cdoState.amperage
-            >> cdoState.voltage
-            >> cdoState.temperature
-            >> cdoState.cdoState
-            >> cdoState.camCount;
+               >> cdoState.amperage
+               >> cdoState.voltage
+               >> cdoState.temperature
+               >> cdoState.cdoState
+               >> cdoState.camCount;
+
+        cdoState.camInfo = new CamState[cdoState.camCount];
 
         for (int i = 0; i < cdoState.camCount; ++i) {
             stream >> cdoState.camInfo[i];
         }
+
         return stream;
     }
 
 };
 
 struct StateMessage {
-    StateMessage();
-
     quint8 acState = 0;
     quint8 frequencyState = 0;
     quint8 switch1State = 0;
     quint8 switch2State = 0;
     quint8 computerState = 0;
-
     quint8 sectorCount = 4;
 
-    CDO_state* cdo_state;
+    CdoMessage* cdoState;
 
-    QByteArray serializeStruct() {
-        QByteArray data;
-        QDataStream stream (&data, QIODevice::WriteOnly);
+    StateMessage() : cdoState(nullptr) {}
+    ~StateMessage() { delete[] cdoState; }
+
+    friend QDataStream &operator >> (QDataStream &stream, StateMessage &stateMsg)
+    {
         stream.setByteOrder(QDataStream::LittleEndian);
         stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
+        stream >> stateMsg.acState
+            >> stateMsg.frequencyState
+            >> stateMsg.switch1State
+            >> stateMsg.switch2State
+            >> stateMsg.computerState
+            >> stateMsg.sectorCount;
 
-        stream >> acState
-            >> frequencyState
-            >> switch1State
-            >> switch2State
-            >> computerState
-            >> sectorCount;
+        stateMsg.cdoState = new CdoMessage[stateMsg.sectorCount];
 
-        for(int i = 0; i < 4; i++) {
-            stream >> cdo_state[i];
+        for(quint8 i = 0; i < stateMsg.sectorCount; ++i) {
+            stream >> stateMsg.cdoState[i];
         }
-        return data;
+
+        return stream;
     }
 };
