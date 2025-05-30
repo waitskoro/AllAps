@@ -26,6 +26,8 @@ SOURCES += \
     gui/stopingplans/stopingplanswidget.cpp \
     gui/trackingplans/channeldatadelegate.cpp \
     gui/trackingplans/channeldatalist.cpp \
+    gui/trackingplans/segmentdelegate.cpp \
+    gui/trackingplans/segmentslist.cpp \
     gui/trackingplans/trackingplanswidget.cpp \
     main.cpp \
     src/connection/connectiondatasaving.cpp \
@@ -59,6 +61,8 @@ HEADERS += \
     gui/stopingplans/stopingplanswidget.h \
     gui/trackingplans/channeldatadelegate.h \
     gui/trackingplans/channeldatalist.h \
+    gui/trackingplans/segmentdelegate.h \
+    gui/trackingplans/segmentslist.h \
     gui/trackingplans/trackingplanswidget.h \
     src/channelmessage.h \
     src/connection/connectiondatasaving.h \

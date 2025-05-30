@@ -23,11 +23,17 @@ void ChannelDataDelegate::paint(QPainter *painter,
     painter->setFont(font);
 
     painter->save();
-    painter->fillRect(option.rect, QColor("#3C388D"));
+
+    if (index == m_clickedIndex) painter->fillRect(option.rect, "#4640C0");
+    else painter->fillRect(option.rect, "#3C388D");
 
     QPen pen;
     pen.setColor("white");
     painter->setPen(pen);
+
+    font.setBold(true);
+    font.setWeight(QFont::Medium);
+    painter->setFont(font);
 
     painter->drawText(option.rect.x() + 10,
                       option.rect.y() + 20,
@@ -61,6 +67,14 @@ bool ChannelDataDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
 {
     if (event->type() == QEvent::MouseButtonRelease) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            m_clickedIndex = index;
+
+            emit const_cast<QAbstractItemModel*>(index.model())->dataChanged(index, index);
+
+            emit itemClicked(index.data(ChannelDataList::ChannelNumber).toInt());
+            return true;
+        }
     }
     return QStyledItemDelegate::editorEvent(event, model, option, index);
 }

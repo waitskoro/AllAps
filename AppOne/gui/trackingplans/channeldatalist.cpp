@@ -16,7 +16,19 @@ ChannelDataList::ChannelDataList(QWidget *parent)
     setSpacing(3);
     setFixedSize(250, 400);
     setModel(m_model.get());
-    setStyleSheet("background-color: #C3D7E4");
+    setStyleSheet("background-color: #FFFFFF");
+
+    hide();
+
+    connect(delegate,
+            &ChannelDataDelegate::itemClicked,
+            this,
+            &ChannelDataList::itemClicked);
+}
+
+void ChannelDataList::clear()
+{
+    m_model->clear();
 }
 
 void ChannelDataList::addMessage(const DataChannelInfo &msg)

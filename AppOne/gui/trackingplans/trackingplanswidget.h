@@ -9,6 +9,7 @@
 
 namespace View {
 
+class SegmentsList;
 class ChannelDataList;
 
 class TrackingPlansWidget : public QWidget
@@ -40,7 +41,10 @@ private:
 
     State m_currentState;
 
+    SegmentsList *m_segmentsList;
     ChannelDataList *m_channelDataTable;
+
+    DataChannelMessage m_message;
 };
 
 }

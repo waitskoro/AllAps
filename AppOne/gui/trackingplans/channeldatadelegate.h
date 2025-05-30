@@ -12,18 +12,22 @@ class ChannelDataDelegate : public QStyledItemDelegate
 public:
     explicit ChannelDataDelegate(QObject *parent = nullptr);
 
+signals:
+    void itemClicked(const int);
+
+private:
+
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const override;
 
     QSize sizeHint(const QStyleOptionViewItem &option,
-                  const QModelIndex &index) const override;
+                   const QModelIndex &index) const override;
 
     bool editorEvent(QEvent *event, QAbstractItemModel *model,
-                    const QStyleOptionViewItem &option,
-                    const QModelIndex &index) override;
+                     const QStyleOptionViewItem &option,
+                     const QModelIndex &index) override;
 
-signals:
-    void buttonClicked(const QModelIndex &index);
+    QPersistentModelIndex m_clickedIndex;
 };
 
 }

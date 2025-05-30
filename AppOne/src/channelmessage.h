@@ -2,13 +2,13 @@
 
 #include <QByteArray>
 #include <QDataStream>
+#include <vector>
 
 struct DesignationTarget {
     qint16 coord[2];
 
     friend QDataStream &operator>>(QDataStream &stream, DesignationTarget &target) {
-        stream >> target.coord[0]
-            >> target.coord[1];
+        stream >> target.coord[0] >> target.coord[1];
         return stream;
     }
 };
@@ -22,23 +22,19 @@ struct DataChannelSegment {
     double startTime;
     double endTime;
     quint16 targetCount;
-
-    DesignationTarget* targets;
-
-    DataChannelSegment() : targets(nullptr) {}
-    ~DataChannelSegment() { delete[] targets; }
+    std::vector<DesignationTarget> targets;
 
     friend QDataStream &operator>>(QDataStream &stream, DataChannelSegment &segment) {
         stream >> segment.sectorNumber
-               >> segment.physicalChannelNumber
-               >> segment.polarizationDirection
-               >> segment.spacecraftNumber
-               >> segment.centerFrequency
-               >> segment.startTime
-               >> segment.endTime
-               >> segment.targetCount;
+            >> segment.physicalChannelNumber
+            >> segment.polarizationDirection
+            >> segment.spacecraftNumber
+            >> segment.centerFrequency
+            >> segment.startTime
+            >> segment.endTime
+            >> segment.targetCount;
 
-        segment.targets = new DesignationTarget[segment.targetCount];
+        segment.targets.resize(segment.targetCount);
         for (quint16 i = 0; i < segment.targetCount; ++i) {
             stream >> segment.targets[i];
         }
@@ -47,18 +43,15 @@ struct DataChannelSegment {
 };
 
 struct DataChannelInfo {
-    quint8 channelNumber;
-    quint8 segmentCount;
-    DataChannelSegment* segments;
-
-    DataChannelInfo() : segments(nullptr) {}
-    ~DataChannelInfo() { delete[] segments; }
+    quint8 channelNumber = 0;
+    quint8 segmentCount = 0;
+    std::vector<DataChannelSegment> segments;
 
     friend QDataStream &operator>>(QDataStream &stream, DataChannelInfo &channel) {
         stream >> channel.channelNumber
-               >> channel.segmentCount;
+            >> channel.segmentCount;
 
-        channel.segments = new DataChannelSegment[channel.segmentCount];
+        channel.segments.resize(channel.segmentCount);
         for (quint8 i = 0; i < channel.segmentCount; ++i) {
             stream >> channel.segments[i];
         }
@@ -68,16 +61,13 @@ struct DataChannelInfo {
 
 struct DataChannelMessage {
     quint8 activeChannelsCount;
-    DataChannelInfo* channels;
-
-    DataChannelMessage() : channels(nullptr) {}
-    ~DataChannelMessage() { delete[] channels; }
+    std::vector<DataChannelInfo> channels;
 
     friend QDataStream &operator>>(QDataStream &stream, DataChannelMessage &msg) {
         stream.setByteOrder(QDataStream::LittleEndian);
         stream >> msg.activeChannelsCount;
 
-        msg.channels = new DataChannelInfo[msg.activeChannelsCount];
+        msg.channels.resize(msg.activeChannelsCount);
         for (quint8 i = 0; i < msg.activeChannelsCount; ++i) {
             stream >> msg.channels[i];
         }

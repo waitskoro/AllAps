@@ -20,7 +20,10 @@ public:
 
     explicit ChannelDataList(QWidget *parent = nullptr);
 
+    void clear();
     void addMessage(const DataChannelInfo &);
+signals:
+    void itemClicked(const int);
 
 private:
     QScopedPointer<QStandardItemModel> m_model;

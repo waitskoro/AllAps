@@ -34,7 +34,6 @@ StateWorkingWidget::StateWorkingWidget(QWidget *parent)
     connect(m_stateWorkingList,
             &StateWorkingList::itemClicked,
             [this](int row){
-
                 auto cdo = m_state.cdoState[row];
 
                 m_camList->clear();

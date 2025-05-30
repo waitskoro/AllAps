@@ -79,12 +79,12 @@ struct CdoMessage {
 };
 
 struct StateMessage {
-    quint8 acState = 0;
-    quint8 frequencyState = 0;
-    quint8 switch1State = 0;
-    quint8 switch2State = 0;
-    quint8 computerState = 0;
-    quint8 sectorCount = 4;
+    quint8 acState;
+    quint8 frequencyState;
+    quint8 switch1State;
+    quint8 switch2State;
+    quint8 computerState;
+    quint8 sectorCount;
 
     CdoMessage* cdoState;
 

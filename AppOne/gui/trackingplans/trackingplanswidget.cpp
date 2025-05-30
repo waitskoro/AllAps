@@ -1,9 +1,10 @@
 #include "trackingplanswidget.h"
 
-#include <QPainter>
-
 #include <src/contants.h>
-#include <gui/trackingplans/channeldatalist.h>
+#include "segmentslist.h"
+#include "channeldatalist.h"
+
+#include <QPainter>
 
 using namespace View;
 
@@ -12,6 +13,7 @@ TrackingPlansWidget::TrackingPlansWidget(QWidget *parent)
     , m_label(new QLabel(this))
     , m_exit(new QPushButton(this))
     , m_headerLabel(new QLabel(this))
+    , m_segmentsList(new SegmentsList(this))
     , m_channelDataTable(new ChannelDataList(this))
 {
     setFixedSize(Sizes::insideSize());
@@ -24,12 +26,33 @@ TrackingPlansWidget::TrackingPlansWidget(QWidget *parent)
             this,
             &TrackingPlansWidget::goBack);
 
+    connect(m_channelDataTable,
+            &ChannelDataList::itemClicked,
+            [this](const int channelNumber){
+                m_segmentsList->clear();
+
+                for (int i = 0; i < m_message.activeChannelsCount; i++) {
+
+                    auto &ch = m_message.channels[i];
+
+                    if (ch.channelNumber == channelNumber) {
+                        m_segmentsList->addMessage(ch.segments[ch.segmentCount]);
+                    }
+                }
+
+            });
+
     m_currentState = Waiting;
 }
 
 void TrackingPlansWidget::addMessage(DataChannelMessage &message)
 {
+    m_message = message;
+
+    m_segmentsList->setVisible(true);
     m_channelDataTable->setVisible(true);
+
+    m_channelDataTable->clear();
 
     for (int i = 0; i < message.activeChannelsCount; i++) {
         m_channelDataTable->addMessage(message.channels[i]);
@@ -65,6 +88,7 @@ void TrackingPlansWidget::initUI()
 
     //Table
     m_channelDataTable->move(20, 70);
+    m_segmentsList->move(285, 70);
 
 }
 
