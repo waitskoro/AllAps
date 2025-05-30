@@ -6,6 +6,7 @@
 
 #include "src/messagesinfo.h"
 #include "src/statemessage.h"
+#include "src/channelmessage.h"
 #include "src/featuremanagment/targetdesignationsinfo.h"
 
 namespace Application {

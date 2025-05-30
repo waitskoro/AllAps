@@ -4,7 +4,7 @@
 #include <QListView>
 #include <QStandardItemModel>
 
-#include "src/messagesinfo.h"
+#include "src/channelmessage.h"
 
 namespace View {
 
@@ -14,13 +14,13 @@ class ChannelDataList : public QListView
 public:
 
     enum Roles {
-        ActiveChannelsCount  = Qt::UserRole + 1,
+        SegmentCount  = Qt::UserRole + 1,
         ChannelNumber
     };
 
     explicit ChannelDataList(QWidget *parent = nullptr);
 
-    void addMessage(const DataChannelMessage &);
+    void addMessage(const DataChannelInfo &);
 
 private:
     QScopedPointer<QStandardItemModel> m_model;

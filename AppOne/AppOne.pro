@@ -60,6 +60,7 @@ HEADERS += \
     gui/trackingplans/channeldatadelegate.h \
     gui/trackingplans/channeldatalist.h \
     gui/trackingplans/trackingplanswidget.h \
+    src/channelmessage.h \
     src/connection/connectiondatasaving.h \
     src/connection/ipconnectionsetupmanager.h \
     src/contants.h \

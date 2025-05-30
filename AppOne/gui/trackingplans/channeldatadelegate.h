@@ -24,10 +24,6 @@ public:
 
 signals:
     void buttonClicked(const QModelIndex &index);
-
-private:
-    QScopedPointer<QRect> m_buttonView;
-    mutable QRect m_currentButtonRect;
 };
 
 }

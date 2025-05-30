@@ -11,18 +11,21 @@ ChannelDataList::ChannelDataList(QWidget *parent)
     auto *delegate = new ChannelDataDelegate(this);
     setItemDelegate(delegate);
 
-    setSpacing(5);
-    setFixedSize(600, 400);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    setSpacing(3);
+    setFixedSize(250, 400);
     setModel(m_model.get());
     setStyleSheet("background-color: #C3D7E4");
 }
 
-void ChannelDataList::addMessage(const DataChannelMessage &msg)
+void ChannelDataList::addMessage(const DataChannelInfo &msg)
 {
     auto *item = new QStandardItem();
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-    item->setData(msg.activeChannelsCount, ActiveChannelsCount);
+    item->setData(msg.segmentCount, SegmentCount);
+    item->setData(msg.channelNumber, ChannelNumber);
 
     m_model->appendRow(item);
 }

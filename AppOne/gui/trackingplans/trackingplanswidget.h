@@ -5,7 +5,7 @@
 #include <QWidget>
 #include <QPushButton>
 
-#include "src/messagesinfo.h"
+#include "src/channelmessage.h"
 
 namespace View {
 

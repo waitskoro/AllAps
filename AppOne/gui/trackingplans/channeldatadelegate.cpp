@@ -9,7 +9,6 @@ using namespace View;
 
 ChannelDataDelegate::ChannelDataDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
-    , m_buttonView(new QRect(0, 0, 150, 30))
 {}
 
 void ChannelDataDelegate::paint(QPainter *painter,
@@ -24,25 +23,26 @@ void ChannelDataDelegate::paint(QPainter *painter,
     painter->setFont(font);
 
     painter->save();
-    painter->fillRect(option.rect, QColor(0x6E, 0x87, 0xD8));
+    painter->fillRect(option.rect, QColor("#3C388D"));
 
-    m_buttonView->moveTo(option.rect.right() - 170, option.rect.y() + 20);
-    m_currentButtonRect = *m_buttonView;
+    QPen pen;
+    pen.setColor("white");
+    painter->setPen(pen);
 
-    painter->fillRect(*m_buttonView, Qt::white);
+    painter->drawText(option.rect.x() + 10,
+                      option.rect.y() + 20,
+                      QString("Канал данных №%1")
+                          .arg(index.data(ChannelDataList::ChannelNumber).toInt()));
 
-    painter->drawText(option.rect.x() + 30,
-                      option.rect.y() + 25,
-                      QString("Канал данных #%1")
-                          .arg(index.data(ChannelDataList::ChannelNumber).toString()));
-
-    QRect textRect = option.rect.adjusted(30, 35, 80, 35);
+    QRect textRect = option.rect.adjusted(10, 35, 80, 35);
     painter->drawText(textRect,
                       Qt::TextWordWrap,
-                      QString("Количество отрезков\nзапланированного сеанса слежения: %1")
-                          .arg(index.data(ChannelDataList::ActiveChannelsCount).toString()));
+                      QString("Количество отрезков\nзапланированного сеанса\nслежения -  %1")
+                          .arg(index.data(ChannelDataList::SegmentCount).toString()));
 
-    painter->drawText(*m_buttonView, Qt::AlignCenter, "Посмотреть");
+    pen.setColor("#9FC53A");
+    painter->setPen(pen);
+    painter->drawLine(0, 30, option.rect.right(), 30);
 
     painter->restore();
 }
@@ -52,7 +52,7 @@ QSize ChannelDataDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(450, 80);
+    return QSize(235, 100);
 }
 
 bool ChannelDataDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
@@ -61,12 +61,6 @@ bool ChannelDataDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
 {
     if (event->type() == QEvent::MouseButtonRelease) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-
-        if (m_currentButtonRect.contains(mouseEvent->pos())) {
-            emit buttonClicked(index);
-            qDebug() << "clicked";
-            return true;
-        }
     }
     return QStyledItemDelegate::editorEvent(event, model, option, index);
 }

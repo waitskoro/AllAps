@@ -30,7 +30,10 @@ TrackingPlansWidget::TrackingPlansWidget(QWidget *parent)
 void TrackingPlansWidget::addMessage(DataChannelMessage &message)
 {
     m_channelDataTable->setVisible(true);
-    m_channelDataTable->addMessage(message);
+
+    for (int i = 0; i < message.activeChannelsCount; i++) {
+        m_channelDataTable->addMessage(message.channels[i]);
+    }
 
     m_label->setVisible(false);
 }
@@ -61,7 +64,7 @@ void TrackingPlansWidget::initUI()
     m_headerLabel->move(centerX(rect().size(), QSize(370, 50)), 15);
 
     //Table
-    m_channelDataTable->move(50, 70);
+    m_channelDataTable->move(20, 70);
 
 }
 
