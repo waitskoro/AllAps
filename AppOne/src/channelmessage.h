@@ -3,6 +3,7 @@
 #include <QByteArray>
 #include <QDataStream>
 #include <vector>
+#include <QDebug>
 
 struct DesignationTarget {
     qint16 coord[2];
@@ -22,7 +23,7 @@ struct DataChannelSegment {
     double startTime;
     double endTime;
     quint16 targetCount;
-    std::vector<DesignationTarget> targets;
+    qint16** targets;
 
     friend QDataStream &operator>>(QDataStream &stream, DataChannelSegment &segment) {
         stream >> segment.sectorNumber
@@ -34,10 +35,17 @@ struct DataChannelSegment {
             >> segment.endTime
             >> segment.targetCount;
 
-        segment.targets.resize(segment.targetCount);
-        for (quint16 i = 0; i < segment.targetCount; ++i) {
-            stream >> segment.targets[i];
+        segment.targets = new qint16*[segment.targetCount];
+
+        for (quint16 i = 0; i < segment.targetCount; i++) {
+            segment.targets[i] = new qint16[2];
         }
+
+        for (quint16 i = 0; i < segment.targetCount; ++i) {
+            stream >> segment.targets[i][0] >> segment.targets[i][1];
+        }
+
+        qDebug() << segment.centerFrequency;
         return stream;
     }
 };
