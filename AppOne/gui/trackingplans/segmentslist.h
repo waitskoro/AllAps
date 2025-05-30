@@ -11,6 +11,8 @@ class SegmentsList : public QListView
 {
     Q_OBJECT
 
+public:
+
     enum Roles {
         SectorNumber,
         PhysicalChannelNumber,
@@ -22,7 +24,6 @@ class SegmentsList : public QListView
         TargetCount
     };
 
-public:
     explicit SegmentsList(QWidget *parent = nullptr);
 
     void clear();

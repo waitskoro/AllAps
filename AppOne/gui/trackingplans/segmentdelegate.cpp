@@ -1,6 +1,6 @@
 #include "segmentdelegate.h"
 
-// #include "segmentslist.h"
+#include "segmentslist.h"
 
 #include <QEvent>
 #include <QPainter>
@@ -17,7 +17,7 @@ QSize SegmentDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(280, 90);
+    return QSize(280, 180);
 }
 void SegmentDelegate::paint(QPainter *painter,
                                  const QStyleOptionViewItem &option,
@@ -26,9 +26,28 @@ void SegmentDelegate::paint(QPainter *painter,
     painter->save();
     painter->fillRect(option.rect, "#B2EEBB");
 
-    int rowNumber = index.row() + 1;
-    painter->drawText(option.rect.right() - 40, option.rect.y() + 20,
-                      "№" + QString::number(rowNumber));
+    QFont font;
+    font.setPixelSize(14);
+    painter->setFont(font);
+
+    auto endTime = index.data(SegmentsList::EndTime).toString();
+    auto startTime = index.data(SegmentsList::StartTime).toString();
+    auto targetCount = index.data(SegmentsList::TargetCount).toString();
+    auto sectorNumber = index.data(SegmentsList::SectorNumber);
+    auto centerFrequency = index.data(SegmentsList::CenterFrequency).toString();
+    auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber).toString();
+    auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber).toString();
+    auto polarizationDirection = index.data(SegmentsList::PolarizationDirection).toString();
+
+    qDebug() << sectorNumber << "dddddd.....";
+
+    painter->drawText(10, 20, "№ КА: " + spacecraftNumber);
+    painter->drawText(10, 40, "№ физ. канала: " + physicalChannelNumber);
+    painter->drawText(10, 60, "№ сектора приема:" + sectorNumber.toString());
+
+    painter->drawText(10, 90, "Частота: \n" + centerFrequency);
+    painter->drawText(10, 120, "Направление поляризации:");
+    painter->drawText(10, 150, "Временной промежуток отрезков:");
 
     painter->restore();
 }

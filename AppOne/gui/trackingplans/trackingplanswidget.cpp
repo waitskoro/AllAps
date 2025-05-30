@@ -36,7 +36,10 @@ TrackingPlansWidget::TrackingPlansWidget(QWidget *parent)
                     auto &ch = m_message.channels[i];
 
                     if (ch.channelNumber == channelNumber) {
-                        m_segmentsList->addMessage(ch.segments[ch.segmentCount]);
+
+                        for (int j = 0; j < ch.segmentCount; j++) {
+                            m_segmentsList->addMessage(ch.segments[j]);
+                        }
                     }
                 }
 
@@ -57,6 +60,7 @@ void TrackingPlansWidget::addMessage(DataChannelMessage &message)
     for (int i = 0; i < message.activeChannelsCount; i++) {
         m_channelDataTable->addMessage(message.channels[i]);
     }
+
 
     m_label->setVisible(false);
 }

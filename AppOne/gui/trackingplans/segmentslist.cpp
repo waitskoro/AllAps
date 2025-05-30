@@ -29,14 +29,16 @@ void SegmentsList::addMessage(const DataChannelSegment &msg)
     auto *item = new QStandardItem();
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
-    // item->setData(msg.sectorNumber, SectorNumber);
-    // item->setData(msg.physicalChannelNumber, PhysicalChannelNumber);
-    // item->setData(msg.polarizationDirection, PolarizationDirection);
-    // item->setData(msg.spacecraftNumber, SpacecraftNumber);
-    // item->setData(msg.centerFrequency, CenterFrequency);
-    // item->setData(msg.startTime, StartTime);
-    // item->setData(msg.endTime, EndTime);
-    // item->setData(msg.targetCount, TargetCount);
+    item->setData(msg.sectorNumber, SectorNumber);
+    item->setData(msg.physicalChannelNumber, PhysicalChannelNumber);
+    item->setData(msg.polarizationDirection, PolarizationDirection);
+    item->setData(msg.spacecraftNumber, SpacecraftNumber);
+    item->setData(msg.centerFrequency, CenterFrequency);
+    item->setData(msg.startTime, StartTime);
+    item->setData(msg.endTime, EndTime);
+    item->setData(msg.targetCount, TargetCount);
+
+    qDebug() << msg.sectorNumber << "dddddd";
 
     m_model->appendRow(item);
 }

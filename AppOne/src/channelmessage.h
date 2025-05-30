@@ -26,6 +26,8 @@ struct DataChannelSegment {
             >> segment.endTime
             >> segment.targetCount;
 
+        qDebug() << segment.sectorNumber << segment.physicalChannelNumber;
+
         segment.targets = new qint16*[segment.targetCount];
 
         for (quint16 i = 0; i < segment.targetCount; i++) {
@@ -35,8 +37,6 @@ struct DataChannelSegment {
         for (quint16 i = 0; i < segment.targetCount; ++i) {
             stream >> segment.targets[i][0] >> segment.targets[i][1];
         }
-
-        qDebug() << segment.centerFrequency;
         return stream;
     }
 };
