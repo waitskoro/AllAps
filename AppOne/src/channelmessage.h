@@ -5,15 +5,6 @@
 #include <vector>
 #include <QDebug>
 
-struct DesignationTarget {
-    qint16 coord[2];
-
-    friend QDataStream &operator>>(QDataStream &stream, DesignationTarget &target) {
-        stream >> target.coord[0] >> target.coord[1];
-        return stream;
-    }
-};
-
 struct DataChannelSegment {
     quint8 sectorNumber;
     quint8 physicalChannelNumber;
