@@ -14,7 +14,7 @@ class SegmentsList : public QListView
 public:
 
     enum Roles {
-        SectorNumber,
+        SectorNumber = Qt::UserRole + 1,
         PhysicalChannelNumber,
         PolarizationDirection,
         SpacecraftNumber,

@@ -30,24 +30,24 @@ void SegmentDelegate::paint(QPainter *painter,
     font.setPixelSize(14);
     painter->setFont(font);
 
+    auto a = index.data(SegmentsList::SectorNumber);
+
     auto endTime = index.data(SegmentsList::EndTime).toString();
     auto startTime = index.data(SegmentsList::StartTime).toString();
     auto targetCount = index.data(SegmentsList::TargetCount).toString();
-    auto sectorNumber = index.data(SegmentsList::SectorNumber);
+    auto sectorNumber = index.data(SegmentsList::SectorNumber).toString();
     auto centerFrequency = index.data(SegmentsList::CenterFrequency).toString();
     auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber).toString();
     auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber).toString();
     auto polarizationDirection = index.data(SegmentsList::PolarizationDirection).toString();
 
-    qDebug() << sectorNumber << "dddddd.....";
-
     painter->drawText(10, 20, "№ КА: " + spacecraftNumber);
     painter->drawText(10, 40, "№ физ. канала: " + physicalChannelNumber);
-    painter->drawText(10, 60, "№ сектора приема:" + sectorNumber.toString());
+    painter->drawText(10, 60, "№ сектора приема: " + sectorNumber);
 
     painter->drawText(10, 90, "Частота: \n" + centerFrequency);
-    painter->drawText(10, 120, "Направление поляризации:");
-    painter->drawText(10, 150, "Временной промежуток отрезков:");
+    painter->drawText(10, 120, "Направление поляризации: " + polarizationDirection);
+    painter->drawText(10, 150, "Временной промежуток отрезков:" + startTime + " - " + endTime);
 
     painter->restore();
 }

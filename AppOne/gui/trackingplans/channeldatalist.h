@@ -14,7 +14,7 @@ class ChannelDataList : public QListView
 public:
 
     enum Roles {
-        SegmentCount  = Qt::UserRole + 1,
+        SegmentCount = Qt::UserRole + 1,
         ChannelNumber
     };
 
