@@ -87,4 +87,10 @@ inline double currentOADate()
     return double(now.toSecsSinceEpoch()) / double (86400) + 25569;
 }
 
+inline QDateTime fromDoubleToDate(double dateValue)
+{
+    const double unixTime = (dateValue - 25569) * 86400;
+    return QDateTime::fromSecsSinceEpoch(static_cast<qint64>(unixTime));
+}
+
 }

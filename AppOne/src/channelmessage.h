@@ -26,15 +26,6 @@ struct DataChannelSegment {
                >> segment.endTime
                >> segment.targetCount;
 
-        qDebug() << "sectorNumber:" << segment.sectorNumber
-                 << "\n" << "physicalChannelNumber:" << segment.physicalChannelNumber
-                 << "\n" << "polarizationDirection:" << segment.polarizationDirection
-                 << "\n" << "spacecraftNumber:" << segment.spacecraftNumber
-                 << "\n" << "centerFrequency:" << segment.centerFrequency
-                 << "\n" << "startTime:" << segment.startTime
-                 << "\n" << "endTime:" << segment.endTime
-                 << "\n" << "targetCount:" << segment.targetCount;
-
         segment.targets = new int16_t*[segment.targetCount];
 
         for (int i = 0; i < segment.targetCount; i++) {

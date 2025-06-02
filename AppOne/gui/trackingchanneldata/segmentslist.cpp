@@ -38,7 +38,5 @@ void SegmentsList::addMessage(const DataChannelSegment &msg)
     item->setData(msg.endTime, EndTime);
     item->setData(msg.targetCount, TargetCount);
 
-    qDebug() << msg.sectorNumber << "sector number in segment list";
-
     m_model->appendRow(item);
 }

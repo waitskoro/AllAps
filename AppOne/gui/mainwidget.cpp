@@ -7,7 +7,7 @@
 #include "planswidget.h"
 #include "state/stateworkingwidget.h"
 #include "stopingplans/stopingplanswidget.h"
-#include "trackingplans/trackingplanswidget.h"
+#include "trackingchanneldata/trackingplanswidget.h"
 #include "featuremanagement/targetdesignationwidget.h"
 
 #include <QPainter>

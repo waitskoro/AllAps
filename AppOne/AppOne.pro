@@ -24,11 +24,11 @@ SOURCES += \
     gui/state/stateworkinglist.cpp \
     gui/state/stateworkingwidget.cpp \
     gui/stopingplans/stopingplanswidget.cpp \
-    gui/trackingplans/channeldatadelegate.cpp \
-    gui/trackingplans/channeldatalist.cpp \
-    gui/trackingplans/segmentdelegate.cpp \
-    gui/trackingplans/segmentslist.cpp \
-    gui/trackingplans/trackingplanswidget.cpp \
+    gui/trackingchanneldata/channeldatadelegate.cpp \
+    gui/trackingchanneldata/channeldatalist.cpp \
+    gui/trackingchanneldata/segmentdelegate.cpp \
+    gui/trackingchanneldata/segmentslist.cpp \
+    gui/trackingchanneldata/trackingplanswidget.cpp \
     main.cpp \
     src/connection/connectiondatasaving.cpp \
     src/connection/ipconnectionsetupmanager.cpp \
@@ -59,11 +59,11 @@ HEADERS += \
     gui/state/stateworkinglist.h \
     gui/state/stateworkingwidget.h \
     gui/stopingplans/stopingplanswidget.h \
-    gui/trackingplans/channeldatadelegate.h \
-    gui/trackingplans/channeldatalist.h \
-    gui/trackingplans/segmentdelegate.h \
-    gui/trackingplans/segmentslist.h \
-    gui/trackingplans/trackingplanswidget.h \
+    gui/trackingchanneldata/channeldatadelegate.h \
+    gui/trackingchanneldata/channeldatalist.h \
+    gui/trackingchanneldata/segmentdelegate.h \
+    gui/trackingchanneldata/segmentslist.h \
+    gui/trackingchanneldata/trackingplanswidget.h \
     src/channelmessage.h \
     src/connection/connectiondatasaving.h \
     src/connection/ipconnectionsetupmanager.h \
