@@ -18,7 +18,7 @@ QSize SegmentDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(280, 180);
+    return QSize(280, 130);
 }
 void SegmentDelegate::paint(QPainter *painter,
                                  const QStyleOptionViewItem &option,
@@ -45,7 +45,7 @@ void SegmentDelegate::paint(QPainter *painter,
     auto centerFrequency = index.data(SegmentsList::CenterFrequency).toString();
     auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber).toString();
     auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber).toString();
-    auto polarizationDirection = index.data(SegmentsList::PolarizationDirection).toString();
+    auto polarizationDirection = index.data(SegmentsList::PolarizationDirection);
 
     painter->drawText(30, 20, "№ КА: " + spacecraftNumber);
     painter->drawText(110, 20, "№ физ. канала: " + physicalChannelNumber);
@@ -59,21 +59,37 @@ void SegmentDelegate::paint(QPainter *painter,
     QDateTime startDate = fromDoubleToDate(startTime.toDouble());
     QDateTime endDate = fromDoubleToDate(endTime.toDouble());
 
-
     auto startTimeS = startDate.toString("dd.MM.yy hh:mm");
     auto endTimeS =  endDate.toString("dd.MM.yy hh:mm");
 
     auto freq = QString("Частота: %1 кГц").arg(centerFrequency);
-    auto pol = QString("Поляризации: %1").arg(polarizationDirection);
+
+    QString polS;
+
+    if (polarizationDirection == 0) {
+        polS = "правая круговая";
+    } else if (polarizationDirection == 1) {
+        polS = "левая круговая";
+    } else if (polarizationDirection == 2) {
+        polS = "вертикальная";
+    } else if (polarizationDirection == 3) {
+        polS = "горизонтальная";
+    } else if (polarizationDirection == 4) {
+        polS = "линейная +45°";
+    } else if (polarizationDirection == 5) {
+        polS = "линейная –45°";
+    }
+
+    auto pol = QString("Поляризации: %1").arg(polS);
 
     painter->drawText(10, 50, freq);
 
-    painter->drawText(QRect(10, 60, 150, 30),
+    painter->drawText(QRect(10, 60, 250, 30),
                       Qt::TextWordWrap,
                       pol);
-    painter->drawText(QRect(10, 80, 250, 50),
+    painter->drawText(QRect(10, 85, 250, 50),
                       Qt::TextWordWrap,
-                      "Временной промежуток отрезков: \n"
+                      "Временной промежуток: \n"
                                    + startTimeS + " - " + endTimeS);
 
     painter->restore();
