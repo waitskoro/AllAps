@@ -20,14 +20,16 @@ QSize SegmentDelegate::sizeHint(const QStyleOptionViewItem &option,
     Q_UNUSED(index)
     return QSize(280, 130);
 }
+
 void SegmentDelegate::paint(QPainter *painter,
-                                 const QStyleOptionViewItem &option,
-                                 const QModelIndex &index) const
+                            const QStyleOptionViewItem &option,
+                            const QModelIndex &index) const
 {
     painter->save();
+
     painter->fillRect(option.rect, "#BDE5ED");
 
-    painter->fillRect(QRect(option.rect.left(), 0,
+    painter->fillRect(QRect(option.rect.left(), option.rect.top(),
                             option.rect.width(), 30), "#3C388D");
 
     QFont font;
@@ -47,13 +49,12 @@ void SegmentDelegate::paint(QPainter *painter,
     auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber).toString();
     auto polarizationDirection = index.data(SegmentsList::PolarizationDirection);
 
-    painter->drawText(30, 20, "№ КА: " + spacecraftNumber);
-    painter->drawText(110, 20, "№ физ. канала: " + physicalChannelNumber);
-    painter->drawText(270, 20, "№ сектора: " + sectorNumber);
+    painter->drawText(option.rect.left() + 30, option.rect.top() + 20, "№ КА: " + spacecraftNumber);
+    painter->drawText(option.rect.left() + 110, option.rect.top() + 20, "№ физ. канала: " + physicalChannelNumber);
+    painter->drawText(option.rect.left() + 270, option.rect.top() + 20, "№ сектора: " + sectorNumber);
 
     pen.setColor("black");
     painter->setPen(pen);
-
     painter->setFont(font);
 
     QDateTime startDate = fromDoubleToDate(startTime.toDouble());
@@ -65,32 +66,24 @@ void SegmentDelegate::paint(QPainter *painter,
     auto freq = QString("Частота: %1 кГц").arg(centerFrequency);
 
     QString polS;
-
-    if (polarizationDirection == 0) {
-        polS = "правая круговая";
-    } else if (polarizationDirection == 1) {
-        polS = "левая круговая";
-    } else if (polarizationDirection == 2) {
-        polS = "вертикальная";
-    } else if (polarizationDirection == 3) {
-        polS = "горизонтальная";
-    } else if (polarizationDirection == 4) {
-        polS = "линейная +45°";
-    } else if (polarizationDirection == 5) {
-        polS = "линейная –45°";
+    switch (polarizationDirection.toInt()) {
+        case 0: polS = "правая круговая"; break;
+        case 1: polS = "левая круговая"; break;
+        case 2: polS = "вертикальная"; break;
+        case 3: polS = "горизонтальная"; break;
+        case 4: polS = "линейная +45°"; break;
+        case 5: polS = "линейная –45°"; break;
+        default: polS = "неизвестно"; break;
     }
 
     auto pol = QString("Поляризации: %1").arg(polS);
 
-    painter->drawText(10, 50, freq);
-
-    painter->drawText(QRect(10, 60, 250, 30),
+    painter->drawText(option.rect.left() + 10, option.rect.top() + 50, freq);
+    painter->drawText(QRect(option.rect.left() + 10, option.rect.top() + 60, 250, 30),
+                      Qt::TextWordWrap, pol);
+    painter->drawText(QRect(option.rect.left() + 10, option.rect.top() + 85, 250, 50),
                       Qt::TextWordWrap,
-                      pol);
-    painter->drawText(QRect(10, 85, 250, 50),
-                      Qt::TextWordWrap,
-                      "Временной промежуток: \n"
-                                   + startTimeS + " - " + endTimeS);
+                      "Временной промежуток: \n" + startTimeS + " - " + endTimeS);
 
     painter->restore();
 }
