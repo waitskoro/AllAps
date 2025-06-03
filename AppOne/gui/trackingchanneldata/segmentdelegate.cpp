@@ -22,7 +22,7 @@ QSize SegmentDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(280, 130);
+    return QSize(280, 120);
 }
 
 void SegmentDelegate::paint(QPainter *painter,
@@ -48,7 +48,7 @@ void SegmentDelegate::paint(QPainter *painter,
     auto startTime = index.data(SegmentsList::StartTime);
     auto targetCount = index.data(SegmentsList::TargetCount);
     auto sectorNumber = index.data(SegmentsList::SectorNumber);
-    auto centerFrequency = index.data(SegmentsList::CenterFrequency).toString();
+    auto centerFrequency = index.data(SegmentsList::CenterFrequency);
     auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber);
     auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber);
     auto polarizationDirection = index.data(SegmentsList::PolarizationDirection);
@@ -67,7 +67,7 @@ void SegmentDelegate::paint(QPainter *painter,
     auto startTimeS = startDate.toString("dd.MM.yy hh:mm:ss");
     auto endTimeS =  endDate.toString("dd.MM.yy hh:mm:ss");
 
-    auto freq = QString("Частота: %1 кГц").arg(centerFrequency);
+    auto freq = QString("Частота: %1 кГц").arg(centerFrequency.toString());
 
     QString polS;
     switch (polarizationDirection.toInt()) {
@@ -80,20 +80,18 @@ void SegmentDelegate::paint(QPainter *painter,
         default: polS = "неизвестно"; break;
     }
 
-    auto pol = QString("Поляризации: %1").arg(polS);
+    auto pol = QString("Поляризация: %1").arg(polS);
 
-    painter->drawText(option.rect.left() + 10, option.rect.top() + 50, freq);
-    painter->drawText(QRect(option.rect.left() + 10, option.rect.top() + 60, 250, 30),
-                      Qt::TextWordWrap, pol);
-    painter->drawText(QRect(option.rect.left() + 10, option.rect.top() + 85, 250, 50),
-                      Qt::TextWordWrap,
-                      "Временной промежуток: \n" + startTimeS + " - " + endTimeS);
+    painter->drawText(option.rect.left() + 10, option.rect.top() + 70, freq);
+    painter->drawText(option.rect.left() + 170, option.rect.top() + 70, pol);
+    painter->drawText(option.rect.left() + 70, option.rect.top() + 50,
+                      "[" + startTimeS + " - " + endTimeS + "]");
 
-    QRect buttonRect(option.rect.left() + 230, option.rect.top() + 40, 150, 60);
+    QRect buttonRect(option.rect.left() + 60, option.rect.top() + 80, 250, 30);
 
     QStyleOptionButton button;
     button.rect = buttonRect;
-    button.text = "Просмотреть \nцелеуказания";
+    button.text = "Просмотреть целеуказания";
     button.state = QStyle::State_Enabled;
 
     QPalette palette = button.palette;
@@ -112,11 +110,10 @@ bool SegmentDelegate::editorEvent(QEvent *event,
 {
     if (event->type() == QEvent::MouseButtonRelease) {
 
-        QVariant variant = index.data(SegmentsList::Targets);
-
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-        QRect buttonRect(option.rect.left() + 230, option.rect.top() + 40, 150, 60);
+        QRect buttonRect(option.rect.left() + 60, option.rect.top() + 80, 250, 30);
 
+        QVariant variant = index.data(SegmentsList::Targets);
         auto targetCount = index.data(SegmentsList::TargetCount);
         auto sectorNumber = index.data(SegmentsList::SectorNumber);
         auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber);
@@ -144,10 +141,6 @@ bool SegmentDelegate::editorEvent(QEvent *event,
             view->show();
             return true;
         }
-
-        qDebug() << "spacecraftNumber: " << spacecraftNumber <<
-                    " sectorNumber:" << sectorNumber <<
-                    " channelNumber: " << index.data(SegmentsList::ChannelNumber);
     }
     return QStyledItemDelegate::editorEvent(event, model, option, index);
 }

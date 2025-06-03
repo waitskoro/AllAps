@@ -24,7 +24,7 @@ QString baseSetButtonCommand = "border-radius: 5px;"
 MenuWidget::MenuWidget(QWidget *parent)
     : QWidget(parent)
     , m_stateWorking(new QPushButton(" Состояния\n работоспособности", this))
-    , m_trackingPlans(new QPushButton(" Планы слежения", this))
+    , m_trackingPlans(new QPushButton(" Состояния\n каналов данных", this))
     , m_target(new QPushButton(" Передача\n целеуказаний", this))
     , m_stopingPlans(new QPushButton(" Остановка приема", this))
     , m_main(new QPushButton(" Главное меню ", this))
@@ -36,17 +36,17 @@ MenuWidget::MenuWidget(QWidget *parent)
     m_stateWorking->setStyleSheet(baseSetButtonRequest);
     m_stateWorking->move(50, 100);
 
-    m_trackingPlans->setFixedSize(230, 40);
+    m_trackingPlans->setFixedSize(230, 50);
     m_trackingPlans->setStyleSheet(baseSetButtonRequest);
     m_trackingPlans->move(50, 155);
 
     m_target->setFixedSize(230, 50);
     m_target->setStyleSheet(baseSetButtonCommand);
-    m_target->move(50, 240);
+    m_target->move(50, 250);
 
     m_stopingPlans->setFixedSize(230, 40);
     m_stopingPlans->setStyleSheet(baseSetButtonCommand);
-    m_stopingPlans->move(50, 295);
+    m_stopingPlans->move(50, 305);
 
     m_main->move(10, 10);
     m_main->setFixedSize(250, 30);
@@ -94,7 +94,7 @@ void MenuWidget::paintEvent(QPaintEvent *e)
     painter.setPen(Qt::white);
     painter.drawText(requests, "Запросы");
 
-    auto commands = QRect(30, 200, 300, 50);
+    auto commands = QRect(30, 210, 300, 50);
     painter.setPen(Qt::white);
     painter.drawText(commands, "Команды");
 
@@ -104,13 +104,13 @@ void MenuWidget::paintEvent(QPaintEvent *e)
     pen.setColor("#708086");
     painter.setPen(pen);
 
-    QLine line = QLine(0, 50, 300, 50);
+    QLine line = QLine(0, 50, 310, 50);
     painter.drawLine(line);
 
     // Menu items lines
     QLine lineRequest = QLine(30, 90, 125, 90);
     painter.drawLine(lineRequest);
 
-    QLine lineCommands = QLine(30, 230, 135, 230);
+    QLine lineCommands = QLine(30, 240, 135, 240);
     painter.drawLine(lineCommands);
 }
