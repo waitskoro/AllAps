@@ -80,9 +80,9 @@ void StopingPlansWidget::messageRecivied(ExecutedTheCommand result)
     QString text;
 
     if (result.result == 0) {
-        text = "Успешное завершение приема по\n"
+        text = "Успешное завершение приема по\n"
                "всем каналам. Переход в режим\n"
-               "ожидания новых планов слежения";
+               "ожидания новых планов слежения";
     } else {
         text = QString("Результат исполнения команды: %1").arg(result.result);
     }

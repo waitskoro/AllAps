@@ -38,7 +38,7 @@ TrackingPlansWidget::TrackingPlansWidget(QWidget *parent)
                     if (ch.channelNumber == channelNumber) {
 
                         for (int j = 0; j < ch.segmentCount; j++) {
-                            m_segmentsList->addMessage(ch.segments[j]);
+                            m_segmentsList->addMessage(ch.segments[j], channelNumber);
                         }
                     }
                 }

@@ -3,7 +3,7 @@
 
 #include <QAbstractListModel>
 
-namespace View::FeatureManagement {
+namespace View {
 
 class TargetDesignationModel : public QAbstractListModel
 {

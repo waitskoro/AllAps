@@ -9,7 +9,7 @@
 #include <QInputDialog>
 #include <QRandomGenerator>
 
-using namespace View::FeatureManagement;
+using namespace View;
 
 TargetDesignationTable::TargetDesignationTable(QWidget *parent)
     : QWidget(parent)

@@ -24,7 +24,7 @@ void SegmentsList::clear()
     m_model->clear();
 }
 
-void SegmentsList::addMessage(const DataChannelSegment &msg)
+void SegmentsList::addMessage(const DataChannelSegment &msg, qint32 channelNumber)
 {
     auto *item = new QStandardItem();
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -36,7 +36,12 @@ void SegmentsList::addMessage(const DataChannelSegment &msg)
     item->setData(msg.centerFrequency, CenterFrequency);
     item->setData(msg.startTime, StartTime);
     item->setData(msg.endTime, EndTime);
+    item->setData(channelNumber, ChannelNumber);
     item->setData(msg.targetCount, TargetCount);
+
+    QVariant variant;
+    variant.setValue(msg.targets);
+    item->setData(variant, Targets);
 
     m_model->appendRow(item);
 }

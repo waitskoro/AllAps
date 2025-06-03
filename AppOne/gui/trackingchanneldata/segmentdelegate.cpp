@@ -2,19 +2,23 @@
 
 #include "segmentslist.h"
 #include "src/contants.h"
+#include "targetsview.h"
 
 #include <QEvent>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QApplication>
+#include <QPushButton>
 
 using namespace View;
 
-SegmentDelegate::SegmentDelegate(QObject *parent)
+SegmentDelegate::SegmentDelegate(QWidget *parent)
     : QStyledItemDelegate(parent)
-{}
+{
+}
 
 QSize SegmentDelegate::sizeHint(const QStyleOptionViewItem &option,
-                                     const QModelIndex &index) const
+                                const QModelIndex &index) const
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
@@ -42,16 +46,16 @@ void SegmentDelegate::paint(QPainter *painter,
 
     auto endTime = index.data(SegmentsList::EndTime);
     auto startTime = index.data(SegmentsList::StartTime);
-    auto targetCount = index.data(SegmentsList::TargetCount).toString();
-    auto sectorNumber = index.data(SegmentsList::SectorNumber).toString();
+    auto targetCount = index.data(SegmentsList::TargetCount);
+    auto sectorNumber = index.data(SegmentsList::SectorNumber);
     auto centerFrequency = index.data(SegmentsList::CenterFrequency).toString();
-    auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber).toString();
-    auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber).toString();
+    auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber);
+    auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber);
     auto polarizationDirection = index.data(SegmentsList::PolarizationDirection);
 
-    painter->drawText(option.rect.left() + 30, option.rect.top() + 20, "№ КА: " + spacecraftNumber);
-    painter->drawText(option.rect.left() + 110, option.rect.top() + 20, "№ физ. канала: " + physicalChannelNumber);
-    painter->drawText(option.rect.left() + 270, option.rect.top() + 20, "№ сектора: " + sectorNumber);
+    painter->drawText(option.rect.left() + 30, option.rect.top() + 20, "№ КА: " + spacecraftNumber.toString());
+    painter->drawText(option.rect.left() + 110, option.rect.top() + 20, "№ физ. канала: " + physicalChannelNumber.toString());
+    painter->drawText(option.rect.left() + 270, option.rect.top() + 20, "№ сектора: " + sectorNumber.toString());
 
     pen.setColor("black");
     painter->setPen(pen);
@@ -60,8 +64,8 @@ void SegmentDelegate::paint(QPainter *painter,
     QDateTime startDate = fromDoubleToDate(startTime.toDouble());
     QDateTime endDate = fromDoubleToDate(endTime.toDouble());
 
-    auto startTimeS = startDate.toString("dd.MM.yy hh:mm");
-    auto endTimeS =  endDate.toString("dd.MM.yy hh:mm");
+    auto startTimeS = startDate.toString("dd.MM.yy hh:mm:ss");
+    auto endTimeS =  endDate.toString("dd.MM.yy hh:mm:ss");
 
     auto freq = QString("Частота: %1 кГц").arg(centerFrequency);
 
@@ -85,5 +89,65 @@ void SegmentDelegate::paint(QPainter *painter,
                       Qt::TextWordWrap,
                       "Временной промежуток: \n" + startTimeS + " - " + endTimeS);
 
+    QRect buttonRect(option.rect.left() + 230, option.rect.top() + 40, 150, 60);
+
+    QStyleOptionButton button;
+    button.rect = buttonRect;
+    button.text = "Просмотреть \nцелеуказания";
+    button.state = QStyle::State_Enabled;
+
+    QPalette palette = button.palette;
+    palette.setColor(QPalette::Button, "#78C4BB");
+    button.palette = palette;
+
+    QApplication::style()->drawControl(QStyle::CE_PushButton, &button, painter);
+
     painter->restore();
+}
+
+bool SegmentDelegate::editorEvent(QEvent *event,
+                                  QAbstractItemModel *model,
+                                  const QStyleOptionViewItem &option,
+                                  const QModelIndex &index)
+{
+    if (event->type() == QEvent::MouseButtonRelease) {
+
+        QVariant variant = index.data(SegmentsList::Targets);
+
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        QRect buttonRect(option.rect.left() + 230, option.rect.top() + 40, 150, 60);
+
+        auto targetCount = index.data(SegmentsList::TargetCount);
+        auto sectorNumber = index.data(SegmentsList::SectorNumber);
+        auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber);
+        auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber);
+
+        m_values.clear();
+
+        int16_t** vectorData = variant.value<int16_t**>();
+
+        for (int i = 0; i < targetCount.toInt(); i++) {
+            m_values.push_back({vectorData[i][0], vectorData[i][1]});
+        }
+
+        if (buttonRect.contains(mouseEvent->pos())) {
+            TargetsView::Target target;
+            target.ka = spacecraftNumber.toInt();
+            target.sector = sectorNumber.toInt();
+            target.countTargets = targetCount.toInt();
+            target.physicalChannel = physicalChannelNumber.toInt();
+            target.channelData = index.data(SegmentsList::ChannelNumber).toInt();
+
+            TargetsView *view = new TargetsView(target);
+            view->setWindowFlags(Qt::Dialog);
+            view->setTargets(m_values);
+            view->show();
+            return true;
+        }
+
+        qDebug() << "spacecraftNumber: " << spacecraftNumber <<
+                    " sectorNumber:" << sectorNumber <<
+                    " channelNumber: " << index.data(SegmentsList::ChannelNumber);
+    }
+    return QStyledItemDelegate::editorEvent(event, model, option, index);
 }

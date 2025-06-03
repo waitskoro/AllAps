@@ -9,7 +9,7 @@
 
 #include "src/featuremanagment/targetdesignationsinfo.h"
 
-namespace View::FeatureManagement {
+namespace View {
 
 class TargetDesignationTable;
 

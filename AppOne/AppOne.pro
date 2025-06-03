@@ -28,6 +28,8 @@ SOURCES += \
     gui/trackingchanneldata/channeldatalist.cpp \
     gui/trackingchanneldata/segmentdelegate.cpp \
     gui/trackingchanneldata/segmentslist.cpp \
+    gui/trackingchanneldata/targetdesignationsview.cpp \
+    gui/trackingchanneldata/targetsview.cpp \
     gui/trackingchanneldata/trackingplanswidget.cpp \
     main.cpp \
     src/connection/connectiondatasaving.cpp \
@@ -63,6 +65,8 @@ HEADERS += \
     gui/trackingchanneldata/channeldatalist.h \
     gui/trackingchanneldata/segmentdelegate.h \
     gui/trackingchanneldata/segmentslist.h \
+    gui/trackingchanneldata/targetdesignationsview.h \
+    gui/trackingchanneldata/targetsview.h \
     gui/trackingchanneldata/trackingplanswidget.h \
     src/channelmessage.h \
     src/connection/connectiondatasaving.h \

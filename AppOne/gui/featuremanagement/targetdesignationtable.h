@@ -5,7 +5,7 @@
 #include <QTableView>
 #include <QPushButton>
 
-namespace View::FeatureManagement {
+namespace View {
 
 class TargetDesignationModel;
 

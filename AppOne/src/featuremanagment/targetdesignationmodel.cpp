@@ -1,6 +1,6 @@
 #include "targetdesignationmodel.h"
 
-using namespace View::FeatureManagement;
+using namespace View;
 
 TargetDesignationModel::TargetDesignationModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -61,9 +61,9 @@ QVariant TargetDesignationModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
-        case 0: return coords[0]; //Azimuth
-        case 1: return coords[1]; //Elevation
-        default: return QVariant();
+            case 0: return coords[0]; //Azimuth
+            case 1: return coords[1]; //Elevation
+            default: return QVariant();
         }
     }
 

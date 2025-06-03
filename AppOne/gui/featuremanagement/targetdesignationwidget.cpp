@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <QStandardItemModel>
 
-using namespace View::FeatureManagement;
+using namespace View;
 
 TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
     : QWidget(parent)

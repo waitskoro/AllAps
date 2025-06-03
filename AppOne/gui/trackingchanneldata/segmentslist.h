@@ -21,13 +21,15 @@ public:
         CenterFrequency,
         StartTime,
         EndTime,
-        TargetCount
+        TargetCount,
+        ChannelNumber,
+        Targets
     };
 
     explicit SegmentsList(QWidget *parent = nullptr);
 
     void clear();
-    void addMessage(const DataChannelSegment &);
+    void addMessage(const DataChannelSegment &, qint32);
 
 private:
     QScopedPointer<QStandardItemModel> m_model;
