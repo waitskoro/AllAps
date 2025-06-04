@@ -145,6 +145,7 @@ void TargetDesignationWidget::paintEvent(QPaintEvent *event)
     painter.drawText(QPoint(60, 235), "Начало плана");
     painter.drawText(QPoint(330, 235), "Окончание плана");
 }
+
 void TargetDesignationWidget::onTargetSend()
 {
     if (m_numberChannelData->currentText() == "") {
@@ -166,6 +167,46 @@ void TargetDesignationWidget::onTargetSend()
         return;
     }
 
+    int targetCount = m_coordinatesView->countCoordinates();
+
+    if (targetCount == 0) {
+        QMessageBox::warning(this, "Ошибка", "Нет целеуказаний для отправки");
+        return;
+    }
+
+    if (targetCount > 65535) {
+        QMessageBox::warning(this, "Ошибка",
+                             QString("Количество значений целеуказаний превышает 65535 (%1)").arg(targetCount));
+        return;
+    }
+
+    QDateTime startDateTime(m_startDate->date(), m_startTime->time());
+    QDateTime endDateTime(m_endDate->date(), m_endTime->time());
+
+    if (startDateTime >= endDateTime) {
+        QMessageBox::warning(this, "Ошибка", "Время окончания должно быть позже времени начала");
+        return;
+    }
+
+    qint64 durationSec = startDateTime.secsTo(endDateTime);
+    qint64 minDuration = targetCount;
+
+    if (durationSec < minDuration) {
+        QDateTime minEndDateTime = startDateTime.addSecs(minDuration);
+
+        QMessageBox::warning(this, "Ошибка",
+                             QString("Длительность целеуказания слишком мала.\n\n"
+                                     "Текущая длительность: %1 секунд (%2 целеуказаний × 1 секунда)\n"
+                                     "Минимальная требуемая длительность: %3 секунд\n\n"
+                                     "Минимально подходящая дата окончания: %4")
+                                 .arg(durationSec)
+                                 .arg(targetCount)
+                                 .arg(minDuration)
+                                 .arg(minEndDateTime.toString("dd.MM.yyyy HH:mm:ss")));
+        return;
+    }
+
+    const auto& coordinates = m_coordinatesView->coordinates();
 
     Application::TargetDesignations target;
 
@@ -174,29 +215,16 @@ void TargetDesignationWidget::onTargetSend()
     target.spacecraftNumber = toDouble(m_spacecraftNumber->text());
     target.centerFrequency = toDouble(m_centerFrequency->text());
 
-    QDateTime startDateTime(m_startDate->date(), m_startTime->time());
     target.planStartTime = fromDateToDouble(startDateTime);
-
-    QDateTime endDateTime(m_endDate->date(), m_endTime->time());
     target.planEndTime = fromDateToDouble(endDateTime);
 
-    int targetCount = m_coordinatesView->countCoordinates();
-
-    if (targetCount > 65535) {
-        QMessageBox *box = new QMessageBox();
-        box->setText(QString("Количество значений целеуказаний превышает 65535 (%1)").arg(targetCount));
-        box->show();
-        return;
-    }
-
-    target.count = m_coordinatesView->countCoordinates();
-
+    target.count = targetCount;
     target.coordinates = new qint16*[target.count];
 
     for(quint16 i = 0; i < target.count; i++) {
         target.coordinates[i] = new qint16[2];
-        target.coordinates[i][0] = m_coordinatesView->coordinates()[i][0];
-        target.coordinates[i][1] = m_coordinatesView->coordinates()[i][1];
+        target.coordinates[i][0] = coordinates[i][0];
+        target.coordinates[i][1] = coordinates[i][1];
     }
 
     emit createTarget(target);

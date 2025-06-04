@@ -51,6 +51,8 @@ void TcpSocketManager::sendTarget(TargetDesignations target)
     header.countBytes = 26 + 4 * target.count;
     header.timeCreated = currentOADate();
 
+    qDebug() << "target.count" << target.count;
+
     QByteArray header_bytes;
     QByteArray message_bytes;
 
