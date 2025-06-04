@@ -196,8 +196,6 @@ void TargetDesignationWidget::onTargetSend()
 
         QMessageBox::warning(this, "Ошибка",
                              QString("Длительность целеуказания слишком мала.\n\n"
-                                     "Текущая длительность: %1 секунд (%2 целеуказаний × 1 секунда)\n"
-                                     "Минимальная требуемая длительность: %3 секунд\n\n"
                                      "Минимально подходящая дата окончания: %4")
                                  .arg(durationSec)
                                  .arg(targetCount)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QLabel>
 #include <QWidget>
 
 #include "src/messagesinfo.h"
@@ -18,6 +19,8 @@ private:
     void paintEvent(QPaintEvent *event);
 
     QScopedPointer<PlansList> m_receivingChecklist;
+
+    QLabel *m_headerLabel;
 };
 
 }

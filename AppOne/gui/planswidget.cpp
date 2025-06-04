@@ -10,15 +10,25 @@ using namespace View;
 PlansWidget::PlansWidget(QWidget *parent)
     : QWidget(parent)
     , m_receivingChecklist(new PlansList(this))
+    , m_headerLabel(new QLabel("Список приемов пуст", this))
 {
     setFixedSize(Sizes::insideSize());
     m_receivingChecklist->move(50, 50);
+
+    m_headerLabel->setStyleSheet("background-color: transparent;"
+                                 "font-weight: 900;"
+                                 "font-size: 24px;");
+
+    m_headerLabel->move(rect().width() / 2 - (m_headerLabel->width() + 30),
+                        rect().height() / 2 - m_headerLabel->height() / 2);
 }
 
 void PlansWidget::addMessage(const ReceivingMessage& msg)
 {
-    if (m_receivingChecklist)
+    if (m_receivingChecklist) {
         m_receivingChecklist->addMessage(msg);
+        m_headerLabel->hide();
+    }
 }
 
 void PlansWidget::paintEvent(QPaintEvent *event)
