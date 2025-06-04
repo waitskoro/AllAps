@@ -2,6 +2,7 @@
 
 #include "src/channelmessage.h"
 
+#include <QLabel>
 #include <QListView>
 #include <QStandardItemModel>
 
@@ -32,6 +33,7 @@ public:
     void addMessage(const DataChannelSegment &, qint32);
 
 private:
+    QLabel *m_headerLabel;
     QScopedPointer<QStandardItemModel> m_model;
 };
 

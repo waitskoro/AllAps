@@ -17,7 +17,11 @@ StateWorkingWidget::StateWorkingWidget(QWidget *parent)
     , m_camList(new StateCamList(this))
 {
     initUI();
+
     setFixedSize(Sizes::insideSize());
+
+    m_label->setFixedSize(Sizes::insideSize());
+    m_label->setAttribute(Qt::WA_AlwaysStackOnTop);
 
     connect(m_exit,
             &QPushButton::clicked,
@@ -25,7 +29,9 @@ StateWorkingWidget::StateWorkingWidget(QWidget *parent)
             &StateWorkingWidget::exit);
 
     m_label->show();
+    m_camList->hide();
     m_stateWorkingList->hide();
+
     m_stateWorkingList->move(10, 245);
 
     m_camList->hide();
@@ -68,11 +74,12 @@ void StateWorkingWidget::initUI()
     //--------------------------------------------------------------
 
     m_label->setStyleSheet("background-color: transparent;"
-                           "font-size: 24px;");
+                           "font-size: 24px;"
+                           "text-align: center;");
     m_label->setText("Ожидание получения данных\n"
-                     "  о текущем состоянии АС");
+                     "о текущем состоянии АС");
 
-    m_label->move(rect().left() + 180, 150);
+    m_label->setAlignment(Qt::AlignCenter);
 
     //--------------------------------------------------------------
 
@@ -154,6 +161,9 @@ void StateWorkingWidget::paintEvent(QPaintEvent *event)
     painter.setPen(pen);
 
     painter.drawLine(50, 95, 340, 95);
+
+    painter.fillRect(m_label->rect(), m_label->isVisible() ? "#C3D7E4"
+                                                           : "transparent");
 }
 
 QColor StateWorkingWidget::colorOnState(int state)
@@ -212,7 +222,6 @@ void StateWorkingWidget::drawStates(StateRole state, QPainter *painter, QPoint p
 
             } else if (stateInfo == 255) {
                 result = "недоступен";
-
             }
 
             painter->drawText(point, result);

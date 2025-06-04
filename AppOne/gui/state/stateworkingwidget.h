@@ -45,6 +45,7 @@ private:
 
     StateMessage m_state;
     StateCamList *m_camList;
+    QLabel *m_hidingRect;
 
 };
 

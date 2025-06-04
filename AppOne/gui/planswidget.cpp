@@ -16,8 +16,8 @@ PlansWidget::PlansWidget(QWidget *parent)
     m_receivingChecklist->move(50, 50);
 
     m_headerLabel->setStyleSheet("background-color: transparent;"
-                                 "font-weight: 900;"
-                                 "font-size: 24px;");
+                                 "font-size: 26px;"
+                                 "text-align: center;");
 
     m_headerLabel->move(rect().width() / 2 - (m_headerLabel->width() + 30),
                         rect().height() / 2 - m_headerLabel->height() / 2);

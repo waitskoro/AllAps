@@ -17,6 +17,8 @@ TrackingPlansWidget::TrackingPlansWidget(QWidget *parent)
     , m_channelDataTable(new ChannelDataList(this))
 {
     setFixedSize(Sizes::insideSize());
+
+    m_segmentsList->setVisible(false);
     m_channelDataTable->setVisible(false);
 
     initUI();
@@ -50,6 +52,9 @@ TrackingPlansWidget::TrackingPlansWidget(QWidget *parent)
 
 void TrackingPlansWidget::addMessage(DataChannelMessage &message)
 {
+    if (message.activeChannelsCount == 0)
+        return;
+
     m_message = message;
 
     m_segmentsList->setVisible(true);

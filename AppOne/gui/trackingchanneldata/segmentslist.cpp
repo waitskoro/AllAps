@@ -6,6 +6,7 @@ using namespace View;
 
 SegmentsList::SegmentsList(QWidget *parent)
     : QListView(parent)
+    , m_headerLabel(new QLabel(this))
     , m_model(new QStandardItemModel(this))
 {
     auto *delegate = new SegmentDelegate(this);
@@ -17,11 +18,23 @@ SegmentsList::SegmentsList(QWidget *parent)
     setFixedSize(395, 400);
     setModel(m_model.get());
     setStyleSheet("background-color: #EBEBEB");
+
+    m_headerLabel->move(100, 130);
+
+    m_headerLabel->setStyleSheet("background-color: transparent;"
+                                 "font-size: 16px;"
+                                 "font-weight: 600;");
+
+    m_headerLabel->setText("Для отображения списка \n"
+                           "нажмите на один из \n"
+                           "элементов списка слева\n"
+                           "                      <-");
 }
 
 void SegmentsList::clear()
 {
     m_model->clear();
+    m_headerLabel->show();
 }
 
 void SegmentsList::addMessage(const DataChannelSegment &msg, qint32 channelNumber)
@@ -42,6 +55,8 @@ void SegmentsList::addMessage(const DataChannelSegment &msg, qint32 channelNumbe
     QVariant variant;
     variant.setValue(msg.targets);
     item->setData(variant, Targets);
+
+    m_headerLabel->hide();
 
     m_model->appendRow(item);
 }
