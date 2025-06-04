@@ -11,7 +11,7 @@ struct TargetDesignations {
     qint32 centerFrequency;
     double planStartTime;
     double planEndTime;
-    qint16 count;
+    quint16 count;
     qint16 **coordinates;
 
     friend QDataStream &operator<<(QDataStream &stream, TargetDesignations cel) {

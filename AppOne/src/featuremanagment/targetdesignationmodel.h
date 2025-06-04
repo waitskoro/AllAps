@@ -22,6 +22,7 @@ public:
     void append(short azimuth, short elevation);
     void append(const std::array<short, 2>& newCoordinates);
 
+    int countCoordinates() const;
     const std::vector<std::array<short, 2>>& coordinates() const;
 
 private:

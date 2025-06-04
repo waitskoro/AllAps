@@ -86,3 +86,8 @@ const std::vector<std::array<short, 2>>& TargetDesignationModel::coordinates() c
 {
     return m_values;
 }
+
+int TargetDesignationModel::countCoordinates() const
+{
+    return m_values.size();
+}

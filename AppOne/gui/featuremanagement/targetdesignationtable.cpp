@@ -82,7 +82,7 @@ const std::vector<std::array<short, 2>>& TargetDesignationTable::coordinates() c
 
 int TargetDesignationTable::countCoordinates() const
 {
-    return m_model->columnCount();
+    return m_model->countCoordinates();
 }
 
 void TargetDesignationTable::paintEvent(QPaintEvent *event)

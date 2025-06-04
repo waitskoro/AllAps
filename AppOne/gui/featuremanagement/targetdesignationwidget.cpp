@@ -4,6 +4,7 @@
 #include <gui/featuremanagement/targetdesignationtable.h>
 
 #include <QPainter>
+#include <QMessageBox>
 #include <QStandardItemModel>
 
 using namespace View;
@@ -165,6 +166,7 @@ void TargetDesignationWidget::onTargetSend()
         return;
     }
 
+
     Application::TargetDesignations target;
 
     target.channelNumber = toDouble(m_numberChannelData->currentText());
@@ -178,9 +180,16 @@ void TargetDesignationWidget::onTargetSend()
     QDateTime endDateTime(m_endDate->date(), m_endTime->time());
     target.planEndTime = fromDateToDouble(endDateTime);
 
-    target.count = m_coordinatesView->countCoordinates();
+    int targetCount = m_coordinatesView->countCoordinates();
 
-    qDebug() << "target.count" << target.count;
+    if (targetCount > 65535) {
+        QMessageBox *box = new QMessageBox();
+        box->setText(QString("Количество значений целеуказаний превышает 65535 (%1)").arg(targetCount));
+        box->show();
+        return;
+    }
+
+    target.count = m_coordinatesView->countCoordinates();
 
     target.coordinates = new qint16*[target.count];
 
