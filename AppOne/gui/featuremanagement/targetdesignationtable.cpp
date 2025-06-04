@@ -80,6 +80,11 @@ const std::vector<std::array<short, 2>>& TargetDesignationTable::coordinates() c
     return m_model->coordinates();
 }
 
+int TargetDesignationTable::countCoordinates() const
+{
+    return m_model->columnCount();
+}
+
 void TargetDesignationTable::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)

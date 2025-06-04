@@ -178,7 +178,9 @@ void TargetDesignationWidget::onTargetSend()
     QDateTime endDateTime(m_endDate->date(), m_endTime->time());
     target.planEndTime = fromDateToDouble(endDateTime);
 
-    target.count = m_coordinatesView->coordinates().size();
+    target.count = m_coordinatesView->countCoordinates();
+
+    qDebug() << "target.count" << target.count;
 
     target.coordinates = new qint16*[target.count];
 

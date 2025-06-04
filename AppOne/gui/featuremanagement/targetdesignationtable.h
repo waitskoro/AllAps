@@ -16,7 +16,7 @@ public:
     explicit TargetDesignationTable(QWidget *parent = nullptr);
 
     const std::vector<std::array<short, 2>>& coordinates() const;
-
+    int countCoordinates() const;
 private:
     void paintEvent(QPaintEvent *event);
 
