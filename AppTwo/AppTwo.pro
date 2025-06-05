@@ -9,35 +9,34 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    gui/connectionheader.cpp \
-    gui/connectionheaderblock.cpp \
-    gui/graphs/graphsviewwidget.cpp \
-    gui/info/complexcounts.cpp \
-    gui/info/informationlist.cpp \
-    gui/info/informationlistdelegate.cpp \
-    gui/info/informationviewwidget.cpp \
-    main.cpp \
+    gui/infolist.cpp \
+    gui/infolistdelegate.cpp \
+    gui/infowidget.cpp \
     gui/mainwindow.cpp \
-    server/sequentialidprovider.cpp \
-    server/tcpserver.cpp \
-    server/tcpsocket.cpp
+    gui/serverconnectingwidget.cpp \
+    main.cpp \
+    mainmanager.cpp \
+    src/sequentialidprovider.cpp \
+    src/tcpmanager.cpp \
+    src/tcpsocket.cpp
 
 HEADERS += \
-    gui/connectionheader.h \
-    gui/connectionheaderblock.h \
-    gui/graphs/graphsviewwidget.h \
-    gui/info/complexcounts.h \
-    gui/info/informationlist.h \
-    gui/info/informationlistdelegate.h \
-    gui/info/informationviewwidget.h \
+    common/enums.h \
+    common/messages.h \
+    gui/infolist.h \
+    gui/infolistdelegate.h \
+    gui/infowidget.h \
     gui/mainwindow.h \
-    server/countmessage.h \
-    server/packet.h \
-    server/tcpserver.h \
-    server/tcpsocket.h
-    server/sequentialidprovider.h \
+    gui/serverconnectingwidget.h \
+    mainmanager.h \
+    src/sequentialidprovider.h \
+    src/tcpmanager.h \
+    src/tcpsocket.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    gui/resources.qrc

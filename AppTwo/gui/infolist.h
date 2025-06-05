@@ -1,7 +1,5 @@
 #pragma once
 
-#include "server/countmessage.h"
-
 #include <QObject>
 #include <QListView>
 #include <QStandardItemModel>
@@ -15,7 +13,7 @@ class InformationList : public QListView
 public:
     explicit InformationList(QWidget *parent = nullptr);
 
-    void addInfo(ChannelData &data);
+    void addInfo();
 
 private:
     QScopedPointer<QStandardItemModel> m_model;

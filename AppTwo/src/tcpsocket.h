@@ -1,7 +1,8 @@
 #pragma once
 
-#include "packet.h"
+#include "common/messages.h"
 
+#include <QObject>
 #include <QTcpSocket>
 
 namespace Tcp {
@@ -13,10 +14,7 @@ public:
     explicit TcpSocket(QObject *parent = nullptr);
 
 signals:
-    void connected();
-    void disconnected();
-
-    void messageReceived(Packet &);
+    void messageRecieved(Packet &);
 
 private:
     void onReadyRead();
@@ -28,7 +26,6 @@ private:
 
     bool m_headerReaded;
 
-    void onChannelDataReceived(Packet &);
     Header deserializeHeader(QByteArray& data);
 };
 

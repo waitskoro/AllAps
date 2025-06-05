@@ -5,9 +5,7 @@
 using namespace Tcp;
 
 namespace {
-
 const qint32 HEADER_SIZE = 16;
-
 }
 
 TcpSocket::TcpSocket(QObject *parent)
@@ -52,18 +50,13 @@ void TcpSocket::onReadyRead()
 
             Packet packet(m_header, m_msgBytes, id);
 
-            emit onChannelDataReceived(packet);
+            emit messageRecieved(packet);
 
             m_msgBytes.clear();
             m_headerBytes.clear();
             m_headerReaded = false;
         }
     }
-}
-
-void TcpSocket::onChannelDataReceived(Packet &packet)
-{
-    qDebug() << packet.header.msgType;
 }
 
 Header TcpSocket::deserializeHeader(QByteArray &data)
@@ -73,10 +66,10 @@ Header TcpSocket::deserializeHeader(QByteArray &data)
     stream.setByteOrder(QDataStream::LittleEndian);
 
     stream >> header.version
-           >> header.msgType
-           >> header.zero
-           >> header.timeCreated
-           >> header.countBytes;
+        >> header.msgType
+        >> header.zero
+        >> header.timeCreated
+        >> header.countBytes;
 
     return header;
 }

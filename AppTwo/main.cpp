@@ -1,15 +1,12 @@
-#include "gui/mainwindow.h"
+#include "mainmanager.h"
 
 #include <QApplication>
-
-using namespace View;
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    MainWindow *w = new MainWindow();
-    w->show();
+    MainManager w;
 
     return a.exec();
 }

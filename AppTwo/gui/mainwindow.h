@@ -1,33 +1,38 @@
 #pragma once
 
-#include <QTabWidget>
-#include <QPushButton>
-#include <QMainWindow>
+#include "common/messages.h"
 
-class TcpServer;
+#include <QLabel>
+#include <QMainWindow>
 
 namespace View {
 
-class ConnectionHeader;
+class LineEdit;
+class InfoWidget;
+class ServerConnectingWidget;
 
-class MainWindow : public QWidget
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void onServerCreated();
+    void onClientConnected();
+    void onCountMessageRecieved(Count);
+
+signals:
+    void createServer(const QString& ip, const int port);
+
 private:
+    void init();
     void paintEvent(QPaintEvent *e) override;
 
-    QTabWidget *m_tabWidget;
-    ConnectionHeader *m_connectionHeader;
-    QPushButton *m_menu;
-
-    int m_iconRotationAngle = 90;
-
-    TcpServer *m_server;
+    QLabel *m_label;
+    InfoWidget *m_infoViewer;
+    ServerConnectingWidget *m_serverConnecting;
 };
 
 }

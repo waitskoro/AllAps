@@ -1,6 +1,6 @@
-#include "informationlist.h"
+#include "infolist.h"
 
-#include "informationlistdelegate.h"
+#include "infolistdelegate.h"
 
 using namespace View;
 
@@ -8,16 +8,18 @@ InformationList::InformationList(QWidget *parent)
     : QListView(parent)
     , m_model(new QStandardItemModel(this))
 {
-    auto *delegate = new InformationListDelegate(this);
+    auto *delegate = new InfoListDelegate(this);
     setItemDelegate(delegate);
 
-    setFixedSize(350, 350);
+    setFixedSize(400, 420);
 
     setSpacing(5);
     setModel(m_model.get());
+
+    setStyleSheet("background-color: #ACB8BF");
 }
 
-void InformationList::addInfo(ChannelData &data)
+void InformationList::addInfo()
 {
     auto *item = new QStandardItem();
     m_model->appendRow(item);
