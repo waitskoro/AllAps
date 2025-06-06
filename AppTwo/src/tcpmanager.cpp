@@ -37,10 +37,13 @@ void TcpManager::onServerCreating(const int &port)
 {
     auto started = m_tcpServer->listen(QHostAddress::Any, port);
 
+    QHostAddress anyAddress = QHostAddress::Any;
+    QString anyAddressString = anyAddress.toString();
+
     if (!started) {
         qWarning() << "Сервер не может быть запущен";
     } else {
-        qInfo() <<"Сервер запущен";
+        qInfo() << QString("Сервер запущен. %1:%2").arg(anyAddressString).arg(port);
         emit serverCreated();
     }
 }

@@ -49,7 +49,7 @@ void MainWindow::init()
     setFixedSize(700, 500);
 
     m_serverConnecting->show();
-    m_serverConnecting->move(37, 10);
+    m_serverConnecting->move(120, 10);
 
     m_label->setFixedSize(rect().size());
     m_label->setStyleSheet("color: white;"
@@ -59,8 +59,8 @@ void MainWindow::init()
     m_label->setAlignment(Qt::AlignCenter);
     m_label->setWordWrap(true);
 
-    m_infoViewer->setFixedSize(650, 440);
-    m_infoViewer->move(25, 40);
+    m_infoViewer->setFixedSize(670, 440);
+    m_infoViewer->move(15, 40);
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QLabel>
 #include <QObject>
 #include <QStyledItemDelegate>
 
@@ -7,7 +8,7 @@ class InfoListDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    explicit InfoListDelegate(QObject *parent = nullptr);
+    explicit InfoListDelegate(QWidget *parent = nullptr);
 
 private:
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
@@ -21,4 +22,9 @@ private:
                      const QModelIndex &index) override;
 
     QPersistentModelIndex m_clickedIndex;
+
+    QDateTime fromDoubleToDate(double dateValue) const;
+
+    QLabel *m_label;
+
 };

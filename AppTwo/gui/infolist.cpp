@@ -17,7 +17,12 @@ InformationList::InformationList(QWidget *parent)
     setSpacing(5);
     setModel(m_model.get());
 
-    setStyleSheet("background-color: #ACB8BF");
+    setStyleSheet("background-color: #E4E5FF");
+
+    Report report;
+    addInfo(report);
+    addInfo(report);
+    addInfo(report);
 }
 
 void InformationList::addInfo(Report msg)

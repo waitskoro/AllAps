@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QLabel>
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
@@ -21,6 +22,7 @@ private:
     void paintEvent(QPaintEvent *e) override;
 
     QLineEdit *m_port;
+    QLabel *m_logoLabel;
     QPushButton *m_connectButton;
 };
 

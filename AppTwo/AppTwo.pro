@@ -13,7 +13,10 @@ SOURCES += \
     gui/infolistdelegate.cpp \
     gui/infowidget.cpp \
     gui/mainwindow.cpp \
+    gui/reportstable.cpp \
     gui/serverconnectingwidget.cpp \
+    gui/targetdesignationmodel.cpp \
+    gui/targetstable.cpp \
     main.cpp \
     mainmanager.cpp \
     src/sequentialidprovider.cpp \
@@ -26,7 +29,10 @@ HEADERS += \
     gui/infolistdelegate.h \
     gui/infowidget.h \
     gui/mainwindow.h \
+    gui/reportstable.h \
     gui/serverconnectingwidget.h \
+    gui/targetdesignationmodel.h \
+    gui/targetstable.h \
     mainmanager.h \
     src/sequentialidprovider.h \
     src/tcpmanager.h
