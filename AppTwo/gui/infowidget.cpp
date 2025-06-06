@@ -15,9 +15,9 @@ InfoWidget::InfoWidget(QWidget *parent)
     m_infoList->move(10, 10);
 }
 
-void InfoWidget::addItem()
+void InfoWidget::addItem(Report msg)
 {
-    m_infoList->addInfo();
+    m_infoList->addInfo(msg);
 }
 
 void InfoWidget::paintEvent(QPaintEvent *e)

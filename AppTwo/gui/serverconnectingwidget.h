@@ -15,12 +15,11 @@ public:
     explicit ServerConnectingWidget(QWidget *parent = nullptr);
 
 signals:
-    void createServer(const QString& ip, const int port);
+    void createServer(const int port);
 
 private:
     void paintEvent(QPaintEvent *e) override;
 
-    QLineEdit *m_host;
     QLineEdit *m_port;
     QPushButton *m_connectButton;
 };

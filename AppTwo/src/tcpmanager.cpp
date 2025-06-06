@@ -1,37 +1,23 @@
 #include "tcpmanager.h"
 
-#include "tcpsocket.h"
+#include "sequentialidprovider.h"
 
 #include <QMessageBox>
 
 using namespace Tcp;
 
+namespace {
+const qint32 HEADER_SIZE = 16;
+}
+
 TcpManager::TcpManager(QObject *parent)
     : QObject(parent)
     , m_tcpServer(new QTcpServer(this))
-    , m_tcpSocket(new TcpSocket(this))
 {
     connect(m_tcpServer,
             &QTcpServer::newConnection,
             this,
             &TcpManager::onClientConnected);
-
-    connect(m_tcpSocket,
-            &TcpSocket::messageRecieved,
-            this,
-            &TcpManager::onMessageRecieved);
-
-    connect(m_tcpSocket, &QTcpSocket::stateChanged, [](int state) {
-
-        if (state == QAbstractSocket::UnconnectedState)
-        {
-            qDebug() << "TcpSocket disconected";
-        }
-        else if (state == QAbstractSocket::ConnectedState)
-        {
-            qDebug() << "TcpSocket connected";
-        }
-    });
 }
 
 void TcpManager::onMessageRecieved(Packet packet)
@@ -40,46 +26,86 @@ void TcpManager::onMessageRecieved(Packet packet)
     stream.setByteOrder(QDataStream::LittleEndian);
 
     if (packet.header.msgType == 0x82) {
-        Count result;
+        Report result;
         stream >> result;
+
         emit countMessage(result);
     }
 }
 
-void TcpManager::onServerCreating(const QString &ip, const int &port)
+void TcpManager::onServerCreating(const int &port)
 {
-    QHostAddress hostAddress;
+    auto started = m_tcpServer->listen(QHostAddress::Any, port);
 
-    if (ip.compare("localhost", Qt::CaseInsensitive) == 0) {
-        hostAddress = QHostAddress::LocalHost;
-
-    } else if (!hostAddress.setAddress(ip)) {
-        qWarning() << "Невалидный IP: " << ip;
-        return;
-    }
-
-    auto m_serverStarted = m_tcpServer->listen(hostAddress, port);
-    if (!m_serverStarted) {
-        qWarning() << "Сервер не может быть запущен" << m_tcpServer->errorString();
-
+    if (!started) {
+        qWarning() << "Сервер не может быть запущен";
     } else {
-        qInfo() << "Сервер запущен с" << ip << ":" << port;
+        qInfo() <<"Сервер запущен";
         emit serverCreated();
     }
 }
 
 void TcpManager::onClientConnected()
 {
-    qInfo() << "Клиент подключен к серверу";
-    m_tcpSocket = static_cast<TcpSocket*>(m_tcpServer->nextPendingConnection());
-    emit clientConnected();
+    m_tcpSocket = m_tcpServer->nextPendingConnection();
 
     connect(m_tcpSocket,
-            &TcpSocket::disconnected,
+            &QTcpSocket::readyRead,
+            this,
+            &TcpManager::onReadyRead);
+
+    connect(m_tcpSocket,
+            &QTcpSocket::disconnected,
             this,
             &TcpManager::onClientDisconnected);
+
+    emit clientConnected();
 }
 
+void TcpManager::onReadyRead()
+{
+    if(!m_headerReaded) {
+        if(m_tcpSocket->bytesAvailable() >= HEADER_SIZE){
+            m_headerBytes = m_tcpSocket->read(HEADER_SIZE);
+            m_header = deserializeHeader(m_headerBytes);
+            m_dataSize = m_header.countBytes;
+            m_headerReaded = true;
+        }
+    }
+    if(m_headerReaded) {
+        if(m_dataSize > 0) {
+            QByteArray chunk = m_tcpSocket->read(qMin(m_dataSize, m_tcpSocket->bytesAvailable()));
+            m_msgBytes += chunk;;
+            m_dataSize -= chunk.size();
+        }
+        if(m_dataSize == 0){
+            auto &provider = SequentialIdProvider::get();
+            long long id = provider.next();
+
+            Packet packet(m_header, m_msgBytes, id);
+
+            onMessageRecieved(packet);
+            m_headerReaded = false;
+            m_msgBytes.clear();
+            m_headerBytes.clear();
+        }
+    }
+}
+
+Header TcpManager::deserializeHeader(QByteArray& data)
+{
+    Header header;
+    QDataStream stream(data);
+    stream.setByteOrder(QDataStream::LittleEndian);
+
+    stream >> header.version
+        >> header.msgType
+        >> header.zero
+        >> header.timeCreated
+        >> header.countBytes;
+
+    return header;
+}
 void TcpManager::onClientDisconnected()
 {
     qInfo() << "Клиент отключился от сервера";

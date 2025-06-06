@@ -21,10 +21,10 @@ public:
 
     void onServerCreated();
     void onClientConnected();
-    void onCountMessageRecieved(Count);
+    void onCountMessageRecieved(Report);
 
 signals:
-    void createServer(const QString& ip, const int port);
+    void createServer(const int port);
 
 private:
     void init();

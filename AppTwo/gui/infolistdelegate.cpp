@@ -1,5 +1,7 @@
 #include "infolistdelegate.h"
 
+#include "common/enums.h"
+
 #include <QEvent>
 #include <QPainter>
 #include <QMouseEvent>
@@ -29,8 +31,8 @@ void InfoListDelegate::paint(QPainter *painter,
     auto right = option.rect.right();
     auto bottom = option.rect.bottom();
 
-    painter->drawText(left + 80, top + 20, "КА: 7");
-    painter->drawText(left + 130, top + 20, "Канал данных: 4");
+    painter->drawText(left + 80, top + 20, "КА: " + index.data(KaNumber).toString());
+    painter->drawText(left + 130, top + 20, "Канал данных: " + index.data(ChannelNumber).toString());
 
     painter->drawText(QRect(left + 15, top + 40, 150, 90),
                       Qt::TextWordWrap,

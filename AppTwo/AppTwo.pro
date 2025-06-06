@@ -17,8 +17,7 @@ SOURCES += \
     main.cpp \
     mainmanager.cpp \
     src/sequentialidprovider.cpp \
-    src/tcpmanager.cpp \
-    src/tcpsocket.cpp
+    src/tcpmanager.cpp
 
 HEADERS += \
     common/enums.h \
@@ -30,8 +29,7 @@ HEADERS += \
     gui/serverconnectingwidget.h \
     mainmanager.h \
     src/sequentialidprovider.h \
-    src/tcpmanager.h \
-    src/tcpsocket.h
+    src/tcpmanager.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

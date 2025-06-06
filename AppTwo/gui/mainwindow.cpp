@@ -39,17 +39,9 @@ void MainWindow::onClientConnected()
 
 }
 
-void MainWindow::onCountMessageRecieved(Count msg)
+void MainWindow::onCountMessageRecieved(Report msg)
 {
-    qDebug() << "channelNumber:" << msg.channelNumber
-             << "infrastructureStatus:" << msg.infrastructureStatus
-             << "satelliteNumber:" << msg.satelliteNumber
-             << "referenceTime:" << msg.referenceTime
-             << "angles_1:" << msg.angles[0]
-             << "angles_2:" << msg.angles[1]
-             << "sampleCount:" << msg.sampleCount;
-
-    m_infoViewer->addItem();
+    m_infoViewer->addItem(msg);
 }
 
 void MainWindow::init()

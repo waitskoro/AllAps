@@ -1,9 +1,9 @@
 #pragma once
 
 #include <array>
-#include <vector>
-#include <QDataStream>
+#include <QIODevice>
 #include <QByteArray>
+#include <QDataStream>
 
 class Header {
 
@@ -49,44 +49,38 @@ public:
 
 using ComplexSample = std::array<int8_t, 2>;
 
-struct Count {
-    uint8_t channelNumber;
-    uint8_t infrastructureStatus;
-    uint16_t satelliteNumber;
-    double referenceTime;
-    std::array<int16_t, 2> angles;
-    uint32_t sampleCount;
-    std::vector<ComplexSample> samples;
+struct Report {
 
-    bool isValid() const {
-        return infrastructureStatus == 0;
-    }
+    quint8 dataChannelNumber = 13;
+    quint8 acState = 3;
+    quint16 kaNumber = 5;
+    double time = 4;
+    qint16 az[2] = {1,2};
+    quint32 count;
+    qint8** info;
 
-    bool isTimeSynchronized() const {
-        return (infrastructureStatus & 0x01) == 0;
-    }
+    friend QDataStream &operator >> (QDataStream &stream, Report &report)
+    {
+        stream.setByteOrder(QDataStream::LittleEndian);
 
-    bool hasNonCriticalFault() const {
-        return (infrastructureStatus & 0x02) != 0;
-    }
+        stream >> report.dataChannelNumber
+            >> report.acState
+            >> report.kaNumber
+            >> report.time
+            >> report.az[0]
+            >> report.az[1]
+            >> report.count;
 
-    bool hasCriticalFault() const {
-        return (infrastructureStatus & 0x04) != 0;
-    }
+        report.info = new qint8*[report.count];
 
-    friend QDataStream &operator >> (QDataStream &stream, Count &data) {
-        stream >> data.channelNumber;
-        stream >> data.infrastructureStatus;
-        stream >> data.satelliteNumber;
-        stream >> data.referenceTime;
-        stream >> data.angles[0] >> data.angles[1];
-        stream >> data.sampleCount;
-
-        data.samples.resize(data.sampleCount);
-        for (uint32_t i = 0; i < data.sampleCount; ++i) {
-            stream >> data.samples[i][0] >> data.samples[i][1];
+        for (quint32 i = 0; i < report.count; i++) {
+            report.info[i] = new qint8[2];
         }
 
+        for(quint16 i = 0; i < report.count; i++) {
+            stream >> report.info[i][0];
+            stream >> report.info[i][1];
+        }
         return stream;
     }
 };

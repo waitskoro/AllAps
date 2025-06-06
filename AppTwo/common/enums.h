@@ -5,3 +5,12 @@ enum StateConnection {
     Connecting,
     Connected
 };
+
+enum ReportDelegate {
+    ChannelNumber,
+    KaNumber,
+    AcState,
+    Count,
+    Time,
+    Info
+};
