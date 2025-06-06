@@ -17,7 +17,7 @@ StateWorkingList::StateWorkingList(QWidget *parent)
 
     setSpacing(5);
 
-    setFixedSize(400, 240);
+    setFixedSize(370, 240);
     setModel(m_model.get());
     setStyleSheet("background-color: white");
 
@@ -27,7 +27,12 @@ StateWorkingList::StateWorkingList(QWidget *parent)
             &StateWorkingList::itemClicked);
 }
 
-void StateWorkingList::addState(CdoMessage &state)
+void StateWorkingList::clear()
+{
+    m_model->clear();
+}
+
+void StateWorkingList::addState(CdoMessage &state, int sector)
 {
     auto *item = new QStandardItem();
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -38,6 +43,11 @@ void StateWorkingList::addState(CdoMessage &state)
     item->setData(state.temperature, Temperature);
     item->setData(state.cdoState, CdoState);
     item->setData(state.camCount, CamCount);
+    item->setData(sector, SectorNumber);
+
+    QVariant variant;
+    variant.setValue(state.camInfo);
+    item->setData(variant, CamInfo);
 
     m_model->appendRow(item);
 }

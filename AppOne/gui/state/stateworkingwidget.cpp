@@ -11,6 +11,7 @@ using namespace View;
 StateWorkingWidget::StateWorkingWidget(QWidget *parent)
     : QWidget(parent)
     , m_label(new QLabel(this))
+    , m_camNumber(new QLabel(this))
     , m_exit(new QPushButton(this))
     , m_headerLabel(new QLabel(this))
     , m_stateWorkingList(new StateWorkingList(this))
@@ -30,23 +31,31 @@ StateWorkingWidget::StateWorkingWidget(QWidget *parent)
 
     m_label->show();
     m_camList->hide();
+    m_camNumber->hide();
     m_stateWorkingList->hide();
 
     m_stateWorkingList->move(10, 245);
 
     m_camList->hide();
-    m_camList->move(430, 265);
+    m_camList->move(420, 265);
+
+    m_camNumber->move(440, 240);
+    m_camNumber->setFixedWidth(300);
+
+    m_camNumber->setStyleSheet("background-color: transparent;"
+                               "font-size: 16px");
 
     connect(m_stateWorkingList,
             &StateWorkingList::itemClicked,
-            [this](int row){
-                auto cdo = m_state.cdoState[row];
-
+            [this](std::vector<CamState> data, int sector){
                 m_camList->clear();
 
-                for (int i = 0; i < cdo.camCount; i++) {
-                    m_camList->addCam(cdo.camInfo[i]);
-                }
+                for (auto& cam : data) {
+                    m_camList->addCam(cam);
+                }                
+
+                m_camNumber->setText(QString("Сектор AC: %1").arg(sector + 1));
+
             });
 }
 
@@ -57,10 +66,13 @@ void StateWorkingWidget::addState(StateMessage &state)
     m_label->hide();
 
     m_camList->show();
+    m_camNumber->show();
     m_stateWorkingList->show();
 
+    m_stateWorkingList->clear();
+
     for (int i = 0; i < state.sectorCount; i++) {
-        m_stateWorkingList->addState(state.cdoState[i]);
+        m_stateWorkingList->addState(state.cdoState[i], i);
     }
 }
 
@@ -116,7 +128,6 @@ void StateWorkingWidget::paintEvent(QPaintEvent *event)
 
     painter.drawText(50, 85, "Состояние работоспособности АС");
     painter.drawText(20, 235, "Информация о текущем состоянии СЧ АС");
-    painter.drawText(440, 255, "Состояние ЦАМ: ");
 
     font.setPixelSize(16);
     painter.setFont(font);

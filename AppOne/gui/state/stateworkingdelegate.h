@@ -1,5 +1,7 @@
 #pragma once
 
+#include "src/statemessage.h"
+
 #include <QModelIndex>
 #include <QStyledItemDelegate>
 
@@ -12,7 +14,7 @@ public:
     explicit StateWorkingDelegate(QObject *parent = nullptr);
 
 signals:
-    void itemClicked(int);
+    void itemClicked(std::vector<CamState>, int sector);
 
 private:
     void paint(QPainter *painter, const QStyleOptionViewItem &option,

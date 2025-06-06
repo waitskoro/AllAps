@@ -17,7 +17,7 @@ QSize StateWorkingDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(280, 90);
+    return QSize(260, 130);
 }
 
 bool StateWorkingDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
@@ -29,9 +29,20 @@ bool StateWorkingDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
         if (mouseEvent->button() == Qt::LeftButton) {
             m_clickedIndex = index;
 
+            std::vector<CamState> values;
+
+            QVariant variant = index.data(StateWorkingList::CamInfo);
+
+            auto camCount = index.data(StateWorkingList::CamCount);
+            CamState* vectorData = variant.value<CamState*>();
+
+            for (int i = 0; i < camCount.toInt(); i++) {
+                values.push_back(vectorData[i]);
+            }
+
+            emit itemClicked(values, index.data(StateWorkingList::SectorNumber).toInt());
             emit const_cast<QAbstractItemModel*>(index.model())->dataChanged(index, index);
 
-            emit itemClicked(index.row());
             return true;
         }
     }
@@ -54,7 +65,7 @@ void StateWorkingDelegate::paint(QPainter *painter,
     painter->setFont(font);
 
     const int leftMargin = 20;
-    const int lineY = option.rect.y() + 55;
+    const int lineY = option.rect.y() + 70;
     const int col2X = 145;
     const int col3X = 275;
     const int textYOffset = option.rect.y();
@@ -65,33 +76,26 @@ void StateWorkingDelegate::paint(QPainter *painter,
     QString voltage = index.data(StateWorkingList::Voltage).toString();
     QString temperature = index.data(StateWorkingList::Temperature).toString();
 
-    painter->drawText(leftMargin, textYOffset + 25, "Состояние 48В:");
-    painter->drawText(leftMargin + 120, textYOffset + 25, state48V);
+    painter->drawText(leftMargin, textYOffset + 20, "Состояния:");
 
-    painter->drawText(leftMargin, textYOffset + 45, "Состояние ЦДО:");
-    painter->drawText(leftMargin + 120, textYOffset + 45, stateCDO);
+    painter->drawText(leftMargin, textYOffset + 40, "48В:");
+    painter->drawText(leftMargin + 35, textYOffset + 40, /*state48V*/"Некритичный отказ преобразователей");
 
-    painter->drawText(leftMargin + 5, textYOffset + 75, "Ток ЦДО:");
-    painter->drawText(leftMargin + 80, textYOffset + 75, currentCDO);
+    painter->drawText(leftMargin, textYOffset + 60, "ЦДО:");
+    painter->drawText(leftMargin + 40, textYOffset + 60, /*stateCDO*/"Cбой при передаче комплексных отсчетов");
 
-    painter->drawText(col2X, textYOffset + 75, "Напряжение:");
-    painter->drawText(col2X + 90, textYOffset + 75, voltage);
+    painter->drawText(leftMargin, textYOffset + 90, "Ток ЦДО:");
+    painter->drawText(leftMargin + 65, textYOffset + 90, /*currentCDO*/"1234");
 
-    painter->drawText(col3X, textYOffset + 75, "t°, темп.:");
-    painter->drawText(col3X + 80, textYOffset + 75, temperature);
+    // painter->drawText(col2X, textYOffset + 75, "Напряжение:");
+    // painter->drawText(col2X + 90, textYOffset + 75, voltage);
+
+    // painter->drawText(col3X, textYOffset + 75, "t°, темп.:");
+    // painter->drawText(col3X + 80, textYOffset + 75, temperature);
 
     pen.setColor("#9FC53A");
     painter->setPen(pen);
     painter->drawLine(leftMargin, lineY, option.rect.width() - leftMargin, lineY);
-
-    pen.setColor("#E4E489");
-    painter->setPen(pen);
-    font.setPixelSize(12);
-    painter->setFont(font);
-
-    int rowNumber = index.row() + 1;
-    painter->drawText(option.rect.right() - 40, option.rect.y() + 20,
-                      "№" + QString::number(rowNumber));
 
     painter->restore();
 }

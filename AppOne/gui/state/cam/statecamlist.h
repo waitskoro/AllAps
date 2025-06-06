@@ -11,6 +11,14 @@ class StateCamList : public QListView
 {
     Q_OBJECT
 public:
+    enum Roles {
+        State = Qt::UserRole + 1,
+        Amperage,
+        Temperature,
+        EmmCount,
+        EmmState
+    };
+
     explicit StateCamList(QWidget *parent = nullptr);
 
     void addCam(CamState &state);

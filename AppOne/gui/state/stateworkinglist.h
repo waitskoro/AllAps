@@ -13,20 +13,24 @@ class StateWorkingList : public QListView
     Q_OBJECT
 
 public:
-    enum Cdo {
-        State,
+    enum Cam {
+        State = Qt::UserRole + 1,
         Amperage,
         Voltage,
         Temperature,
         CdoState,
-        CamCount
+        CamCount,
+        CamInfo,
+        SectorNumber
     };
 
     explicit StateWorkingList(QWidget *parent = nullptr);
-    void addState(CdoMessage &state);
+
+    void clear();
+    void addState(CdoMessage &state, int sector);
 
 signals:
-    void itemClicked(int);
+    void itemClicked(std::vector<CamState>, int sector);
 
 private:
     QScopedPointer<QStandardItemModel> m_model;

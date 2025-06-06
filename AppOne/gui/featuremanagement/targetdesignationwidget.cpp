@@ -169,11 +169,6 @@ void TargetDesignationWidget::onTargetSend()
 
     int targetCount = m_coordinatesView->countCoordinates();
 
-    if (targetCount == 0) {
-        QMessageBox::warning(this, "Ошибка", "Нет целеуказаний для отправки");
-        return;
-    }
-
     if (targetCount > 65535) {
         QMessageBox::warning(this, "Ошибка",
                              QString("Количество значений целеуказаний превышает 65535 (%1)").arg(targetCount));
@@ -195,12 +190,8 @@ void TargetDesignationWidget::onTargetSend()
         QDateTime minEndDateTime = startDateTime.addSecs(minDuration);
 
         QMessageBox::warning(this, "Ошибка",
-                             QString("Длительность целеуказания слишком мала.\n\n"
-                                     "Минимально подходящая дата окончания: %4")
-                                 .arg(durationSec)
-                                 .arg(targetCount)
-                                 .arg(minDuration)
-                                 .arg(minEndDateTime.toString("dd.MM.yyyy HH:mm:ss")));
+                             QString("Длительность целеуказания слишком мала.\n"
+                                     "Минимально подходящая дата окончания: %1").arg(minEndDateTime.toString("dd.MM.yyyy HH:mm:ss")));
         return;
     }
 

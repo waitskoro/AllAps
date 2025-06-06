@@ -3,10 +3,10 @@
 #include <QIODevice>
 
 struct Emmiter_state{
-    quint8 number = 1;
-    quint8 pol = 1;
-    quint8 state = 1;
-    float signalLevel = 1;
+    quint8 number;
+    quint8 pol;
+    quint8 state;
+    float signalLevel;
 
     friend QDataStream &operator >> (QDataStream &stream, Emmiter_state &emState)
     {
@@ -21,11 +21,11 @@ struct Emmiter_state{
 struct CamState {
     CamState() {}
 
-    quint8 camState = 1;
-    float amperage = 1;
-    float temperature = 1;
-    quint8 emmiterCount = 16;
-    Emmiter_state* emmState ;
+    quint8 camState;
+    float amperage;
+    float temperature;
+    quint8 camCount;
+    Emmiter_state* emmState;
 
     friend QDataStream &operator >> (QDataStream &stream, CamState &camState)
     {
@@ -33,11 +33,11 @@ struct CamState {
         stream >> camState.camState
                >> camState.amperage
                >> camState.temperature
-               >> camState.emmiterCount;
+               >> camState.camCount;
 
-        camState.emmState = new Emmiter_state[camState.emmiterCount];
+        camState.emmState = new Emmiter_state[camState.camCount];
 
-        for(int i = 0; i < camState.emmiterCount; ++i) {
+        for(int i = 0; i < camState.camCount; ++i) {
             stream >> camState.emmState[i];
         }
 
@@ -49,12 +49,12 @@ struct CamState {
 struct CdoMessage {
     CdoMessage() {}
 
-    quint8 state = 1;
-    float amperage = 1;
-    float voltage = 1;
-    float temperature = 1;
-    quint8 cdoState = 1;
-    quint8 camCount = 16;
+    quint8 state;
+    float amperage;
+    float voltage;
+    float temperature;
+    quint8 cdoState;
+    quint8 camCount;
     CamState * camInfo;
 
     friend QDataStream &operator >> (QDataStream &stream, CdoMessage &cdoState)
