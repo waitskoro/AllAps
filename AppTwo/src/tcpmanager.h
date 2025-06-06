@@ -28,6 +28,7 @@ private:
     TcpSocket *m_tcpSocket;
 
     void onClientConnected();
+    void onClientDisconnected();
 };
 
 }
