@@ -12,24 +12,44 @@ InformationList::InformationList(QWidget *parent)
     auto *delegate = new InfoListDelegate(this);
     setItemDelegate(delegate);
 
-    setFixedSize(660, 420);
+    setFixedSize(650, 410);
 
     setSpacing(5);
     setModel(m_model.get());
 
     setStyleSheet("background-color: #E4E5FF");
-
-    Report report;
-    addInfo(report);
-    addInfo(report);
-    addInfo(report);
 }
 
 void InformationList::addInfo(Report msg)
 {
+    QModelIndexList matches = m_model->match(m_model->index(0, 0),
+                                             ChannelNumber,
+                                             msg.dataChannelNumber,
+                                             -1,
+                                             Qt::MatchExactly);
+
+    for (const QModelIndex &index : matches) {
+        if (index.isValid()) {
+            if (m_model->data(index, KaNumber).toInt() == msg.kaNumber) {
+                QStandardItem* existingItem = m_model->itemFromIndex(index);
+                if (existingItem) {
+                    setData(existingItem, msg);
+
+                    return;
+                }
+            }
+        }
+    }
+
     auto *item = new QStandardItem();
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
+    setData(item, msg);
+    m_model->appendRow(item);
+}
+
+void InformationList::setData(QStandardItem *item, Report msg)
+{
     item->setData(msg.dataChannelNumber, ChannelNumber);
     item->setData(msg.kaNumber, KaNumber);
     item->setData(msg.acState, AcState);
@@ -41,6 +61,4 @@ void InformationList::addInfo(Report msg)
     QVariant variant;
     variant.setValue(msg.info);
     item->setData(variant, Info);
-
-    m_model->appendRow(item);
 }

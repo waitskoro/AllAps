@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QObject>
+
 enum StateConnection {
     Disconnected,
     Connecting,
@@ -7,7 +9,7 @@ enum StateConnection {
 };
 
 enum ReportDelegate {
-    ChannelNumber,
+    ChannelNumber = Qt::UserRole + 1,
     KaNumber,
     AcState,
     Count,

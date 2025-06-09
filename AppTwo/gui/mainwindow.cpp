@@ -36,7 +36,7 @@ void MainWindow::onServerCreated()
 
 void MainWindow::onClientConnected()
 {
-
+    qDebug() << "Клиент подключился";
 }
 
 void MainWindow::onCountMessageRecieved(Report msg)

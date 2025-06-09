@@ -24,7 +24,5 @@ private:
                      const QStyleOptionViewItem &option,
                      const QModelIndex &index) override;
 
-    QPersistentModelIndex m_clickedIndex;
-
     QDateTime fromDoubleToDate(double dateValue) const;
 };

@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QMouseEvent>
 #include <QModelIndex>
+#include <QApplication>
 
 InfoListDelegate::InfoListDelegate(QWidget *parent)
     : QStyledItemDelegate(parent)
@@ -25,13 +26,8 @@ void InfoListDelegate::paint(QPainter *painter,
     Q_UNUSED(index)
     Q_UNUSED(option)
 
-    if (index == m_clickedIndex) {
-        painter->fillRect(option.rect, "#2F7689");
-        painter->setPen("white");
-    } else {
-        painter->fillRect(option.rect, QColor(54, 204, 232, 50));
-        painter->setPen("black");
-    }
+    painter->fillRect(option.rect, QColor(54, 204, 232, 50));
+    painter->setPen("black");
 
     auto top = option.rect.top();
     auto left = option.rect.left();
@@ -42,18 +38,18 @@ void InfoListDelegate::paint(QPainter *painter,
     font.setWeight(QFont::DemiBold);
     painter->setFont(font);
 
-    painter->drawText(left + 230, top + 20, "КА: " + index.data(KaNumber).toString());
-    painter->drawText(left + 280, top + 20, "Канал данных: " + index.data(ChannelNumber).toString());
+    painter->drawText(left + 210, top + 20, "КА: " + index.data(KaNumber).toString());
+    painter->drawText(left + 300, top + 20, "Канал данных: " + index.data(ChannelNumber).toString());
 
     painter->drawText(left + 20, top + 45,
                       "Состояние инфраструктуры");
 
-    painter->drawText(left + 340, top + 50,
+    painter->drawText(left + 340, top + 45,
                       "Азимут:");
-    painter->drawText(left + 470, top + 50,
+    painter->drawText(left + 470, top + 45,
                       "Угол места:");
 
-    painter->drawText(QRect(left + 340, top + 60, 150, 50),
+    painter->drawText(QRect(left + 340, top + 50, 150, 50),
                       "Время привязки первого отсчета: ");
 
     font.setBold(false);
@@ -77,13 +73,13 @@ void InfoListDelegate::paint(QPainter *painter,
         }
     }
 
-    painter->drawText(left + 410, top + 50, index.data(Az_1).toString());
-    painter->drawText(left + 570, top + 50, index.data(Az_2).toString());
+    painter->drawText(left + 410, top + 45, index.data(Az_1).toString());
+    painter->drawText(left + 570, top + 45, index.data(Az_2).toString());
 
     double data = index.data(Time).toDouble();
     QDateTime dateTime = fromDoubleToDate(data);
 
-    painter->drawText(left + 480, top + 95,
+    painter->drawText(left + 480, top + 85,
                       dateTime.toString("dd.MM.yy hh:mm:ss"));
 
     font.setPixelSize(14);
@@ -96,6 +92,18 @@ void InfoListDelegate::paint(QPainter *painter,
     painter->drawText(left + 40, top + 105,
                       QString("Неисправность (без ухудшения):  %1").arg(badError ? "Да" : "Нет"));
 
+    QRect buttonRect(left + 400, top + 95, 150, 20);
+    QStyleOptionButton button;
+    button.rect = buttonRect;
+    button.text = "Просмотреть отчеты";
+    button.state = QStyle::State_Enabled;
+
+    QPalette palette = button.palette;
+    palette.setColor(QPalette::Button, "#3BBCD4");
+    button.palette = palette;
+
+    QApplication::style()->drawControl(QStyle::CE_PushButton, &button, painter);
+
     painter->save();
     painter->restore();
 }
@@ -105,13 +113,18 @@ bool InfoListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
                                    const QModelIndex &index)
 {
     if (event->type() == QEvent::MouseButtonRelease) {
+        QRect buttonRect(option.rect.left() + 400, option.rect.top() + 85, 150, 20);
+
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+
         if (mouseEvent->button() == Qt::LeftButton) {
-            m_clickedIndex = index;
 
-            emit const_cast<QAbstractItemModel*>(index.model())->dataChanged(index, index);
+            if (buttonRect.contains(mouseEvent->pos())) {
 
-            return true;
+                emit const_cast<QAbstractItemModel*>(index.model())->dataChanged(index, index);
+
+                return true;
+            }
         }
     }
     return QStyledItemDelegate::editorEvent(event, model, option, index);
@@ -122,5 +135,5 @@ QSize InfoListDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(280, 120);
+    return QSize(280, 125);
 }

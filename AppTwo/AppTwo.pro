@@ -18,6 +18,7 @@ SOURCES += \
     gui/serverconnectingwidget.cpp \
     main.cpp \
     mainmanager.cpp \
+    src/csvparser.cpp \
     src/sequentialidprovider.cpp \
     src/tcpmanager.cpp
 
@@ -32,6 +33,7 @@ HEADERS += \
     gui/reportsstable.h \
     gui/serverconnectingwidget.h \
     mainmanager.h \
+    src/csvparser.h \
     src/sequentialidprovider.h \
     src/tcpmanager.h
 

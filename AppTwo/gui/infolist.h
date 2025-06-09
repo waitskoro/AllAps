@@ -18,7 +18,9 @@ public:
     void addInfo(Report msg);
 
 private:
+    void setData(QStandardItem *item, Report msg);
     QScopedPointer<QStandardItemModel> m_model;
+
 };
 
 }
