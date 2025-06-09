@@ -10,6 +10,9 @@ class InfoListDelegate : public QStyledItemDelegate
 public:
     explicit InfoListDelegate(QWidget *parent = nullptr);
 
+signals:
+    void itemClicked(std::vector<std::array<short, 2>>);
+
 private:
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const override;
@@ -24,7 +27,4 @@ private:
     QPersistentModelIndex m_clickedIndex;
 
     QDateTime fromDoubleToDate(double dateValue) const;
-
-    QLabel *m_label;
-
 };

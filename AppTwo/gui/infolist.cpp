@@ -12,7 +12,7 @@ InformationList::InformationList(QWidget *parent)
     auto *delegate = new InfoListDelegate(this);
     setItemDelegate(delegate);
 
-    setFixedSize(400, 420);
+    setFixedSize(660, 420);
 
     setSpacing(5);
     setModel(m_model.get());
@@ -35,6 +35,8 @@ void InformationList::addInfo(Report msg)
     item->setData(msg.acState, AcState);
     item->setData(msg.count, Count);
     item->setData(msg.time, Time);
+    item->setData(msg.az[0], Az_1);
+    item->setData(msg.az[1], Az_2);
 
     QVariant variant;
     variant.setValue(msg.info);

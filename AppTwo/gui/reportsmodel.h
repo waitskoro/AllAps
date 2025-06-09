@@ -5,11 +5,13 @@
 
 namespace View {
 
-class TargetDesignationModel : public QAbstractListModel
+class ReportsModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit TargetDesignationModel(QObject *parent = nullptr);
+    explicit ReportsModel(QObject *parent = nullptr);
+
+    void clear();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;

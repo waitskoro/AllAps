@@ -10,12 +10,7 @@
 
 InfoListDelegate::InfoListDelegate(QWidget *parent)
     : QStyledItemDelegate(parent)
-    , m_label(new QLabel(parent))
-{
-    m_label->setText("  !");
-    m_label->setFixedSize(17, 15);
-    m_label->setStyleSheet("background-color: red;");
-}
+{}
 
 QDateTime InfoListDelegate::fromDoubleToDate(double dateValue) const
 {
@@ -40,57 +35,69 @@ void InfoListDelegate::paint(QPainter *painter,
 
     auto top = option.rect.top();
     auto left = option.rect.left();
-    auto right = option.rect.right();
 
-    painter->drawText(left + 100, top + 20, "КА: " + index.data(KaNumber).toString());
-    painter->drawText(left + 150, top + 20, "Канал данных: " + index.data(ChannelNumber).toString());
+    QFont font;
+    font.setBold(true);
+    font.setPixelSize(16);
+    font.setWeight(QFont::DemiBold);
+    painter->setFont(font);
+
+    painter->drawText(left + 230, top + 20, "КА: " + index.data(KaNumber).toString());
+    painter->drawText(left + 280, top + 20, "Канал данных: " + index.data(ChannelNumber).toString());
+
+    painter->drawText(left + 20, top + 45,
+                      "Состояние инфраструктуры");
+
+    painter->drawText(left + 340, top + 50,
+                      "Азимут:");
+    painter->drawText(left + 470, top + 50,
+                      "Угол места:");
+
+    painter->drawText(QRect(left + 340, top + 60, 150, 50),
+                      "Время привязки первого отсчета: ");
+
+    font.setBold(false);
+    painter->setFont(font);
 
     quint8 acState = static_cast<quint8>(index.data(AcState).toUInt());
 
-    QString stateMessage;
-    QStringList errors;
+    bool timeError = false;
+    bool toBadError = false;
+    bool badError = false;
 
-    if (acState == 0) {
-        stateMessage = "Данные пригодны";
-    } else {
-        stateMessage = "Данные не пригодны";
-
+    if (acState != 0) {
         if (acState & 0x01) {
-            errors << "Время не синхронизировано с UTC";
+            timeError = true;
         }
         if (acState & 0x02) {
-            errors << "Обнаружена неисправность (без ухудшения характеристик приёма)";
+            badError = true;
         }
         if (acState & 0x08) {
-            errors << "Обнаружена неисправность (с ухудшением характеристик приёма)";
-        }
-        if ((acState & 0xF4) != 0) {
-            errors << "Неизвестный статус оборудования";
+            toBadError = true;
         }
     }
 
-    painter->drawLine(left + 10, top + 30,
-                      right - 10, top + 30);
-
-    painter->drawText(left + 20, top + 50,
-                      "Состояние АС:");
-
-    painter->drawText(left + 170, top + 50,
-                      stateMessage);
-
-    painter->drawText(QRect(left + 20, top + 60, 150, 90),
-                      "Время привязки первого отсчета: ");
+    painter->drawText(left + 410, top + 50, index.data(Az_1).toString());
+    painter->drawText(left + 570, top + 50, index.data(Az_2).toString());
 
     double data = index.data(Time).toDouble();
     QDateTime dateTime = fromDoubleToDate(data);
 
-    painter->drawText(QRect(left + 170, top + 70, 150, 25),
+    painter->drawText(left + 480, top + 95,
                       dateTime.toString("dd.MM.yy hh:mm:ss"));
+
+    font.setPixelSize(14);
+    painter->setFont(font);
+
+    painter->drawText(left + 40, top + 65,
+                      QString("Время синхронизировано с UTC:  %1").arg(timeError ? "Нет" : "Да"));
+    painter->drawText(left + 40, top + 85,
+                      QString("Неисправность (с ухудшением):  %1").arg(toBadError ? "Да" : "Нет"));
+    painter->drawText(left + 40, top + 105,
+                      QString("Неисправность (без ухудшения):  %1").arg(badError ? "Да" : "Нет"));
 
     painter->save();
     painter->restore();
-
-    m_label->move(option.rect.right() - 20, option.rect.top() + 10);
 }
 
 bool InfoListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
@@ -115,5 +122,5 @@ QSize InfoListDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(280, 100);
+    return QSize(280, 120);
 }

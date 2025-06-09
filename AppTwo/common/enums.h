@@ -12,5 +12,7 @@ enum ReportDelegate {
     AcState,
     Count,
     Time,
+    Az_1,
+    Az_2,
     Info
 };

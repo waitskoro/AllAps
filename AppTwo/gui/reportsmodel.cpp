@@ -1,23 +1,23 @@
-#include "targetdesignationmodel.h"
+#include "reportsmodel.h"
 
 using namespace View;
 
-TargetDesignationModel::TargetDesignationModel(QObject *parent)
+ReportsModel::ReportsModel(QObject *parent)
     : QAbstractListModel(parent)
 {}
 
-int TargetDesignationModel::rowCount(const QModelIndex &) const
+int ReportsModel::rowCount(const QModelIndex &) const
 {
     return m_values.size();
 }
 
-int TargetDesignationModel::columnCount(const QModelIndex &parent) const
+int ReportsModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     return 2;
 }
 
-QVariant TargetDesignationModel::data(const QModelIndex &index, int role) const
+QVariant ReportsModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() < 0 ||
         static_cast<size_t>(index.row()) >= m_values.size())
@@ -38,7 +38,7 @@ QVariant TargetDesignationModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QVariant TargetDesignationModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ReportsModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
@@ -50,19 +50,24 @@ QVariant TargetDesignationModel::headerData(int section, Qt::Orientation orienta
     return QVariant();
 }
 
-void TargetDesignationModel::append(short azimuth, short elevation)
+void ReportsModel::clear()
+{
+    m_values.clear();
+}
+
+void ReportsModel::append(short azimuth, short elevation)
 {
     append({azimuth, elevation});
 }
 
-void TargetDesignationModel::append(const std::array<short, 2>& newCoordinates)
+void ReportsModel::append(const std::array<short, 2>& newCoordinates)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_values.push_back(newCoordinates);
     endInsertRows();
 }
 
-const std::vector<std::array<short, 2>>& TargetDesignationModel::coordinates() const
+const std::vector<std::array<short, 2>>& ReportsModel::coordinates() const
 {
     return m_values;
 }

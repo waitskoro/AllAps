@@ -6,7 +6,6 @@
 
 namespace View {
 
-class TargetTable;
 class InformationList;
 
 class InfoWidget : public QWidget
@@ -20,7 +19,6 @@ public:
 private:
     void paintEvent(QPaintEvent *e) override;
 
-    TargetTable *m_targetList;
     InformationList *m_infoList;
 };
 

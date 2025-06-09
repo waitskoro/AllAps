@@ -6,15 +6,19 @@
 
 namespace View {
 
-class ReportsTable : QWidget
+class ReportsModel;
+
+class ReportsTable : public QWidget
 {
     Q_OBJECT
 public:
     explicit ReportsTable(QWidget *parent = nullptr);
 
+    void clear();
+    void append(short azimuth, short elevation);
 private:
     QTableView *m_tableView;
-    // TargetDesignationModel *m_model;
+    ReportsModel *m_model;
 };
 
 }
