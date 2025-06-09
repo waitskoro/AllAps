@@ -51,11 +51,11 @@ using ComplexSample = std::array<int8_t, 2>;
 
 struct Report {
 
-    quint8 dataChannelNumber = 13;
-    quint8 acState = 3;
-    quint16 kaNumber = 5;
-    double time = 4;
-    qint16 az[2] = {1,2};
+    quint8 dataChannelNumber;
+    quint8 acState;
+    quint16 kaNumber;
+    double time;
+    qint16 az[2];
     quint32 count;
     qint8** info;
 

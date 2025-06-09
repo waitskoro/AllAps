@@ -9,80 +9,31 @@ using namespace Reports;
 
 CsvParser::CsvParser(QObject *parent)
     : QObject{parent}
-    , m_file("../reports.csv")
-{
-    if (!m_file.open(QFile::ReadOnly | QFile::Text)) {
-        qDebug() << "File not exists";
-    } else {
-        qDebug() << "File is exist";
-    }
-}
-
-QVector<ChannelData> CsvParser::parseChannelData()
-{
-    QVector<ChannelData> channels;
-
-    if (!m_file.isOpen()) {
-        qWarning() << "File is not open for reading";
-        return channels;
-    }
-
-    QTextStream in(&m_file);
-    bool isFirstLine = true;
-
-    while (!in.atEnd()) {
-        QString line = in.readLine();
-
-        if (isFirstLine) {
-            isFirstLine = false;
-            if (line.contains("channelNumber") || line.contains("синфазная составляющая") || line.contains("квадратурная составляющая")) {
-                continue;
-            }
-        }
-
-        QStringList fields = line.split(';');
-        if (fields.size() >= 3) {
-            ChannelData data;
-            bool ok;
-
-            data.channelNumber = fields[0].trimmed().toInt(&ok);
-            if (!ok) continue;
-
-            data.iQuadrature = fields[1].trimmed().toDouble(&ok);
-            if (!ok) continue;
-
-            data.qQuadrature = fields[2].trimmed().toDouble(&ok);
-            if (!ok) continue;
-
-            channels.append(data);
-        }
-    }
-
-    m_file.close();
-    return channels;
-}
+{}
 
 bool CsvParser::appendChannelData(int channelNumber, double iQuadrature, double qQuadrature)
 {
-    if (m_file.isOpen()) {
-        m_file.close();
-    }
-
-    if (!m_file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
-        qWarning() << "Failed to open file for appending";
+    m_file = fopen("../reports.csv", "a");
+    if (!m_file) {
+        qDebug() << "Failed to open file";
         return false;
     }
 
-    QTextStream out(&m_file);
+    QString str = QString::number(channelNumber) + ";" +
+                  QString::number(iQuadrature, 'f', 6) + ";" +
+                  QString::number(qQuadrature, 'f', 6) + "\n";
 
-    if (m_file.size() == 0) {
-        out << "channelNumber;синфазная составляющая (I-квадратура);квадратурная составляющая (Q-квадратура)\n";
+    QByteArray byteArray = str.toUtf8();
+    const char *buffer = byteArray.constData();
+    size_t bytesToWrite = byteArray.size();
+
+    size_t written = fwrite(buffer, 1, bytesToWrite, m_file);
+    if (written != bytesToWrite) {
+        qDebug() << "Failed to write all data";
+        fclose(m_file);
+        return false;
     }
 
-    out << channelNumber << ";"
-        << QString::number(iQuadrature, 'f', 6) << ";"
-        << QString::number(qQuadrature, 'f', 6) << "\n";
-
-    m_file.close();
+    fclose(m_file);
     return true;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QFile>
+#include <QMutex>
 #include <QObject>
 #include <QVector>
 
@@ -18,11 +19,10 @@ class CsvParser : public QObject
 public:
     explicit CsvParser(QObject *parent = nullptr);
 
-    QVector<ChannelData> parseChannelData();
     bool appendChannelData(int channelNumber, double iQuadrature, double qQuadrature);
 
 private:
-    QFile m_file;
+    FILE *m_file;
 };
 
-} // namespace Reports
+}
