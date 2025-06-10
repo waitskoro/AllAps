@@ -1,5 +1,6 @@
 #include "tcpmanager.h"
 
+#include "src/csvparser.h"
 #include "sequentialidprovider.h"
 
 #include <QMessageBox>
@@ -13,6 +14,7 @@ const qint32 HEADER_SIZE = 16;
 TcpManager::TcpManager(QObject *parent)
     : QObject(parent)
     , m_tcpServer(new QTcpServer(this))
+    , m_csvParser(new Reports::CsvParser())
 {
     connect(m_tcpServer,
             &QTcpServer::newConnection,
@@ -29,7 +31,16 @@ void TcpManager::onMessageRecieved(Packet packet)
         Report result;
         stream >> result;
 
+        count += result.count;
+        qDebug() << "common count:" << count;
+
         emit countMessage(result);
+
+        for (quint32 i = 0; i < result.count; i++) {
+            m_csvParser->appendChannelData(result.dataChannelNumber,
+                                           result.info[i][0],
+                                           result.info[i][1]);
+        }
     }
 }
 

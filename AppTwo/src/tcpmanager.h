@@ -6,6 +6,10 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 
+namespace Reports {
+class CsvParser;
+}
+
 namespace Tcp {
 
 class TcpSocket;
@@ -22,7 +26,7 @@ public:
 signals:
     void serverCreated();
     void clientConnected();
-    void countMessage(Report);
+    void countMessage(const Report &result);
 
 private:
     QTcpServer *m_tcpServer;
@@ -40,7 +44,11 @@ private:
 
     bool m_headerReaded;
 
+    int count = 0;
+
     Header deserializeHeader(QByteArray& data);
+
+    Reports::CsvParser *m_csvParser;
 };
 
 }
