@@ -39,8 +39,9 @@ private:
 
     QLineEdit* createLineEdit(int width, int height);
 
-
     Loader *m_loader;
+
+
 };
 
 }

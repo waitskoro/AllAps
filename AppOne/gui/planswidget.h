@@ -14,6 +14,7 @@ class PlansWidget : public QWidget
 public:
     explicit PlansWidget(QWidget *parent = nullptr);
 
+    void clear();
     void addMessage(const ReceivingMessage &);
 private:
     void paintEvent(QPaintEvent *event);

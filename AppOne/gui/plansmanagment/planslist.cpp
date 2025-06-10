@@ -67,5 +67,8 @@ void PlansList::addMessage(const ReceivingMessage& msg)
 
 void PlansList::emptyMessages()
 {
-    if (!m_isActive || m_model.isNull()) m_model->clear();;
+    if (!m_isActive || m_model.isNull()) {
+        return;
+    }
+    m_model->clear();
 }

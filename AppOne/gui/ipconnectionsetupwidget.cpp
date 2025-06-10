@@ -15,6 +15,7 @@ IpConnectionSetupWidget::IpConnectionSetupWidget(QWidget *parent)
     , m_mainRect(QRect(0, 0, 400, 150))
 {
     initUI();
+    m_loader->stop();
 }
 
 void IpConnectionSetupWidget::showWindow(Connection::ConnectionData data)
@@ -34,12 +35,16 @@ void IpConnectionSetupWidget::initUI()
     m_acPortTextEdit = createLineEdit(80, 30);
     m_pushButton = createButton(this, "Соединиться", 150, 35);
 
+    m_loader = new Loader("Подключение", QRect(0, 0, 650, 400), this);
+
     connect(m_pushButton,
             &QPushButton::clicked,
             this,
             &IpConnectionSetupWidget::onPushButtonClicked);
 
     updateWidgetPositions();
+
+
 }
 
 QLineEdit* IpConnectionSetupWidget::createLineEdit(int width, int height)
@@ -101,13 +106,6 @@ void IpConnectionSetupWidget::resizeEvent(QResizeEvent *e)
 
 void IpConnectionSetupWidget::onPushButtonClicked()
 {
-    QString loaderText = "Подключение";
-    QRect *rect = new QRect(0, 0, 650, 400);
-    m_loader = new Loader(loaderText,
-                          *rect,
-                          this);
-    m_loader->start();
-
     auto acIp = m_acIpTextEdit->text();
     auto acPort = m_acPortTextEdit->text();
 
@@ -115,6 +113,9 @@ void IpConnectionSetupWidget::onPushButtonClicked()
         QUrl url_ac = QUrl::fromUserInput(acIp + ":" + acPort);
         emit connectToHosts(url_ac);
     }
+
+    m_loader->start();
+    m_loader->setAttribute(Qt::WA_AlwaysStackOnTop);
 }
 
 IpConnectionSetupWidget::~IpConnectionSetupWidget()

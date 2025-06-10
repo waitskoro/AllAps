@@ -69,8 +69,10 @@ MainWidget::MainWidget(QWidget *parent)
 
     connect(m_reconnectButton,
             &QPushButton::clicked,
-            this,
-            &MainWidget::reconnect);
+            [this](){
+                m_plansWidget->clear();
+                emit reconnect();
+            });
 
     setLayout(m_mainLayout);
 

@@ -23,6 +23,11 @@ PlansWidget::PlansWidget(QWidget *parent)
                         rect().height() / 2 - m_headerLabel->height() / 2);
 }
 
+void PlansWidget::clear()
+{
+    m_receivingChecklist->emptyMessages();
+}
+
 void PlansWidget::addMessage(const ReceivingMessage& msg)
 {
     if (m_receivingChecklist) {
