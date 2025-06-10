@@ -2,6 +2,7 @@
 
 #include "common/messages.h"
 
+#include <QTimer>
 #include <QObject>
 #include <QListView>
 #include <QStandardItemModel>
@@ -18,7 +19,12 @@ public:
     void addInfo(Report msg);
 
 private:
+    bool isNew;
+
     void setData(QStandardItem *item, Report msg);
+
+    QScopedPointer<QTimer> m_clearTimer;
+    QScopedPointer<QTimer> m_refreshTimer;
     QScopedPointer<QStandardItemModel> m_model;
 
 };

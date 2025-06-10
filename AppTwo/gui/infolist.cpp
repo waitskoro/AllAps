@@ -7,6 +7,9 @@ using namespace View;
 
 InformationList::InformationList(QWidget *parent)
     : QListView(parent)
+    , isNew(false)
+    , m_clearTimer(new QTimer(this))
+    , m_refreshTimer(new QTimer(this))
     , m_model(new QStandardItemModel(this))
 {
     auto *delegate = new InfoListDelegate(this);
@@ -17,11 +20,29 @@ InformationList::InformationList(QWidget *parent)
     setSpacing(5);
     setModel(m_model.get());
 
+    connect(m_refreshTimer.get(), &QTimer::timeout, this, [this]() {
+        isNew = true;
+    });
+
+    m_clearTimer->setSingleShot(true);
+    connect(m_clearTimer.get(), &QTimer::timeout, this, [this]() {
+        m_model->clear();
+    });
+
+    m_refreshTimer->start(1500);
+
     setStyleSheet("background-color: #E4E5FF");
 }
 
 void InformationList::addInfo(Report msg)
 {
+    m_clearTimer->start(2000);
+
+    if (isNew) {
+        m_model->clear();
+        isNew = false;
+    }
+
     QModelIndexList matches = m_model->match(m_model->index(0, 0),
                                              ChannelNumber,
                                              msg.dataChannelNumber,
