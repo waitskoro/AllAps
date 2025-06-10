@@ -31,7 +31,7 @@ MainWidget::MainWidget(QWidget *parent)
 {
     m_currentView = Plans;
 
-    m_loader->hide();
+    m_loader->close();
 
     m_mainLayout->addWidget(m_plansWidget);
 
@@ -51,7 +51,7 @@ MainWidget::MainWidget(QWidget *parent)
 
     connect(m_menuButton, &QPushButton::clicked, [this](){
         if (m_menuWidget->isVisible()) {
-            m_menuWidget->hide();
+            m_menuWidget->close();
         } else {
             m_menuWidget->show();
             m_menuWidget->raise();
@@ -128,7 +128,7 @@ void MainWidget::drawMenuButton()
 void MainWidget::onButtonMenuClicked(CurrentView nextView)
 {
     if (nextView == m_currentView) {
-        m_menuWidget->hide();
+        m_menuWidget->close();
         return;
     } else {
         m_currentView = nextView;
@@ -139,7 +139,7 @@ void MainWidget::onButtonMenuClicked(CurrentView nextView)
         delete item;
     }
 
-    m_menuWidget->hide();
+    m_menuWidget->close();
 
     switch (nextView) {
         case Plans: {

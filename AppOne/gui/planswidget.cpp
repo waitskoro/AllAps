@@ -32,7 +32,7 @@ void PlansWidget::addMessage(const ReceivingMessage& msg)
 {
     if (m_receivingChecklist) {
         m_receivingChecklist->addMessage(msg);
-        m_headerLabel->hide();
+        m_headerLabel->close();
     }
 }
 

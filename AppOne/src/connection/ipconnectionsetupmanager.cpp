@@ -29,5 +29,5 @@ void IpConnectionSetupManager::open()
 
 void IpConnectionSetupManager::close()
 {
-    m_connectionWidget->hide();
+    m_connectionWidget->close();
 }

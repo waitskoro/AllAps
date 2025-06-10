@@ -18,7 +18,7 @@ ChannelDataList::ChannelDataList(QWidget *parent)
     setModel(m_model.get());
     setStyleSheet("background-color: #FFFFFF");
 
-    hide();
+    close();
 
     connect(delegate,
             &ChannelDataDelegate::itemClicked,

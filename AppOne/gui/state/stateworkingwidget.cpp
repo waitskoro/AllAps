@@ -30,13 +30,13 @@ StateWorkingWidget::StateWorkingWidget(QWidget *parent)
             &StateWorkingWidget::exit);
 
     m_label->show();
-    m_camList->hide();
-    m_camNumber->hide();
-    m_stateWorkingList->hide();
+    m_camList->close();
+    m_camNumber->close();
+    m_stateWorkingList->close();
 
     m_stateWorkingList->move(10, 245);
 
-    m_camList->hide();
+    m_camList->close();
     m_camList->move(420, 265);
 
     m_camNumber->move(440, 240);
@@ -63,7 +63,7 @@ void StateWorkingWidget::addState(StateMessage &state)
 {
     m_state = state;
 
-    m_label->hide();
+    m_label->close();
 
     m_camList->show();
     m_camNumber->show();

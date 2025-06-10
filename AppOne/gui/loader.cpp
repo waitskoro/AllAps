@@ -70,7 +70,7 @@ void Loader::start()
 void Loader::stop()
 {
     m_dotsTimer->stop();
-    hide();
+    close();
 }
 
 void Loader::updateDots()

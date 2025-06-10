@@ -56,7 +56,7 @@ void SegmentsList::addMessage(const DataChannelSegment &msg, qint32 channelNumbe
     variant.setValue(msg.targets);
     item->setData(variant, Targets);
 
-    m_headerLabel->hide();
+    m_headerLabel->close();
 
     m_model->appendRow(item);
 }

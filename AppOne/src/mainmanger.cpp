@@ -66,5 +66,5 @@ void MainManager::showWindow()
 
 void MainManager::closeWindow()
 {
-    m_mainWidget->hide();
+    m_mainWidget->close();
 }

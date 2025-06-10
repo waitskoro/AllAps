@@ -12,14 +12,14 @@ StopingPlansWidget::StopingPlansWidget(QWidget *parent)
     , m_cancel(new QPushButton("Cancel", this))
     , m_buttonOk(new QPushButton("OK", this))
 {
-    hide();
+    close();
 
     setFixedSize(Sizes::mainSize());
 
     connect(m_cancel,
             &QPushButton::clicked,
             [this](bool){
-                hide();
+                close();
                 emit canceled();
             });
 
@@ -35,7 +35,7 @@ StopingPlansWidget::StopingPlansWidget(QWidget *parent)
 
                     m_buttonOk->setVisible(false);
                 } else {
-                    hide();
+                    close();
                     emit stoped();
                 }
             });

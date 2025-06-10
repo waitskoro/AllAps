@@ -29,7 +29,7 @@ MenuWidget::MenuWidget(QWidget *parent)
     , m_stopingPlans(new QPushButton(" Остановка приема", this))
     , m_main(new QPushButton(" Главное меню ", this))
 {
-    hide();
+    close();
     setFixedSize(300, 400);
 
     m_stateWorking->setFixedSize(230, 50);
