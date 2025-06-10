@@ -55,6 +55,11 @@ void TcpSocket::handleReadyRead()
     }
 }
 
+void TcpSocket::abortSocket()
+{
+    m_socket->abort();
+}
+
 void TcpSocket::disconnectFromHost()
 {
     m_connectionTimeoutTimer->stop();

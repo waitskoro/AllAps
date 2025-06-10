@@ -19,6 +19,10 @@ public:
                          QObject *parent = nullptr);
 
     void showWindow();
+    void closeWindow();
+
+signals:
+    void reconnect();
 
 private:
     TcpSocketManager *m_tcpManager;

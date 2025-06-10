@@ -23,25 +23,25 @@ TcpSocketManager::TcpSocketManager(QObject *parent)
 
 void TcpSocketManager::disconnect()
 {
-    m_socket->disconnect();
-
     isSocketsConnected = false;
-
+    m_socket->disconnectFromHost();
     emit stateChanged(Disconnected);
+
+    qInfo() << "Отключение от сокета";
 }
 
 void TcpSocketManager::cancelConnecting()
 {
-    m_socket->disconnect();
-
     isSocketsConnected = false;
 }
 
-void TcpSocketManager::connectToHosts(const QUrl &ac)
+void TcpSocketManager::connectToHost(const QUrl &ac)
 {
+    m_url = ac;
     m_socket->connectToHost(ac);
-
     emit stateChanged(Connecting);
+
+    qInfo() << "Подключение к сокету";
 }
 
 void TcpSocketManager::sendTarget(TargetDesignations target)

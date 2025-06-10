@@ -24,10 +24,8 @@ ConnectionData ConnectionDataSaving::connectionData()
 
     QString acHost = root.value("acHost").toString();
     QString acPort = QString::number(root.value("acPort").toInt());
-    QString p2Host = root.value("p2Host").toString();
-    QString p2Port = QString::number(root.value("p2Port").toInt());
 
-    return {acHost, acPort, p2Host, p2Port};
+    return {acHost, acPort};
 }
 
 void ConnectionDataSaving::setConnectionData(const QUrl &ac)

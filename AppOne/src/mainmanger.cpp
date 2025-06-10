@@ -51,9 +51,20 @@ MainManager::MainManager(TcpSocketManager *tcpManager, QObject *parent)
             &TcpSocketManager::recieveState,
             m_mainWidget,
             &View::MainWidget::recieveState);
+
+    //Tcp
+    connect(m_mainWidget,
+            &View::MainWidget::reconnect,
+            this,
+            &MainManager::reconnect);
 }
 
 void MainManager::showWindow()
 {
     m_mainWidget->show();
+}
+
+void MainManager::closeWindow()
+{
+    m_mainWidget->hide();
 }

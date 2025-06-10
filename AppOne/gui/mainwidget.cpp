@@ -22,6 +22,7 @@ MainWidget::MainWidget(QWidget *parent)
     , m_mainLayout(new QHBoxLayout(this))
     , m_menuWidget(new MenuWidget(this))
     , m_menuButton(new QPushButton(this))
+    , m_reconnectButton(new QPushButton(this))
     , m_plansWidget(new PlansWidget(this))
     , m_loader(new Loader(QString("Ожидание ответа"),
                         QRect(0, 0, 800, 600),
@@ -43,6 +44,11 @@ MainWidget::MainWidget(QWidget *parent)
     m_menuWidget->move(10, 50);
     m_menuWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
 
+    m_reconnectButton->setFixedSize(180, 25);
+    m_reconnectButton->setText("Переподключиться");
+    m_reconnectButton->setStyleSheet("background-color: #36CCE8");
+    m_reconnectButton->move(rect().left() + 80, rect().top() + 15);
+
     connect(m_menuButton, &QPushButton::clicked, [this](){
         if (m_menuWidget->isVisible()) {
             m_menuWidget->hide();
@@ -60,6 +66,11 @@ MainWidget::MainWidget(QWidget *parent)
                 if (m_stopingPlans->isVisible())
                     m_stopingPlans->messageRecivied(result);
             });
+
+    connect(m_reconnectButton,
+            &QPushButton::clicked,
+            this,
+            &MainWidget::reconnect);
 
     setLayout(m_mainLayout);
 

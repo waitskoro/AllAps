@@ -20,6 +20,7 @@ public:
     ~IpConnectionSetupWidget();
 
     void showWindow(Connection::ConnectionData);
+    void onPushButtonClicked();
 
 signals:
     void connectToHosts(const QUrl &ac);
@@ -38,7 +39,6 @@ private:
 
     QLineEdit* createLineEdit(int width, int height);
 
-    void onPushButtonClicked();
 
     Loader *m_loader;
 };

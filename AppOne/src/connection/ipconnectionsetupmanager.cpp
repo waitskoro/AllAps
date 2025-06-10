@@ -21,6 +21,13 @@ IpConnectionSetupManager::IpConnectionSetupManager(QObject *parent)
             });
 }
 
+void IpConnectionSetupManager::open()
+{
+    m_connectionWidget->show();
+    m_connectionWidget->showWindow(m_connectionData->connectionData());
+    m_connectionWidget->onPushButtonClicked();
+}
+
 void IpConnectionSetupManager::close()
 {
     m_connectionWidget->hide();

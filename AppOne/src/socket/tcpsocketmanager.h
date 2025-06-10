@@ -29,7 +29,7 @@ public:
 
     void disconnect();
     void cancelConnecting();
-    void connectToHosts(const QUrl &ac);
+    void connectToHost(const QUrl &ac);
 
     void stopingPlans();
     void sendRequestStateWorking();
@@ -49,6 +49,7 @@ signals:
     void stateChanged(ConnectionStatus status);
 
 private:
+    QUrl m_url;
     TcpSocket *m_socket;
 
     bool isSocketsConnected = false;

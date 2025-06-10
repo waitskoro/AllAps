@@ -15,6 +15,7 @@ class TcpSocket : public QObject
 public:
     explicit TcpSocket(QObject *parent = nullptr);
 
+    void abortSocket();
     void disconnectFromHost();
     void connectToHost(const QUrl& url);
     void send(const QByteArray& header, const QByteArray& msg);

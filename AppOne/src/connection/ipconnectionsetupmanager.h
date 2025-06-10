@@ -16,6 +16,7 @@ class IpConnectionSetupManager : public QObject
 public:
     explicit IpConnectionSetupManager(QObject *parent = nullptr);
 
+    void open();
     void close();
 signals:
     void connectToHosts(const QUrl &ac);

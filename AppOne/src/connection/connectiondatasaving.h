@@ -7,8 +7,6 @@ namespace Connection {
 struct ConnectionData {
     QString acHost;
     QString acPort;
-    QString p2Host;
-    QString p2Port;
 };
 
 class ConnectionDataSaving : public QObject
