@@ -24,7 +24,7 @@ public:
     explicit CsvParser(QObject *parent = nullptr);
     ~CsvParser();
 
-    void appendChannelData(int channelNumber, double iQuadrature, double qQuadrature);
+    void appendChannelData(int channelNumber, int iQuadrature, int qQuadrature);
 
 private:
     QThread *m_thread;

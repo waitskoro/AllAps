@@ -11,7 +11,7 @@ using namespace Reports;
 
 CsvParser::CsvParser(QObject *parent)
     : QObject(parent)
-    , m_thread(new QThread())
+    , m_thread(new QThread(this))
 {
     for (int i = 0; i < CHANNEL_COUNT; ++i) {
         QString filename = QString("../reports_%1.csv").arg(i+1);
@@ -39,8 +39,8 @@ CsvParser::~CsvParser()
 }
 
 void CsvParser::appendChannelData(int channelNumber,
-                                  double iQuadrature,
-                                  double qQuadrature)
+                                  int iQuadrature,
+                                  int qQuadrature)
 {
     if (channelNumber < 1 || channelNumber > CHANNEL_COUNT) {
         qDebug() << "Invalid channel number:" << channelNumber;
