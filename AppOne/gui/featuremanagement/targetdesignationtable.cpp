@@ -137,8 +137,8 @@ void TargetDesignationTable::onTestCreating()
         int count = dialog.intValue();
         count = qMin(count, 65536);
 
-        const int maxAzimuth = 3600;
-        const int maxAngle = 900;
+        const int maxAzimuth = 900;
+        const int maxAngle = 899;
 
         double azimuthStep = static_cast<double>(maxAzimuth) / count;
 
