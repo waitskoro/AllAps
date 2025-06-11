@@ -44,8 +44,6 @@ private:
 
     bool m_headerReaded;
 
-    int count = 0;
-
     Header deserializeHeader(QByteArray& data);
 
     Reports::CsvParser *m_csvParser;

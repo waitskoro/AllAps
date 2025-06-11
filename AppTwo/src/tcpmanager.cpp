@@ -31,9 +31,6 @@ void TcpManager::onMessageRecieved(Packet packet)
         Report result;
         stream >> result;
 
-        count += result.count;
-        qDebug() << "common count:" << count;
-
         emit countMessage(result);
 
         for (quint32 i = 0; i < result.count; i++) {
