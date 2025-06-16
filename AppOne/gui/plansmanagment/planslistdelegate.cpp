@@ -149,3 +149,11 @@ QSize PlansListDelegate::sizeHint(const QStyleOptionViewItem &option,
     Q_UNUSED(index)
     return QSize(450, 150);
 }
+
+
+bool PlansListDelegate::editorEvent(QEvent *, QAbstractItemModel *,
+                                    const QStyleOptionViewItem &,
+                                    const QModelIndex &)
+{
+    return true;
+}

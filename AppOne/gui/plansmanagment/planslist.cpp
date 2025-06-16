@@ -14,6 +14,7 @@ PlansList::PlansList(QWidget *parent)
     auto *delegate = new PlansListDelegate(this);
     setItemDelegate(delegate);
 
+
     setSpacing(5);
     setModel(m_model.get());
     setFixedWidth(600);
