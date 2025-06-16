@@ -30,7 +30,7 @@ void PlansListDelegate::paint(QPainter *painter,
     painter->drawLine(left, top + 80, right, top + 80);
 
     painter->drawLine(left + 320, top, left + 320, top + 80);
-    painter->drawLine(left + 270, top + 80, left + 270, bottom);
+    painter->drawLine(left + 340, top + 80, left + 340, bottom);
 
     QStyledItemDelegate::paint(painter, option, index);
 
@@ -84,8 +84,8 @@ void PlansListDelegate::drawText(QPainter *painter,
 
     //================Номер сектора-Номер физ. канала==============
 
-    painter->drawText(option.rect.adjusted(280, 95, 0, 0), "Номер сектора");
-    painter->drawText(option.rect.adjusted(280, 115, 0, 0), "Номер физ. канала");
+    painter->drawText(option.rect.adjusted(360, 95, 0, 0), "Номер сектора");
+    painter->drawText(option.rect.adjusted(360, 115, 0, 0), "Номер физ. канала");
 }
 
 void PlansListDelegate::drawBoldText(QPainter *painter,
@@ -95,16 +95,31 @@ void PlansListDelegate::drawBoldText(QPainter *painter,
     //===========Номер_КА-Поляризация-Центральная частота============
 
     QString spacecraftNumber = index.data(PlansList::SpacecraftNumber).toString();
-    painter->drawText(option.rect.adjusted(205, 15, 0, 0),
+    painter->drawText(option.rect.adjusted(110, 15, 0, 0),
                       spacecraftNumber == "" ? "0" : spacecraftNumber);
 
     QString polarizaion = index.data(PlansList::DirectionOfPolarizaion).toString();
-    painter->drawText(option.rect.adjusted(205, 35, 0, 0),
+
+    if (polarizaion == "0") {
+        polarizaion = "правая круговая";
+    } else if (polarizaion == "1") {
+        polarizaion = "левая круговая";
+    } else if (polarizaion == "2") {
+        polarizaion = "вертикальная";
+    } else if (polarizaion == "3") {
+        polarizaion = "горизонтальная";
+    } else if (polarizaion == "4") {
+        polarizaion = "линейная +45°";
+    } else if (polarizaion == "5") {
+        polarizaion = "линейная –45°";
+    }
+
+    painter->drawText(option.rect.adjusted(140, 35, 0, 0),
                       polarizaion == "" ? "0" : polarizaion);
 
     QString centerFrequency = index.data(PlansList::CenterFrequency).toString();
     painter->drawText(option.rect.adjusted(205, 55, 0, 0),
-                      centerFrequency == "" ? "0" : centerFrequency);
+                      centerFrequency == "" ? "0 кГц" : centerFrequency + " кГц");
 
     //=========================Текущее положение====================
 
@@ -118,13 +133,25 @@ void PlansListDelegate::drawBoldText(QPainter *painter,
 
     //==========Уровень_сигнала-Состояние-Диапазон-сектора==========
 
-    QString level = index.data(PlansList::LevelOfSignal).toString();
-    painter->drawText(option.rect.adjusted(180, 85, 0, 0),
-                      level == "" ? "0" : level);
-
     QString state = index.data(PlansList::State).toString();
-    painter->drawText(option.rect.adjusted(180, 105, 0, 0),
+    if (state == "0") {
+        state = "норма";
+    } else if (state == "1") {
+        state = "сбои (восстановлено)";
+    } else if (state == "2") {
+        state = "незначительные отказы";
+    } else if (state == "3") {
+        state = "серьезные отказы";
+    } else if (state == "255") {
+        state = "полный отказ";
+    }
+
+    painter->drawText(option.rect.adjusted(110, 85, 0, 0),
                       state == "" ? "0" : state);
+
+    QString level = index.data(PlansList::LevelOfSignal).toString();
+    painter->drawText(option.rect.adjusted(160, 105, 0, 0),
+                      level == "" ? "0 мкВ" : level + " мкВ");
 
     QString startSector = index.data(PlansList::AzimutStartSector).toString();
     if (startSector.isEmpty()) startSector = "0";
@@ -138,10 +165,10 @@ void PlansListDelegate::drawBoldText(QPainter *painter,
     //================Номер сектора-Номер физ. канала==============
 
     QString numberSector = index.data(PlansList::ReceivingSectorNumber).toString();
-    painter->drawText(option.rect.adjusted(450, 95, 0, 0),
+    painter->drawText(option.rect.adjusted(480, 95, 0, 0),
                       numberSector == "" ? "0" : numberSector);
 
     QString numberChannel = index.data(PlansList::ChannelNumber).toString();
-    painter->drawText(option.rect.adjusted(450, 115, 0, 0),
+    painter->drawText(option.rect.adjusted(510, 115, 0, 0),
                       numberChannel == "" ? "0" : numberChannel);
 }
