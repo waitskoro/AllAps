@@ -11,8 +11,12 @@ using namespace Reports;
 
 CsvParser::CsvParser(QObject *parent)
     : QObject(parent)
-    , m_thread(new QThread(this))
+    , m_thread(new QThread())
 {
+    moveToThread(m_thread);
+
+    m_thread->start();
+
     for (int i = 0; i < CHANNEL_COUNT; ++i) {
         QString filename = QString("../reports_%1.csv").arg(i+1);
         m_files[i] = new QFile(filename);
@@ -23,9 +27,6 @@ CsvParser::CsvParser(QObject *parent)
             qDebug() << "Failed to open file:" << filename;
         }
     }
-
-    moveToThread(m_thread);
-    m_thread->start();
 }
 
 CsvParser::~CsvParser()
@@ -36,6 +37,10 @@ CsvParser::~CsvParser()
             delete m_files[i];
         }
     }
+
+    m_thread->quit();
+    m_thread->wait();
+    m_thread->deleteLater();
 }
 
 void CsvParser::appendChannelData(int channelNumber,

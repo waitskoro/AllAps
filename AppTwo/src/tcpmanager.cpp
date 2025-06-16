@@ -62,6 +62,7 @@ void TcpManager::onServerCreating(const int &port)
 void TcpManager::onClientConnected()
 {
     m_tcpSocket = m_tcpServer->nextPendingConnection();
+
     m_tcpSocket->waitForBytesWritten(1000);
     m_tcpSocket->readAll();
 
@@ -93,21 +94,29 @@ void TcpManager::onClientConnected()
 
 void TcpManager::onReadyRead()
 {
+
     if (!m_headerReaded) {
+
         if(m_tcpSocket->bytesAvailable() >= HEADER_SIZE){
             m_headerBytes = m_tcpSocket->read(HEADER_SIZE);
             m_header = deserializeHeader(m_headerBytes);
-            m_dataSize = m_header.countBytes;
+
+            if (m_header.countBytes < 10000) {
+                m_dataSize = m_header.countBytes;
+            }
             m_headerReaded = true;
         }
     }
 
     if (m_headerReaded) {
+
         if (m_dataSize > 0) {
+
             QByteArray chunk = m_tcpSocket->read(qMin(m_dataSize, m_tcpSocket->bytesAvailable()));
             m_msgBytes += chunk;;
             m_dataSize -= chunk.size();
         }
+
         if (m_dataSize == 0){
             auto &provider = SequentialIdProvider::get();
             long long id = provider.next();
