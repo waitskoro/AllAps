@@ -4,6 +4,7 @@
 #include "sequentialidprovider.h"
 
 #include <QMessageBox>
+#include <QtConcurrent/QtConcurrent>
 
 using namespace Tcp;
 
@@ -22,7 +23,7 @@ TcpManager::TcpManager(QObject *parent)
             &TcpManager::onClientConnected);
 }
 
-void TcpManager::onMessageRecieved(Packet packet)
+void TcpManager::onMessageRecieved(Packet &packet)
 {
     QDataStream stream(&packet.data, QIODevice::ReadOnly);
     stream.setByteOrder(QDataStream::LittleEndian);
@@ -33,11 +34,13 @@ void TcpManager::onMessageRecieved(Packet packet)
 
         emit countMessage(result);
 
+        QVector<QPair<double, double>> data;
+        data.reserve(result.count);
         for (quint32 i = 0; i < result.count; i++) {
-            m_csvParser->appendChannelData(result.dataChannelNumber,
-                                           result.info[i][0],
-                                           result.info[i][1]);
+            data.append({result.info[i][0], result.info[i][1]});
         }
+
+        m_csvParser->appendChannelDataBatch(result.dataChannelNumber, data);
     }
 }
 
@@ -59,23 +62,38 @@ void TcpManager::onServerCreating(const int &port)
 void TcpManager::onClientConnected()
 {
     m_tcpSocket = m_tcpServer->nextPendingConnection();
+    m_tcpSocket->waitForBytesWritten(1000);
+    m_tcpSocket->readAll();
+
+    m_tcpSocket->setParent(nullptr);
+
+    QThread* thread = new QThread();
+    m_tcpSocket->moveToThread(thread);
+
+    connect(thread, &QThread::started, [this]() {
+        m_tcpSocket->waitForReadyRead(1000);
+        m_tcpSocket->readAll();
+    });
 
     connect(m_tcpSocket,
             &QTcpSocket::readyRead,
             this,
             &TcpManager::onReadyRead);
 
-    connect(m_tcpSocket,
-            &QTcpSocket::disconnected,
-            this,
-            &TcpManager::onClientDisconnected);
+    connect(m_tcpSocket, &QTcpSocket::disconnected, [this, thread]() {
+        m_tcpSocket->deleteLater();
+        thread->quit();
+        thread->wait();
+        thread->deleteLater();
+    });
 
+    thread->start();
     emit clientConnected();
 }
 
 void TcpManager::onReadyRead()
 {
-    if(!m_headerReaded) {
+    if (!m_headerReaded) {
         if(m_tcpSocket->bytesAvailable() >= HEADER_SIZE){
             m_headerBytes = m_tcpSocket->read(HEADER_SIZE);
             m_header = deserializeHeader(m_headerBytes);
@@ -83,13 +101,14 @@ void TcpManager::onReadyRead()
             m_headerReaded = true;
         }
     }
-    if(m_headerReaded) {
-        if(m_dataSize > 0) {
+
+    if (m_headerReaded) {
+        if (m_dataSize > 0) {
             QByteArray chunk = m_tcpSocket->read(qMin(m_dataSize, m_tcpSocket->bytesAvailable()));
             m_msgBytes += chunk;;
             m_dataSize -= chunk.size();
         }
-        if(m_dataSize == 0){
+        if (m_dataSize == 0){
             auto &provider = SequentialIdProvider::get();
             long long id = provider.next();
 

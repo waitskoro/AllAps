@@ -20,7 +20,7 @@ class TcpManager : public QObject
 public:
     explicit TcpManager(QObject *parent = nullptr);
 
-    void onMessageRecieved(Packet);
+    void onMessageRecieved(Packet &);
     void onServerCreating(const int &port);
 
 signals:

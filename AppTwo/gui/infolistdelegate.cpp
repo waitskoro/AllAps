@@ -92,17 +92,17 @@ void InfoListDelegate::paint(QPainter *painter,
     painter->drawText(left + 40, top + 105,
                       QString("Неисправность (без ухудшения):  %1").arg(badError ? "Да" : "Нет"));
 
-    QRect buttonRect(left + 400, top + 95, 150, 20);
-    QStyleOptionButton button;
-    button.rect = buttonRect;
-    button.text = "Просмотреть отчеты";
-    button.state = QStyle::State_Enabled;
+    // QRect buttonRect(left + 400, top + 95, 150, 20);
+    // QStyleOptionButton button;
+    // button.rect = buttonRect;
+    // button.text = "Просмотреть отчеты";
+    // button.state = QStyle::State_Enabled;
 
-    QPalette palette = button.palette;
-    palette.setColor(QPalette::Button, "#3BBCD4");
-    button.palette = palette;
+    // QPalette palette = button.palette;
+    // palette.setColor(QPalette::Button, "#3BBCD4");
+    // button.palette = palette;
 
-    QApplication::style()->drawControl(QStyle::CE_PushButton, &button, painter);
+    // QApplication::style()->drawControl(QStyle::CE_PushButton, &button, painter);
 
     painter->save();
     painter->restore();

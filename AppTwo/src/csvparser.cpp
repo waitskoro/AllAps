@@ -59,6 +59,31 @@ void CsvParser::appendChannelData(int channelNumber,
     write(str, file);
 }
 
+void CsvParser::appendChannelDataBatch(int channelNumber,
+                                       const QVector<QPair<double, double>> &data)
+{
+    if (channelNumber < 1 || channelNumber > CHANNEL_COUNT) {
+        qDebug() << "Invalid channel number:" << channelNumber;
+        return;
+    }
+
+    QFile* file = m_files[channelNumber - 1];
+    if (!file || !file->isOpen()) {
+        qDebug() << "File for channel" << channelNumber << "is not open";
+        return;
+    }
+
+    QString buffer;
+    buffer.reserve(data.size() * 32);
+
+    for (const auto &point : data) {
+        buffer += QString::number(point.first, 'f', 6) + ";" +
+                  QString::number(point.second, 'f', 6) + "\n";
+    }
+
+    write(buffer, file);
+}
+
 void CsvParser::write(QString str, QFile* file)
 {
     if (file->size() > 55500000) {
@@ -73,7 +98,7 @@ void CsvParser::write(QString str, QFile* file)
     }
 }
 
-void CsvParser::removeFirstNLines(QFile* file, int n) {
+void CsvParser::removeFirstNLines(QFile *file, int n) {
     if (!file || n <= 0 || !file->isOpen()) return;
 
     file->close();

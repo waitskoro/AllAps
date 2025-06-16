@@ -25,6 +25,7 @@ public:
     ~CsvParser();
 
     void appendChannelData(int channelNumber, int iQuadrature, int qQuadrature);
+    void appendChannelDataBatch(int channelNumber, const QVector<QPair<double, double>> &data);
 
 private:
     QThread *m_thread;
