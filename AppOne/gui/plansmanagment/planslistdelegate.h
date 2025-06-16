@@ -17,12 +17,6 @@ private:
 
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const override;
-
-    void drawText(QPainter *painter,
-                  const QStyleOptionViewItem &option) const;
-    void drawBoldText(QPainter *painter,
-                      const QStyleOptionViewItem &option,
-                      const QModelIndex &index) const;
 };
 
 }
