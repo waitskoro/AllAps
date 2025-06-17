@@ -79,7 +79,7 @@ void PlansList::addMessage(const ReceivingMessage& msg)
     });
 }
 
-void PlansList::emptyMessages()
+void PlansList::clear()
 {
     if (!m_isActive || m_model.isNull()) {
         return;
