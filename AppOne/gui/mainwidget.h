@@ -11,6 +11,7 @@
 #include "src/featuremanagment/targetdesignationsinfo.h"
 
 namespace View {
+class LogViewer;
 
 namespace FeatureManagement {
 class TargetDesignationWidget;
@@ -50,8 +51,10 @@ signals:
     void recieveState(StateMessage &);
     void executedTheCommandRecevied(ExecutedTheCommand result);
     void dataChannelMessagesRecieved(DataChannelMessage &messages);
+
 private:
     QRect m_mainRect;
+    LogViewer *m_logViewer;
     QHBoxLayout *m_mainLayout;
     MenuWidget *m_menuWidget;
     QPushButton *m_menuButton;

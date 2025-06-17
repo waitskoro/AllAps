@@ -4,6 +4,8 @@
 #include <QTimer>
 #include <QObject>
 
+#include <fstream>
+
 #include "src/messagesinfo.h"
 #include "src/statemessage.h"
 #include "src/channelmessage.h"
@@ -51,6 +53,8 @@ signals:
 private:
     QUrl m_url;
     TcpSocket *m_socket;
+
+    std::ofstream m_logFile;
 
     bool isSocketsConnected = false;
 

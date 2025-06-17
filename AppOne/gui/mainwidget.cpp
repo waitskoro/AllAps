@@ -4,6 +4,7 @@
 #include "src/contants.h"
 
 #include "loader.h"
+#include "logviewer.h"
 #include "planswidget.h"
 #include "state/stateworkingwidget.h"
 #include "stopingplans/stopingplanswidget.h"
@@ -22,6 +23,7 @@ MainWidget::MainWidget(QWidget *parent)
     , m_mainLayout(new QHBoxLayout(this))
     , m_menuWidget(new MenuWidget(this))
     , m_menuButton(new QPushButton(this))
+    , m_logViewer(new LogViewer(this))
     , m_plansWidget(new PlansWidget(this))
     , m_loader(new Loader(QString("Ожидание ответа"),
                         QRect(0, 0, 800, 600),
@@ -92,6 +94,10 @@ MainWidget::MainWidget(QWidget *parent)
 
     m_menuWidget->setWindowFlags(Qt::Popup);
     m_menuWidget->setAttribute(Qt::WA_TranslucentBackground);
+
+    //------------------Log Viewer-------------------
+    m_logViewer->setFixedSize(rect().width() - 40, 35);
+    m_logViewer->move(20, rect().bottom() - 42);
 }
 
 void MainWidget::addMessage(const ReceivingMessage &msg)
