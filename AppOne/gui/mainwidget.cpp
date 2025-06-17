@@ -51,9 +51,7 @@ MainWidget::MainWidget(QWidget *parent)
             m_menuWidget->raise();
         }
     });
-    connect(this,
-            &MainWidget::executedTheCommandRecevied,
-            [this](ExecutedTheCommand result){
+    connect(this, &MainWidget::executedTheCommandRecevied, [this](ExecutedTheCommand result){
                 if (m_loader->isVisible())
                     m_loader->stop();
 
@@ -61,11 +59,9 @@ MainWidget::MainWidget(QWidget *parent)
                     m_stopingPlans->messageRecivied(result);
             });
 
-    connect(m_menuWidget,
-            &MenuWidget::disconnect,
-            [this](){
-                m_plansWidget->clear();
+    connect(m_menuWidget, &MenuWidget::disconnect, [this](){
                 m_menuWidget->close();
+                onGoBack();
                 emit disconnect();
             });
 
@@ -78,21 +74,15 @@ MainWidget::MainWidget(QWidget *parent)
             this,
             &MainWidget::onButtonMenuClicked);
 
-    connect(m_stopingPlans,
-            &StopingPlansWidget::send,
-            [this]() {
+    connect(m_stopingPlans, &StopingPlansWidget::send, [this]() {
                 emit sendStopingPlans();
             });
 
-    connect(m_stopingPlans,
-            &StopingPlansWidget::canceled,
-            [this]() {
+    connect(m_stopingPlans, &StopingPlansWidget::canceled, [this]() {
                 m_currentView = Plans;
             });
 
-    connect(m_stopingPlans,
-            &StopingPlansWidget::stoped,
-            [this]() {
+    connect(m_stopingPlans, &StopingPlansWidget::stoped, [this]() {
                 m_currentView = Plans;
             });
 
