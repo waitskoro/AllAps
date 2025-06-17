@@ -95,6 +95,13 @@ MainWidget::MainWidget(QWidget *parent)
             [this]() {
                 m_currentView = Plans;
             });
+
+    //------Скрытие меню при нажатии вне области------
+    setMouseTracking(true);
+    setAttribute(Qt::WA_TransparentForMouseEvents, false);
+
+    m_menuWidget->setWindowFlags(Qt::Popup);
+    m_menuWidget->setAttribute(Qt::WA_TranslucentBackground);
 }
 
 void MainWidget::addMessage(const ReceivingMessage &msg)
