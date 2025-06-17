@@ -8,6 +8,7 @@ using namespace View;
 PlansList::PlansList(QWidget *parent)
     : QListView(parent)
     , isNew(false)
+    , m_clearTimer(new QTimer(this))
     , m_refreshTimer(new QTimer(this))
     , m_model(new QStandardItemModel(this))
 {
@@ -25,6 +26,12 @@ PlansList::PlansList(QWidget *parent)
     });
     m_refreshTimer->start(1500);
 
+    m_clearTimer->setSingleShot(true);
+    connect(m_clearTimer.get(), &QTimer::timeout, this, [this]() {
+        m_model->clear();
+        emit messagesIsEmpty();
+    });
+
     setStyleSheet("background-color: #C3D7E4");
 }
 
@@ -35,7 +42,10 @@ PlansList::~PlansList()
 }
 
 void PlansList::addMessage(const ReceivingMessage& msg)
-{
+{   count += 1;
+    qDebug() << "timer started" << count;
+    m_clearTimer->start(3500);
+
     QMetaObject::invokeMethod(this, [this, msg]() {
     if (!m_isActive || m_model.isNull()) return;
 
@@ -70,7 +80,7 @@ void PlansList::addMessage(const ReceivingMessage& msg)
     });
 }
 
-void PlansList::emptyMessages()
+void PlansList::clear()
 {
     if (!m_isActive || m_model.isNull()) {
         return;

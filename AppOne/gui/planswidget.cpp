@@ -21,15 +21,24 @@ PlansWidget::PlansWidget(QWidget *parent)
 
     m_headerLabel->move(rect().width() / 2 - (m_headerLabel->width() + 30),
                         rect().height() / 2 - m_headerLabel->height() / 2);
+
+    connect(m_receivingChecklist.get(),
+            &PlansList::messagesIsEmpty,
+            [this](){
+                m_receivingChecklist->close();
+                m_headerLabel->show();
+            });
 }
 
 void PlansWidget::clear()
 {
-    m_receivingChecklist->emptyMessages();
+    m_receivingChecklist->clear();
 }
 
 void PlansWidget::addMessage(const ReceivingMessage& msg)
 {
+    m_receivingChecklist->show();
+
     if (m_receivingChecklist) {
         m_receivingChecklist->addMessage(msg);
         m_headerLabel->close();

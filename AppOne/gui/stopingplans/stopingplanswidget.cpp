@@ -50,7 +50,7 @@ StopingPlansWidget::StopingPlansWidget(QWidget *parent)
     m_label->setFixedSize(300, 150);
     m_label->setAlignment(Qt::AlignCenter);
     m_label->setStyleSheet("background-color: transparent;"
-                           "font-size: 18px;"
+                           "font-size: 16px;"
                            "");
 }
 

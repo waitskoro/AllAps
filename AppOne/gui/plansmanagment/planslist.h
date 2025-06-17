@@ -30,15 +30,20 @@ public:
 
     explicit PlansList(QWidget *parent = nullptr);
     ~PlansList();
-    void emptyMessages();
+    void clear();
     void addMessage(const ReceivingMessage &);
+
+signals:
+    void messagesIsEmpty();
 
 private:
     bool isNew;
+    int count = 0;
 
     bool m_isDestroying = false;
 
     std::atomic<bool> m_isActive{true};
+    QScopedPointer<QTimer> m_clearTimer;
     QScopedPointer<QTimer> m_refreshTimer;
     QScopedPointer<QStandardItemModel> m_model;
 };
