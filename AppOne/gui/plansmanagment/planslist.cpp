@@ -42,8 +42,7 @@ PlansList::~PlansList()
 }
 
 void PlansList::addMessage(const ReceivingMessage& msg)
-{   count += 1;
-    qDebug() << "timer started" << count;
+{
     m_clearTimer->start(3500);
 
     QMetaObject::invokeMethod(this, [this, msg]() {
@@ -80,7 +79,7 @@ void PlansList::addMessage(const ReceivingMessage& msg)
     });
 }
 
-void PlansList::clear()
+void PlansList::emptyMessages()
 {
     if (!m_isActive || m_model.isNull()) {
         return;

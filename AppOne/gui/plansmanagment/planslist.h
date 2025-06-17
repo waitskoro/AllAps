@@ -38,7 +38,6 @@ signals:
 
 private:
     bool isNew;
-    int count = 0;
 
     bool m_isDestroying = false;
 
