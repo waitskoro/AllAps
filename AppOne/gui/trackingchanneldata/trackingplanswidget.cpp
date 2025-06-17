@@ -66,7 +66,6 @@ void TrackingPlansWidget::addMessage(DataChannelMessage &message)
         m_channelDataTable->addMessage(message.channels[i]);
     }
 
-
     m_label->setVisible(false);
 }
 
@@ -81,8 +80,8 @@ void TrackingPlansWidget::initUI()
     //Labels
     m_label->setStyleSheet("background-color: transparent;"
                            "font-size: 26px;");
-    m_label->setText("Ожидание получения данных\n"
-                     "об активных каналах данных");
+    m_label->setText("Для отображения информации\n"
+                     "        создайте целеуказание");
 
     m_label->move(centerX(rect().size(), QSize(350, 50)), 150);
 

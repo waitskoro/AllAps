@@ -9,10 +9,16 @@ StopingPlansWidget::StopingPlansWidget(QWidget *parent)
     : QWidget(parent)
     , m_label(new QLabel(this))
     , m_insideRect(new QRect(250, 150, 300, 200))
-    , m_cancel(new QPushButton("Cancel", this))
+    , m_cancel(new QPushButton("Отмена", this))
     , m_buttonOk(new QPushButton("OK", this))
 {
     close();
+
+    m_cancel->setStyleSheet("background-color: #2C4B65;"
+                            "color: white");
+
+    m_buttonOk->setStyleSheet("background-color: #2C4B65;"
+                            "color: white");
 
     setFixedSize(Sizes::mainSize());
 
@@ -43,7 +49,9 @@ StopingPlansWidget::StopingPlansWidget(QWidget *parent)
     m_label->move(250, 150);
     m_label->setFixedSize(300, 150);
     m_label->setAlignment(Qt::AlignCenter);
-    m_label->setStyleSheet("background-color: transparent");
+    m_label->setStyleSheet("background-color: transparent;"
+                           "font-size: 18px;"
+                           "");
 }
 
 void StopingPlansWidget::showWindow()
@@ -51,9 +59,9 @@ void StopingPlansWidget::showWindow()
     show();
     m_isStoped = false;
 
-    QString text = "Вы уверены, что хотите совершить\n"
-                   "остановку приема по всем каналам\n"
-                   "данных?";
+    QString text = "Вы уверены, что хотите \n"
+                   "совершить остановку приема \n"
+                   "по всем каналам данных?";
     m_label->setText(text);
 
     m_buttonOk->setVisible(true);
@@ -71,7 +79,6 @@ void StopingPlansWidget::paintEvent(QPaintEvent *e)
     QPainter painter(this);
     painter.fillRect(rect(), QColor(217, 217, 217, 127));
 
-    painter.drawRect(*m_insideRect);
     painter.fillRect(*m_insideRect, QColor(136, 194, 230));
 }
 

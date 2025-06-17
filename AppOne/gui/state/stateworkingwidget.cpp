@@ -88,8 +88,8 @@ void StateWorkingWidget::initUI()
     m_label->setStyleSheet("background-color: transparent;"
                            "font-size: 24px;"
                            "text-align: center;");
-    m_label->setText("Ожидание получения данных\n"
-                     "о текущем состоянии АС");
+    m_label->setText("Для отображения создайте\n"
+                     "о текущем состоянии АСы");
 
     m_label->setAlignment(Qt::AlignCenter);
 

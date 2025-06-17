@@ -13,13 +13,6 @@ class StopingPlansWidget : public QWidget
 {
     Q_OBJECT
 
-    enum State {
-        Question,
-        Sending,
-        Sended,
-
-    };
-
 public:
     explicit StopingPlansWidget(QWidget *parent = nullptr);
 
