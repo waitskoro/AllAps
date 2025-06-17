@@ -54,9 +54,9 @@ MainManager::MainManager(TcpSocketManager *tcpManager, QObject *parent)
 
     //Tcp
     connect(m_mainWidget,
-            &View::MainWidget::reconnect,
+            &View::MainWidget::disconnect,
             this,
-            &MainManager::reconnect);
+            &MainManager::disconnect);
 }
 
 void MainManager::showWindow()

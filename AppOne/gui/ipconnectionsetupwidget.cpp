@@ -23,6 +23,8 @@ void IpConnectionSetupWidget::showWindow(Connection::ConnectionData data)
     m_acIpTextEdit->setText(data.acHost);
     m_acPortTextEdit->setText(data.acPort);
 
+    m_loader->stop();
+
     show();
 }
 
@@ -43,8 +45,6 @@ void IpConnectionSetupWidget::initUI()
             &IpConnectionSetupWidget::onPushButtonClicked);
 
     updateWidgetPositions();
-
-
 }
 
 QLineEdit* IpConnectionSetupWidget::createLineEdit(int width, int height)

@@ -39,7 +39,7 @@ public:
 
     void addMessage(const ReceivingMessage &);
 signals:
-    void reconnect();
+    void disconnect();
 
     void sendStopingPlans();
 
@@ -55,7 +55,6 @@ private:
     QHBoxLayout *m_mainLayout;
     MenuWidget *m_menuWidget;
     QPushButton *m_menuButton;
-    QPushButton *m_reconnectButton;
 
     PlansWidget *m_plansWidget;
 

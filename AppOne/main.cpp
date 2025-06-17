@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
                      });
 
     QObject::connect(mainManager,
-                     &MainManager::reconnect,
+                     &MainManager::disconnect,
                      [tcpManager, ipConnectionManager, mainManager](){
                          mainManager->closeWindow();
 

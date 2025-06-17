@@ -15,6 +15,7 @@ public:
 
 signals:
     void sendFeature(CurrentView);
+    void disconnect();
 
 private:
     void paintEvent(QPaintEvent *e);
@@ -24,6 +25,8 @@ private:
 
     QPushButton *m_target;
     QPushButton *m_stopingPlans;
+
+    QPushButton *m_disconnect;
 
     QPushButton *m_main;
 };
