@@ -42,7 +42,7 @@ void PlansListDelegate::paint(QPainter *painter,
     //---------------------------------
 
     auto spacecraft = index.data(PlansList::SpacecraftNumber).toString();
-    auto phyNumber = index.data(PlansList::SpacecraftNumber).toString();
+    auto phyNumber = index.data(PlansList::ChannelNumber).toString();
     QString mainText = QString("КА: %1    |    № Физ. канала: %2").
                        arg(spacecraft).
                        arg(phyNumber);
