@@ -1,19 +1,21 @@
 #include "logviewer.h"
 
 #include <QPainter>
+#include <QCloseEvent>
 
 using namespace View;
 
 LogViewer::LogViewer(QWidget *parent)
     : QWidget(parent)
 {
-    show();
+    // setWindowFlags(Qt::Popup);
 }
 
 void LogViewer::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e)
+
     QPainter *painter = new QPainter(this);
-    painter->begin(this);
 
     painter->fillRect(rect(), "white");
 

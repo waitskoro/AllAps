@@ -2,13 +2,13 @@
 
 #include <QIODevice>
 
-struct Emmiter_state{
+struct EmmiterState{
     quint8 number;
     quint8 pol;
     quint8 state;
     float signalLevel;
 
-    friend QDataStream &operator >> (QDataStream &stream, Emmiter_state &emState)
+    friend QDataStream &operator >> (QDataStream &stream, EmmiterState &emState)
     {
         stream >> emState.number
             >> emState.pol
@@ -25,7 +25,7 @@ struct CamState {
     float amperage;
     float temperature;
     quint8 camCount;
-    Emmiter_state* emmState;
+    EmmiterState* emmState;
 
     friend QDataStream &operator >> (QDataStream &stream, CamState &camState)
     {
@@ -35,7 +35,7 @@ struct CamState {
                >> camState.temperature
                >> camState.camCount;
 
-        camState.emmState = new Emmiter_state[camState.camCount];
+        camState.emmState = new EmmiterState[camState.camCount];
 
         for(int i = 0; i < camState.camCount; ++i) {
             stream >> camState.emmState[i];

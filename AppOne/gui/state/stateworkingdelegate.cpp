@@ -17,7 +17,7 @@ QSize StateWorkingDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     Q_UNUSED(option)
     Q_UNUSED(index)
-    return QSize(260, 130);
+    return QSize(260, 100);
 }
 
 bool StateWorkingDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
@@ -40,7 +40,7 @@ bool StateWorkingDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
                 values.push_back(vectorData[i]);
             }
 
-            emit itemClicked(values, index.data(StateWorkingList::SectorNumber).toInt());
+            emit itemClicked(values);
             emit const_cast<QAbstractItemModel*>(index.model())->dataChanged(index, index);
 
             return true;
@@ -66,8 +66,6 @@ void StateWorkingDelegate::paint(QPainter *painter,
 
     const int leftMargin = 20;
     const int lineY = option.rect.y() + 70;
-    const int col2X = 145;
-    const int col3X = 275;
     const int textYOffset = option.rect.y();
 
     QString state48V = index.data(StateWorkingList::State).toString();
@@ -78,20 +76,47 @@ void StateWorkingDelegate::paint(QPainter *painter,
 
     painter->drawText(leftMargin, textYOffset + 20, "Состояния:");
 
+    if (state48V == "0") {
+        state48V = "в норме";
+    } else if(state48V == "1") {
+        state48V = "некритичный отказ преобразователей";
+    } else if(state48V == "2") {
+        state48V = "критичный отказ преобразователей";
+    } else if(state48V == "3") {
+        state48V = "ограничение по току";
+    } else if(state48V == "4") {
+        state48V = "сброс по питанию";
+    } else if(state48V == "255") {
+        state48V = "недоступен";
+    }
+
+    painter->drawText(leftMargin + 160,
+                      textYOffset + 20,
+                      QString("Темп.: %1°"). arg(temperature));
+
     painter->drawText(leftMargin, textYOffset + 40, "48В:");
-    painter->drawText(leftMargin + 35, textYOffset + 40, /*state48V*/"Некритичный отказ преобразователей");
+    painter->drawText(leftMargin + 35, textYOffset + 40, state48V);
+
+    if (stateCDO == "0") {
+        stateCDO = "в норме";
+    } else if (stateCDO == "1") {
+        stateCDO = "не подается опорная частота 10 МГц";
+    } else if (stateCDO == "2") {
+        stateCDO = "не подается сигнал 1 сек";
+    } else if (stateCDO == "3") {
+        stateCDO = "нет синхронизации с опорной частотой";
+    } else if (stateCDO == "4") {
+        stateCDO = "сбой при передаче комплексных отсчетов";
+    } else if (stateCDO == "255") {
+        stateCDO = "недоступен";
+    }
 
     painter->drawText(leftMargin, textYOffset + 60, "ЦДО:");
-    painter->drawText(leftMargin + 40, textYOffset + 60, /*stateCDO*/"Cбой при передаче комплексных отсчетов");
+    painter->drawText(leftMargin + 40, textYOffset + 60, stateCDO);
 
-    painter->drawText(leftMargin, textYOffset + 90, "Ток ЦДО:");
-    painter->drawText(leftMargin + 65, textYOffset + 90, /*currentCDO*/"1234");
-
-    // painter->drawText(col2X, textYOffset + 75, "Напряжение:");
-    // painter->drawText(col2X + 90, textYOffset + 75, voltage);
-
-    // painter->drawText(col3X, textYOffset + 75, "t°, темп.:");
-    // painter->drawText(col3X + 80, textYOffset + 75, temperature);
+    painter->drawText(QRect(option.rect.left(), textYOffset + 70, option.rect.width(), 25),
+                      Qt::AlignCenter,
+                      QString("Ток потреб.: %1A     Напряжение: %2В").arg(currentCDO).arg(voltage));
 
     pen.setColor("#9FC53A");
     painter->setPen(pen);

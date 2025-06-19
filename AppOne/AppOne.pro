@@ -19,8 +19,11 @@ SOURCES += \
     gui/plansmanagment/planslist.cpp \
     gui/plansmanagment/planslistdelegate.cpp \
     gui/planswidget.cpp \
+    gui/state/cam/camradiatorsdelegate.cpp \
+    gui/state/cam/camradiatorslist.cpp \
     gui/state/cam/statecamdelegate.cpp \
     gui/state/cam/statecamlist.cpp \
+    gui/state/cam/statecamradiators.cpp \
     gui/state/stateworkingdelegate.cpp \
     gui/state/stateworkinglist.cpp \
     gui/state/stateworkingwidget.cpp \
@@ -57,8 +60,11 @@ HEADERS += \
     gui/plansmanagment/planslist.h \
     gui/plansmanagment/planslistdelegate.h \
     gui/planswidget.h \
+    gui/state/cam/camradiatorsdelegate.h \
+    gui/state/cam/camradiatorslist.h \
     gui/state/cam/statecamdelegate.h \
     gui/state/cam/statecamlist.h \
+    gui/state/cam/statecamradiators.h \
     gui/state/stateworkingdelegate.h \
     gui/state/stateworkinglist.h \
     gui/state/stateworkingwidget.h \

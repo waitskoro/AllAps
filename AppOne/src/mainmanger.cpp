@@ -61,7 +61,7 @@ MainManager::MainManager(TcpSocketManager *tcpManager, QObject *parent)
 
 void MainManager::showWindow()
 {
-    m_mainWidget->show();
+    m_mainWidget->showWindow();
 }
 
 void MainManager::closeWindow()

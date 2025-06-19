@@ -38,6 +38,7 @@ class MainWidget : public QWidget
 public:
     explicit MainWidget(QWidget *parent = nullptr);
 
+    void showWindow();
     void addMessage(const ReceivingMessage &);
 signals:
     void disconnect();

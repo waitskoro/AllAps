@@ -11,7 +11,6 @@ using namespace View;
 StateWorkingWidget::StateWorkingWidget(QWidget *parent)
     : QWidget(parent)
     , m_label(new QLabel(this))
-    , m_camNumber(new QLabel(this))
     , m_exit(new QPushButton(this))
     , m_headerLabel(new QLabel(this))
     , m_stateWorkingList(new StateWorkingList(this))
@@ -31,31 +30,21 @@ StateWorkingWidget::StateWorkingWidget(QWidget *parent)
 
     m_label->show();
     m_camList->close();
-    m_camNumber->close();
     m_stateWorkingList->close();
 
     m_stateWorkingList->move(10, 245);
 
     m_camList->close();
-    m_camList->move(420, 265);
-
-    m_camNumber->move(440, 240);
-    m_camNumber->setFixedWidth(300);
-
-    m_camNumber->setStyleSheet("background-color: transparent;"
-                               "font-size: 16px");
+    m_camList->move(400, 265);
 
     connect(m_stateWorkingList,
             &StateWorkingList::itemClicked,
-            [this](std::vector<CamState> data, int sector){
+            [this](std::vector<CamState> data){
                 m_camList->clear();
 
                 for (auto& cam : data) {
                     m_camList->addCam(cam);
                 }                
-
-                m_camNumber->setText(QString("Сектор AC: %1").arg(sector + 1));
-
             });
 }
 
@@ -66,7 +55,6 @@ void StateWorkingWidget::addState(StateMessage &state)
     m_label->close();
 
     m_camList->show();
-    m_camNumber->show();
     m_stateWorkingList->show();
 
     m_stateWorkingList->clear();

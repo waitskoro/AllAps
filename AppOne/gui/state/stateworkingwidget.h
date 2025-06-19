@@ -32,7 +32,6 @@ signals:
 
 private:
     QLabel *m_label;
-    QLabel *m_camNumber;
     QPushButton *m_exit;
     QLabel *m_headerLabel;
 

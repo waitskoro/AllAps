@@ -14,7 +14,7 @@ public:
     explicit StateWorkingDelegate(QObject *parent = nullptr);
 
 signals:
-    void itemClicked(std::vector<CamState>, int sector);
+    void itemClicked(std::vector<CamState>);
 
 private:
     void paint(QPainter *painter, const QStyleOptionViewItem &option,

@@ -22,7 +22,8 @@ private:
 
     bool editorEvent(QEvent *event,
                      QAbstractItemModel *model,
-                     const QStyleOptionViewItem &option, const QModelIndex &index) override;
+                     const QStyleOptionViewItem &option,
+                     const QModelIndex &index) override;
 
     QPushButton *m_targetView;
     std::vector<std::array<short, 2>> m_values;

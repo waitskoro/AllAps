@@ -30,7 +30,7 @@ public:
     void addState(CdoMessage &state, int sector);
 
 signals:
-    void itemClicked(std::vector<CamState>, int sector);
+    void itemClicked(std::vector<CamState>);
 
 private:
     QScopedPointer<QStandardItemModel> m_model;

@@ -11,10 +11,8 @@ StateCamList::StateCamList(QWidget *parent)
     auto *delegate = new StateCamDelegate(this);
     setItemDelegate(delegate);
 
-    // setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
     setSpacing(5);
-    setFixedSize(270, 220);
+    setFixedSize(290, 220);
     setModel(m_model.get());
     setStyleSheet("background-color: white");
 }
@@ -27,7 +25,6 @@ void StateCamList::addCam(CamState &state)
     item->setData(state.camState, State);
     item->setData(state.amperage, Amperage);
     item->setData(state.temperature, Temperature);
-
 
     item->setData(state.camCount, EmmCount);
 
