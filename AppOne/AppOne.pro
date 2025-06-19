@@ -13,7 +13,6 @@ SOURCES += \
     gui/featuremanagement/targetdesignationwidget.cpp \
     gui/ipconnectionsetupwidget.cpp \
     gui/loader.cpp \
-    gui/logviewer.cpp \
     gui/mainwidget.cpp \
     gui/menuwidget.cpp \
     gui/plansmanagment/planslist.cpp \
@@ -54,7 +53,6 @@ HEADERS += \
     gui/featuremanagement/targetdesignationwidget.h \
     gui/ipconnectionsetupwidget.h \
     gui/loader.h \
-    gui/logviewer.h \
     gui/mainwidget.h \
     gui/menuwidget.h \
     gui/plansmanagment/planslist.h \

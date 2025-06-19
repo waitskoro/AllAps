@@ -4,7 +4,6 @@
 #include "src/contants.h"
 
 #include "loader.h"
-#include "logviewer.h"
 #include "planswidget.h"
 #include "state/stateworkingwidget.h"
 #include "stopingplans/stopingplanswidget.h"
@@ -20,7 +19,6 @@ using namespace View::FeatureManagement;
 MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
     , m_mainRect(QRect(0, 0, 700, 500))
-    , m_logViewer(new LogViewer(this))
     , m_mainLayout(new QHBoxLayout(this))
     , m_menuWidget(new MenuWidget(this))
     , m_menuButton(new QPushButton(this))
@@ -92,16 +90,12 @@ MainWidget::MainWidget(QWidget *parent)
     //------Скрытие меню при нажатии вне области------
     m_menuWidget->setWindowFlags(Qt::Popup);
     m_menuWidget->setAttribute(Qt::WA_TranslucentBackground);
-
-    //------------------Log Viewer-------------------
-    m_logViewer->setFixedSize(rect().width() - 100, 35);
-    m_logViewer->move(50, rect().bottom() - 42);
 }
 
 void MainWidget::showWindow()
 {
     show();
-    m_logViewer->show();
+    // m_logViewer->show();
 }
 
 void MainWidget::addMessage(const ReceivingMessage &msg)

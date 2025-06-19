@@ -55,7 +55,6 @@ signals:
 
 private:
     QRect m_mainRect;
-    LogViewer *m_logViewer;
     QHBoxLayout *m_mainLayout;
     MenuWidget *m_menuWidget;
     QPushButton *m_menuButton;
