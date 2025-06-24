@@ -21,7 +21,7 @@ public:
 
     void onServerCreated();
     void onClientConnected();
-    void onCountMessageRecieved(Report);
+    void onCountMessageRecieved(const Report &);
 
 signals:
     void createServer(const int port);

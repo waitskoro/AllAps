@@ -39,7 +39,7 @@ void MainWindow::onClientConnected()
     qDebug() << "Клиент подключился";
 }
 
-void MainWindow::onCountMessageRecieved(Report msg)
+void MainWindow::onCountMessageRecieved(const Report &msg)
 {
     m_infoViewer->addItem(msg);
 }

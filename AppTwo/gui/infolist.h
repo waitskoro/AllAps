@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/messages.h"
+#include "infolistdelegate.h"
 
 #include <QTimer>
 #include <QObject>
@@ -16,16 +17,18 @@ class InformationList : public QListView
 public:
     explicit InformationList(QWidget *parent = nullptr);
 
-    void addInfo(Report msg);
+    void addInfo(const Report &msg);
 
 private:
     bool isNew;
 
-    void setData(QStandardItem *item, Report msg);
+    void setData(QStandardItem *item, const Report &msg);
 
     QScopedPointer<QTimer> m_clearTimer;
     QScopedPointer<QTimer> m_refreshTimer;
     QScopedPointer<QStandardItemModel> m_model;
+
+    InfoListDelegate *m_delegate;
 
 };
 

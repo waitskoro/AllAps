@@ -14,7 +14,7 @@ class InfoWidget : public QWidget
 public:
     explicit InfoWidget(QWidget *parent = nullptr);
 
-    void addItem(Report msg);
+    void addItem(const Report &msg);
 
 private:
     void paintEvent(QPaintEvent *e) override;

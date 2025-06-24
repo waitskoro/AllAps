@@ -15,7 +15,7 @@ InfoWidget::InfoWidget(QWidget *parent)
     m_infoList->move(10, 10);
 }
 
-void InfoWidget::addItem(Report msg)
+void InfoWidget::addItem(const Report &msg)
 {
     m_infoList->addInfo(msg);
 }

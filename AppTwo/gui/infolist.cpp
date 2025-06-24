@@ -1,7 +1,6 @@
 #include "infolist.h"
 
 #include "common/enums.h"
-#include "infolistdelegate.h"
 
 using namespace View;
 
@@ -12,8 +11,8 @@ InformationList::InformationList(QWidget *parent)
     , m_refreshTimer(new QTimer(this))
     , m_model(new QStandardItemModel(this))
 {
-    auto *delegate = new InfoListDelegate(this);
-    setItemDelegate(delegate);
+    m_delegate = new InfoListDelegate(this);
+    setItemDelegate(m_delegate);
 
     setFixedSize(650, 410);
 
@@ -34,7 +33,7 @@ InformationList::InformationList(QWidget *parent)
     setStyleSheet("background-color: #E4E5FF");
 }
 
-void InformationList::addInfo(Report msg)
+void InformationList::addInfo(const Report &msg)
 {
     m_clearTimer->start(2000);
 
@@ -52,7 +51,7 @@ void InformationList::addInfo(Report msg)
     for (const QModelIndex &index : matches) {
         if (index.isValid()) {
             if (m_model->data(index, KaNumber).toInt() == msg.kaNumber) {
-                QStandardItem* existingItem = m_model->itemFromIndex(index);
+                QStandardItem *existingItem = m_model->itemFromIndex(index);
                 if (existingItem) {
                     setData(existingItem, msg);
 
@@ -69,7 +68,7 @@ void InformationList::addInfo(Report msg)
     m_model->appendRow(item);
 }
 
-void InformationList::setData(QStandardItem *item, Report msg)
+void InformationList::setData(QStandardItem *item, const Report &msg)
 {
     item->setData(msg.dataChannelNumber, ChannelNumber);
     item->setData(msg.kaNumber, KaNumber);

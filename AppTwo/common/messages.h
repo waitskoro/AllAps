@@ -49,18 +49,19 @@ public:
 
 using ComplexSample = std::array<int8_t, 2>;
 
-struct Report {
+#include <vector>
+#include <array>
 
+struct Report {
     quint8 dataChannelNumber;
     quint8 acState;
     quint16 kaNumber;
     double time;
-    qint16 az[2];
+    std::array<qint16, 2> az;
     quint32 count;
-    qint8** info;
+    std::vector<std::array<qint8, 2>> info;
 
-    friend QDataStream &operator >> (QDataStream &stream, Report &report)
-    {
+    friend QDataStream &operator>>(QDataStream &stream, Report &report) {
         stream.setByteOrder(QDataStream::LittleEndian);
 
         stream >> report.dataChannelNumber
@@ -71,16 +72,12 @@ struct Report {
             >> report.az[1]
             >> report.count;
 
-        report.info = new qint8*[report.count];
+        report.info.resize(report.count);
 
-        for (quint32 i = 0; i < report.count; i++) {
-            report.info[i] = new qint8[2];
+        for (auto &sample : report.info) {
+            stream >> sample[0] >> sample[1];
         }
 
-        for(quint16 i = 0; i < report.count; i++) {
-            stream >> report.info[i][0];
-            stream >> report.info[i][1];
-        }
         return stream;
     }
 };
