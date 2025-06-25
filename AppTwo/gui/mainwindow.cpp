@@ -3,17 +3,23 @@
 #include <QPainter>
 
 #include "infowidget.h"
+#include "graph/graphwidget.h"
 #include "serverconnectingwidget.h"
 
 using namespace View;
+using namespace View::Graphic;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , m_label(new QLabel(this))
+    , m_tabWidget(new QTabWidget(this))
     , m_infoViewer(new InfoWidget(this))
+    , m_graphViewer(new GraphWidget(this))
     , m_serverConnecting(new ServerConnectingWidget(this))
 {
     init();
+
+    m_tabWidget->hide();
 
     connect(
         m_serverConnecting,
@@ -31,7 +37,7 @@ void MainWindow::onServerCreated()
     m_label->hide();
     m_serverConnecting->hide();
 
-    m_infoViewer->show();
+    m_tabWidget->show();
 }
 
 void MainWindow::onClientConnected()
@@ -46,7 +52,7 @@ void MainWindow::onCountMessageRecieved(const Report &msg)
 
 void MainWindow::init()
 {
-    setFixedSize(700, 500);
+    setFixedSize(700, 800);
 
     m_serverConnecting->show();
     m_serverConnecting->move(120, 10);
@@ -59,18 +65,25 @@ void MainWindow::init()
     m_label->setAlignment(Qt::AlignCenter);
     m_label->setWordWrap(true);
 
-    m_infoViewer->setFixedSize(670, 440);
-    m_infoViewer->move(15, 40);
+    m_tabWidget->move(15, 50);
+    m_tabWidget->setFixedSize(670, 700);
+    m_tabWidget->addTab(m_infoViewer, "Отсчеты");
+    m_tabWidget->addTab(m_graphViewer, "Графики");
+
+    m_tabWidget->setStyleSheet("color: rgb(119, 133, 255);"
+                               "font-weight: 600;");
+
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
 {
+    QPainter painter(this);
+
     QPixmap background(":/src/background.png");
 
-    QPalette palette;
+    background = background.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
-    palette.setBrush(QPalette::Window, background);
-    this->setPalette(palette);
+    painter.drawPixmap(0, 0, background);
 
     QWidget::paintEvent(e);
 }

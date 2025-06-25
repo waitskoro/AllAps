@@ -11,6 +11,10 @@ class LineEdit;
 class InfoWidget;
 class ServerConnectingWidget;
 
+namespace Graphic {
+class GraphWidget;
+}
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -31,7 +35,10 @@ private:
     void paintEvent(QPaintEvent *e) override;
 
     QLabel *m_label;
+    QTabWidget *m_tabWidget;
+
     InfoWidget *m_infoViewer;
+    Graphic::GraphWidget *m_graphViewer;
     ServerConnectingWidget *m_serverConnecting;
 };
 

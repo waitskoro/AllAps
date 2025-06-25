@@ -1,60 +1,59 @@
 #include "csvparser.h"
-
-#include <QFile>
-#include <QDebug>
-#include <QThread>
-#include <QTextStream>
-#include <QStandardItem>
 #include <QTemporaryFile>
+#include <QDebug>
 
 using namespace Reports;
 
 CsvParser::CsvParser(QObject *parent)
     : QObject(parent)
-    , m_thread(new QThread())
+    , m_thread(std::make_unique<QThread>())
 {
-    moveToThread(m_thread);
-
+    moveToThread(m_thread.get());
     m_thread->start();
 
     for (int i = 0; i < CHANNEL_COUNT; ++i) {
         QString filename = QString("../reports_%1.csv").arg(i+1);
-        m_files[i] = new QFile(filename);
-        if (!m_files[i]->open(QIODevice::Append |
-                              QIODevice::Text |
-                              QIODevice::Truncate |
-                              QIODevice::ReadWrite)) {
-            qDebug() << "Failed to open file:" << filename;
+        auto file = std::make_unique<QFile>(filename);
+
+        if (!file->open(QIODevice::Append | QIODevice::Text | QIODevice::ReadWrite)) {
+            qWarning() << "Failed to open file:" << filename;
+            continue;
         }
+
+        m_files[i] = std::move(file);
     }
 }
 
 CsvParser::~CsvParser()
 {
-    for (int i = 0; i < CHANNEL_COUNT; ++i) {
-        if (m_files[i]) {
-            m_files[i]->close();
-            delete m_files[i];
-        }
+    m_thread->requestInterruption();
+    m_thread->quit();
+
+    if (!m_thread->wait(1000)) {
+        qWarning() << "Forcing thread termination";
+        m_thread->terminate();
     }
 
-    m_thread->quit();
-    m_thread->wait();
-    m_thread->deleteLater();
+    QMutexLocker locker(&m_fileMutex);
+    for (auto& file : m_files) {
+        if (file && file->isOpen()) {
+            file->close();
+        }
+    }
 }
 
-void CsvParser::appendChannelData(int channelNumber,
-                                  int iQuadrature,
-                                  int qQuadrature)
+void CsvParser::appendChannelData(int channelNumber, int iQuadrature, int qQuadrature)
 {
     if (channelNumber < 1 || channelNumber > CHANNEL_COUNT) {
-        qDebug() << "Invalid channel number:" << channelNumber;
+        qWarning() << "Invalid channel number:" << channelNumber;
         return;
     }
 
-    QFile* file = m_files[channelNumber - 1];
+    QMutexLocker locker(&m_fileMutex);
+    QFile* file = m_files[channelNumber - 1].get();
+
     if (!file || !file->isOpen()) {
-        qDebug() << "File for channel" << channelNumber << "is not open";
+        qWarning() << "File for channel" << channelNumber << "is not available";
         return;
     }
 
@@ -64,17 +63,18 @@ void CsvParser::appendChannelData(int channelNumber,
     write(str, file);
 }
 
-void CsvParser::appendChannelDataBatch(int channelNumber,
-                                       const QVector<QPair<double, double>> &data)
+void CsvParser::appendChannelDataBatch(int channelNumber, const QVector<QPair<double, double>> &data)
 {
     if (channelNumber < 1 || channelNumber > CHANNEL_COUNT) {
-        qDebug() << "Invalid channel number:" << channelNumber;
+        qWarning() << "Invalid channel number:" << channelNumber;
         return;
     }
 
-    QFile* file = m_files[channelNumber - 1];
+    QMutexLocker locker(&m_fileMutex);
+    QFile* file = m_files[channelNumber - 1].get();
+
     if (!file || !file->isOpen()) {
-        qDebug() << "File for channel" << channelNumber << "is not open";
+        qWarning() << "File for channel" << channelNumber << "is not available";
         return;
     }
 
@@ -89,46 +89,72 @@ void CsvParser::appendChannelDataBatch(int channelNumber,
     write(buffer, file);
 }
 
-void CsvParser::write(QString str, QFile* file)
+void CsvParser::write(const QString &str, QFile* file)
 {
-    if (file->size() > 55500000) {
-        removeFirstNLines(file, 500000);
+    static constexpr qint64 MAX_FILE_SIZE = 55'500'000;
+    static constexpr int LINES_TO_REMOVE = 500'000;
+    static constexpr int FLUSH_THRESHOLD = 8'192;
+
+    if (file->size() > MAX_FILE_SIZE) {
+        removeFirstNLines(file, LINES_TO_REMOVE);
     }
 
     QTextStream stream(file);
     stream << str;
 
     if (stream.status() != QTextStream::Ok) {
-        qDebug() << "Failed to write data";
-    }
-}
-
-void CsvParser::removeFirstNLines(QFile *file, int n) {
-    if (!file || n <= 0 || !file->isOpen()) return;
-
-    file->close();
-    if (!file->open(QIODevice::ReadWrite | QIODevice::Text)) {
-        qDebug() << "Failed to reopen file for truncation";
+        qWarning() << "Failed to write data to file" << file->fileName();
         return;
     }
 
-    QTextStream in(file);
-    QString content;
-    int linesSkipped = 0;
+    if (file->pos() > FLUSH_THRESHOLD) {
+        stream.flush();
+    }
+}
 
+void CsvParser::removeFirstNLines(QFile *file, int n)
+{
+    if (!file || n <= 0 || !file->isOpen()) return;
+
+    QTemporaryFile tempFile;
+    if (!tempFile.open()) {
+        qWarning() << "Failed to create temporary file";
+        return;
+    }
+
+    file->seek(0);
+    QTextStream in(file);
+    QTextStream out(&tempFile);
+
+    int linesSkipped = 0;
     while (linesSkipped < n && !in.atEnd()) {
         in.readLine();
         linesSkipped++;
     }
 
-    content = in.readAll();
-    file->resize(0);
+    out << in.readAll();
 
-    QTextStream out(file);
-    out << content;
+    if (!file->resize(0)) {
+        qWarning() << "Failed to truncate file";
+        return;
+    }
+
+    file->seek(0);
+    tempFile.seek(0);
+    file->write(tempFile.readAll());
+}
+
+bool CsvParser::reopenFile(QFile* file)
+{
+    if (!file) return false;
+
+    QString filename = file->fileName();
     file->close();
 
     if (!file->open(QIODevice::Append | QIODevice::Text | QIODevice::ReadWrite)) {
-        qDebug() << "Failed to reopen file in append mode";
+        qWarning() << "Failed to reopen file:" << filename;
+        return false;
     }
+
+    return true;
 }

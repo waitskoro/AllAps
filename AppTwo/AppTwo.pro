@@ -1,6 +1,6 @@
-QT       += core gui network concurrent
+QT       += core gui network charts
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++17
 
@@ -9,6 +9,9 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    gui/graph/graphwidget.cpp \
+    gui/graph/plotter.cpp \
+    gui/graph/qcustomplot.cpp \
     gui/infolist.cpp \
     gui/infolistdelegate.cpp \
     gui/infowidget.cpp \
@@ -25,6 +28,9 @@ SOURCES += \
 HEADERS += \
     common/enums.h \
     common/messages.h \
+    gui/graph/graphwidget.h \
+    gui/graph/plotter.h \
+    gui/graph/qcustomplot.h \
     gui/infolist.h \
     gui/infolistdelegate.h \
     gui/infowidget.h \

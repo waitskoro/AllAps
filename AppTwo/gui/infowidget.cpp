@@ -10,9 +10,8 @@ InfoWidget::InfoWidget(QWidget *parent)
     : QWidget(parent)
     , m_infoList(new InformationList(this))
 {
-    hide();
-
     m_infoList->move(10, 10);
+    m_infoList->setFixedSize(645, 650);
 }
 
 void InfoWidget::addItem(const Report &msg)

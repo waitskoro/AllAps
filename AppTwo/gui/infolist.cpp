@@ -14,8 +14,6 @@ InformationList::InformationList(QWidget *parent)
     m_delegate = new InfoListDelegate(this);
     setItemDelegate(m_delegate);
 
-    setFixedSize(650, 410);
-
     setSpacing(5);
     setModel(m_model.get());
 

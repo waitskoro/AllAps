@@ -1,25 +1,21 @@
 #pragma once
 
-#include <QFile>
-#include <QMutex>
 #include <QObject>
-#include <QVector>
-
-namespace {
-const int CHANNEL_COUNT = 12;
-}
+#include <QFile>
+#include <QThread>
+#include <QMutex>
+#include <QTextStream>
+#include <memory>
+#include <array>
 
 namespace Reports {
 
-struct ChannelData {
-    int channelNumber;
-    double iQuadrature;
-    double qQuadrature;
-};
+constexpr int CHANNEL_COUNT = 8;
 
 class CsvParser : public QObject
 {
     Q_OBJECT
+
 public:
     explicit CsvParser(QObject *parent = nullptr);
     ~CsvParser();
@@ -28,12 +24,13 @@ public:
     void appendChannelDataBatch(int channelNumber, const QVector<QPair<double, double>> &data);
 
 private:
-    QThread *m_thread;
+    void write(const QString &str, QFile* file);
+    void removeFirstNLines(QFile *file, int n);
+    bool reopenFile(QFile* file);
 
-    QFile* m_files[CHANNEL_COUNT];
-
-    void write(QString, QFile *__restrict);
-    void removeFirstNLines(QFile* file, int n);
+    std::array<std::unique_ptr<QFile>, CHANNEL_COUNT> m_files;
+    std::unique_ptr<QThread> m_thread;
+    QMutex m_fileMutex;
 };
 
-}
+} // namespace Reports
