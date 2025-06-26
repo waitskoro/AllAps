@@ -5,7 +5,15 @@
 #include <QChartView>
 #include <QHBoxLayout>
 
-namespace View::Graphic {
+#include "common/messages.h"
+
+namespace View {
+
+namespace Common {
+class CustomComboBox;
+}
+
+namespace Graphic {
 
 class Plotter;
 
@@ -14,7 +22,7 @@ class GraphWidget : public QWidget
     Q_OBJECT
 public:
     explicit GraphWidget(QWidget *parent = nullptr);
-
+    void addItem(const Report &msg);
 signals:
 
 private:
@@ -23,7 +31,9 @@ private:
     Plotter *m_qGraph;
     Plotter *m_iqGraph;
 
-    QComboBox *m_channelsBox;
+    Common::CustomComboBox *m_channelsBox;
 };
+
+}
 
 }

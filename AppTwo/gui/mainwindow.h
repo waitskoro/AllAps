@@ -40,6 +40,12 @@ private:
     InfoWidget *m_infoViewer;
     Graphic::GraphWidget *m_graphViewer;
     ServerConnectingWidget *m_serverConnecting;
+
+    QTimer* m_reportTimer;  // Таймер для генерации отчетов
+    double m_currentTime;   // Текущее время для упорядоченных дат
+
+private slots:
+    void generateReport();  // Слот для генерации отчета
 };
 
 }

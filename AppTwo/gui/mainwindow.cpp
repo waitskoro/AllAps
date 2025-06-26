@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 
+#include <QTimer>
 #include <QPainter>
+#include <QDateTime>
 
 #include "infowidget.h"
 #include "graph/graphwidget.h"
@@ -21,12 +23,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_tabWidget->hide();
 
-    connect(
-        m_serverConnecting,
-        &ServerConnectingWidget::createServer,
-        this,
-        &MainWindow::createServer
-    );
+    connect(m_serverConnecting,
+            &ServerConnectingWidget::createServer,
+            this,
+            &MainWindow::createServer);
+
+    m_reportTimer = new QTimer(this);
+    connect(m_reportTimer, &QTimer::timeout, this, &MainWindow::generateReport);
 }
 
 MainWindow::~MainWindow()
@@ -38,6 +41,10 @@ void MainWindow::onServerCreated()
     m_serverConnecting->hide();
 
     m_tabWidget->show();
+
+    m_reportTimer->start(1000);
+
+    generateReport();
 }
 
 void MainWindow::onClientConnected()
@@ -48,6 +55,41 @@ void MainWindow::onClientConnected()
 void MainWindow::onCountMessageRecieved(const Report &msg)
 {
     m_infoViewer->addItem(msg);
+    m_graphViewer->addItem(msg);
+}
+
+void MainWindow::generateReport()
+{
+    Report r;
+
+    m_currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000.0;
+
+    r.time = m_currentTime;
+
+    int start = 10;
+    int end = 20;
+    qint8 x = rand() % (end - start + 1) + start;
+    qint8 y = rand() % (end - start + 1) + start;
+
+    r.info.push_back(std::array<qint8, 2> {x, y});
+
+    x = rand() % (end - start + 1) + start;
+    y = rand() % (end - start + 1) + start;
+
+    r.info.push_back(std::array<qint8, 2> {x, y});
+
+    x = rand() % (end - start + 1) + start;
+    y = rand() % (end - start + 1) + start;
+
+    r.info.push_back(std::array<qint8, 2> {x, y});
+
+    r.dataChannelNumber = 1;
+    r.acState = 0;
+    r.kaNumber = 1234;
+    r.az = {0, 0};
+    r.count = r.info.size();
+
+    m_graphViewer->addItem(r);
 }
 
 void MainWindow::init()
@@ -72,7 +114,6 @@ void MainWindow::init()
 
     m_tabWidget->setStyleSheet("color: rgb(119, 133, 255);"
                                "font-weight: 600;");
-
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
