@@ -1,7 +1,7 @@
 #include "graphwidget.h"
 
 #include "plotter.h"
-#include "common/customcombobox.h"
+#include "gui/common/customcombobox.h"
 
 #include <QValueAxis>
 #include <QLineSeries>
@@ -42,6 +42,16 @@ GraphWidget::GraphWidget(QWidget *parent)
     m_iqGraph->graph(0)->setPen(QPen(Qt::green));
 
     m_layout->setAlignment(m_channelsBox, Qt::AlignHCenter);
+
+    connect(m_channelsBox,
+            &CustomComboBox::checkedChannelsChanged,
+            [this](QList<qint8> &list){
+                m_iGraph->addChannels(list);
+                m_qGraph->addChannels(list);
+                m_iqGraph->addChannels(list);
+
+                qDebug() << list.count();
+            });
 }
 
 void GraphWidget::addItem(const Report &msg)

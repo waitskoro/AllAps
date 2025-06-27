@@ -7,17 +7,30 @@ using namespace View::Graphic;
 
 Plotter::Plotter(QWidget *parent)
     : QCustomPlot(parent)
+    , m_channels(new QList<qint8>)
 {
-    addGraph();
+    for (int i = 0; i <= 12; i++) {
+        addGraph();
+    }
 
     setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     axisRect()->setRangeDrag(Qt::Horizontal | Qt::Vertical);
     axisRect()->setRangeZoom(Qt::Horizontal | Qt::Vertical);
 }
 
+void Plotter::addChannels(const QList<qint8> channels)
+{
+    m_channels->clear();
+    m_channels->append(channels);
+}
+
 void Plotter::addItem(const Report &msg, Type type)
 {
+    if (!m_channels->contains(msg.dataChannelNumber))
+        return;
+
     double scale = 1.0/128.0;
+
     std::vector<std::complex<double>> iq_data;
     for (const auto& sample : msg.info) {
         iq_data.emplace_back(sample[0] * scale, sample[1] * scale);

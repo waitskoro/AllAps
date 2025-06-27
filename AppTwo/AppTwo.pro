@@ -9,7 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    common/customcombobox.cpp \
+    gui/common/customcombobox.cpp \
     gui/graph/graphwidget.cpp \
     gui/graph/plotter.cpp \
     gui/graph/qcustomplot.cpp \
@@ -27,9 +27,9 @@ SOURCES += \
     src/tcpmanager.cpp
 
 HEADERS += \
-    common/customcombobox.h \
     common/enums.h \
     common/messages.h \
+    gui/common/customcombobox.h \
     gui/graph/graphwidget.h \
     gui/graph/plotter.h \
     gui/graph/qcustomplot.h \

@@ -66,8 +66,8 @@ void MainWindow::generateReport()
 
     r.time = m_currentTime;
 
-    int start = 10;
     int end = 20;
+    int start = 10;
     qint8 x = rand() % (end - start + 1) + start;
     qint8 y = rand() % (end - start + 1) + start;
 
@@ -89,6 +89,9 @@ void MainWindow::generateReport()
     r.az = {0, 0};
     r.count = r.info.size();
 
+    m_graphViewer->addItem(r);
+
+    r.dataChannelNumber = 2;
     m_graphViewer->addItem(r);
 }
 
