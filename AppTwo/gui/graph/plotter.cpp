@@ -9,9 +9,21 @@ Plotter::Plotter(QWidget *parent)
     : QCustomPlot(parent)
     , m_channels(new QList<qint8>)
 {
-    for (int i = 0; i <= 12; i++) {
+    for (int i = 0; i <= 12; i++)
         addGraph();
-    }
+
+    graph(0)->setPen(QPen(Qt::red));
+    graph(1)->setPen(QPen(Qt::green));
+    graph(2)->setPen(QPen(Qt::blue));
+    graph(3)->setPen(QPen(Qt::cyan));
+    graph(4)->setPen(QPen(Qt::magenta));
+    graph(5)->setPen(QPen(Qt::yellow));
+    graph(6)->setPen(QPen(Qt::darkRed));
+    graph(7)->setPen(QPen(Qt::darkGreen));
+    graph(8)->setPen(QPen(Qt::darkBlue));
+    graph(9)->setPen(QPen(Qt::darkCyan));
+    graph(10)->setPen(QPen(Qt::darkMagenta));
+    graph(11)->setPen(QPen(Qt::darkYellow));
 
     setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     axisRect()->setRangeDrag(Qt::Horizontal | Qt::Vertical);
@@ -62,7 +74,7 @@ void Plotter::addItem(const Report &msg, Type type)
         }
     }
 
-    graph(0)->addData(x, y);
+    graph(msg.dataChannelNumber)->addData(x, y);
 
     QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
     dateTicker->setDateTimeFormat("dd.MM.yyyy\nhh:mm:ss");
@@ -72,6 +84,6 @@ void Plotter::addItem(const Report &msg, Type type)
 
     replot();
 
-    graph(0)->rescaleAxes(true);
+    graph(msg.dataChannelNumber)->rescaleAxes(true);
 }
 

@@ -91,6 +91,10 @@ void MainWindow::generateReport()
 
     m_graphViewer->addItem(r);
 
+    r.info.clear();
+    x = rand() % (end - start + 1) + start;
+    y = rand() % (end - start + 1) + start;
+    r.info.push_back(std::array<qint8, 2> {x, y});
     r.dataChannelNumber = 2;
     m_graphViewer->addItem(r);
 }

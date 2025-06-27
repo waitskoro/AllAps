@@ -49,8 +49,6 @@ GraphWidget::GraphWidget(QWidget *parent)
                 m_iGraph->addChannels(list);
                 m_qGraph->addChannels(list);
                 m_iqGraph->addChannels(list);
-
-                qDebug() << list.count();
             });
 }
 
