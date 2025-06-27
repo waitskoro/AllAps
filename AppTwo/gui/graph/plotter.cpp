@@ -44,9 +44,8 @@ void Plotter::addItem(const Report &msg, Type type)
     double scale = 1.0/128.0;
 
     std::vector<std::complex<double>> iq_data;
-    for (const auto& sample : msg.info) {
+    for (const auto& sample : msg.info)
         iq_data.emplace_back(sample[0] * scale, sample[1] * scale);
-    }
 
     QVector<double> x, y;
 
@@ -67,7 +66,7 @@ void Plotter::addItem(const Report &msg, Type type)
         }
         case Type::Spectrum: {
             for (size_t i = 0; i < iq_data.size(); ++i) {
-                x.append(msg.time + i * 1.0/(iq_data.size()));
+                x.append(msg.time + i * 1.0 / (iq_data.size()));
                 y.append(std::abs(iq_data[i]));
             }
             break;
@@ -77,11 +76,10 @@ void Plotter::addItem(const Report &msg, Type type)
     graph(msg.dataChannelNumber)->addData(x, y);
 
     QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
-    dateTicker->setDateTimeFormat("dd.MM.yyyy\nhh:mm:ss");
+    dateTicker->setDateTimeFormat("hh:mm:ss");
     xAxis->setTicker(dateTicker);
 
     rescaleAxes();
-
     replot();
 
     graph(msg.dataChannelNumber)->rescaleAxes(true);
