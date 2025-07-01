@@ -66,8 +66,8 @@ void MainWindow::generateReport()
 
     r.time = m_currentTime;
 
-    int end = 20;
-    int start = 10;
+    int end = -127;
+    int start = 127;
     qint8 x = rand() % (end - start + 1) + start;
     qint8 y = rand() % (end - start + 1) + start;
 

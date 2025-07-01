@@ -23,6 +23,7 @@ SOURCES += \
     main.cpp \
     mainmanager.cpp \
     src/csvparser.cpp \
+    src/graph/minfft.c \
     src/sequentialidprovider.cpp \
     src/tcpmanager.cpp
 
@@ -42,6 +43,8 @@ HEADERS += \
     gui/serverconnectingwidget.h \
     mainmanager.h \
     src/csvparser.h \
+    src/graph/minfft.h \
+    src/graph/spectrumanalyzer.h \
     src/sequentialidprovider.h \
     src/tcpmanager.h
 

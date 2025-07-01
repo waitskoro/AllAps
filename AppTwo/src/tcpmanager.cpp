@@ -34,7 +34,7 @@ void TcpManager::onMessageRecieved(Packet &packet)
 
         emit countMessage(result);
 
-        QVector<QPair<double, double>> data;
+        QVector<QPair<int, int>> data;
         data.reserve(result.count);
         for (quint32 i = 0; i < result.count; i++) {
             data.append({result.info[i][0], result.info[i][1]});

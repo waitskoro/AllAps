@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QLabel>
 #include <QWidget>
 #include <QComboBox>
 #include <QChartView>
@@ -27,9 +28,11 @@ signals:
 
 private:
     QVBoxLayout *m_layout;
-    Plotter *m_iGraph;
-    Plotter *m_qGraph;
-    Plotter *m_iqGraph;
+    Plotter *m_powerGraph;
+    Plotter *m_signalGraph;
+    Plotter *m_spectrumGraph;
+
+    QLabel *m_mainText;
 
     Common::CustomComboBox *m_channelsBox;
 };

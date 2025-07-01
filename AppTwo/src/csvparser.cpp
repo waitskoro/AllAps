@@ -63,7 +63,7 @@ void CsvParser::appendChannelData(int channelNumber, int iQuadrature, int qQuadr
     write(str, file);
 }
 
-void CsvParser::appendChannelDataBatch(int channelNumber, const QVector<QPair<double, double>> &data)
+void CsvParser::appendChannelDataBatch(int channelNumber, const QVector<QPair<int, int>> &data)
 {
     if (channelNumber < 1 || channelNumber > CHANNEL_COUNT) {
         qWarning() << "Invalid channel number:" << channelNumber;

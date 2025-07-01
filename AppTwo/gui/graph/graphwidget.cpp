@@ -12,49 +12,55 @@ using namespace View::Common;
 GraphWidget::GraphWidget(QWidget *parent)
     : QWidget{parent}
     , m_layout(new QVBoxLayout(this))
-    , m_iGraph(new Plotter(this))
-    , m_qGraph(new Plotter(this))
-    , m_iqGraph(new Plotter(this))
+    , m_powerGraph(new Plotter(this))
+    , m_signalGraph(new Plotter(this))
+    , m_spectrumGraph(new Plotter(this))
     , m_channelsBox(new CustomComboBox(this))
 {
     m_layout->addWidget(m_channelsBox);
 
-    QLabel *label_1 = new QLabel("I-квадратура", this);
+    m_mainText = new QLabel("", this);
+    m_mainText->setFixedHeight(20);
+    m_layout->addWidget(m_mainText);
+
+    QLabel *label_1 = new QLabel("Мощность", this);
     label_1->setFixedHeight(20);
 
-    QLabel *label_2 = new QLabel("Q-квадратура", this);
+    QLabel *label_2 = new QLabel("Сигнал", this);
     label_2->setFixedHeight(20);
 
-    QLabel *label_3 = new QLabel("Спектр I/Q", this);
+    QLabel *label_3 = new QLabel("Спектр", this);
     label_3->setFixedHeight(20);
 
     m_layout->addWidget(label_1);
-    m_layout->addWidget(m_iGraph);
+    m_layout->addWidget(m_powerGraph);
 
     m_layout->addWidget(label_2);
-    m_layout->addWidget(m_qGraph);
+    m_layout->addWidget(m_signalGraph);
 
     m_layout->addWidget(label_3);
-    m_layout->addWidget(m_iqGraph);
+    m_layout->addWidget(m_spectrumGraph);
 
-    m_iGraph->graph(0)->setPen(QPen(Qt::blue));
-    m_qGraph->graph(0)->setPen(QPen(Qt::red));
-    m_iqGraph->graph(0)->setPen(QPen(Qt::green));
-
+    m_layout->setAlignment(m_mainText, Qt::AlignHCenter);
     m_layout->setAlignment(m_channelsBox, Qt::AlignHCenter);
 
     connect(m_channelsBox,
             &CustomComboBox::checkedChannelsChanged,
-            [this](QList<qint8> &list){
-                m_iGraph->addChannels(list);
-                m_qGraph->addChannels(list);
-                m_iqGraph->addChannels(list);
+            [this](QVector<qint8> &list){
+                m_powerGraph->addChannels(list);
+                m_signalGraph->addChannels(list);
+                m_spectrumGraph->addChannels(list);
             });
 }
 
 void GraphWidget::addItem(const Report &msg)
 {
-    m_iGraph->addItem(msg, Plotter::Type::I);
-    m_qGraph->addItem(msg, Plotter::Type::Q);
-    m_iqGraph->addItem(msg, Plotter::Type::Spectrum);
+    m_powerGraph->addItem(msg, Plotter::Power);
+    m_signalGraph->addItem(msg, Plotter::Signal);
+    m_spectrumGraph->addItem(msg, Plotter::Spectrum);
+
+    auto text = QString("Max мощность: %1     Max сигнал: %2    Max спектр: %3");
+    m_mainText->setText(text.arg(m_powerGraph->maxPower())
+                            .arg(m_signalGraph->maxSignal())
+                            .arg(m_spectrumGraph->maxSpectrum()));
 }

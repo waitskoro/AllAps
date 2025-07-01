@@ -10,7 +10,7 @@
 
 namespace Reports {
 
-constexpr int CHANNEL_COUNT = 8;
+constexpr int CHANNEL_COUNT = 12;
 
 class CsvParser : public QObject
 {
@@ -21,7 +21,7 @@ public:
     ~CsvParser();
 
     void appendChannelData(int channelNumber, int iQuadrature, int qQuadrature);
-    void appendChannelDataBatch(int channelNumber, const QVector<QPair<double, double>> &data);
+    void appendChannelDataBatch(int channelNumber, const QVector<QPair<int, int>> &data);
 
 private:
     void write(const QString &str, QFile* file);

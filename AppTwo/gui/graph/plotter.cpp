@@ -1,13 +1,16 @@
 #include "plotter.h"
 
 #include <complex>
+
 #include "qcustomplot.h"
+#include "src/graph/spectrumanalyzer.h"
 
 using namespace View::Graphic;
 
 Plotter::Plotter(QWidget *parent)
     : QCustomPlot(parent)
-    , m_channels(new QList<qint8>)
+    , m_channels(new QVector<qint8>)
+    , m_analyzer(new SpectrumAnalyzer())
 {
     for (int i = 0; i <= 12; i++)
         addGraph();
@@ -30,7 +33,7 @@ Plotter::Plotter(QWidget *parent)
     axisRect()->setRangeZoom(Qt::Horizontal | Qt::Vertical);
 }
 
-void Plotter::addChannels(const QList<qint8> channels)
+void Plotter::addChannels(const QVector<qint8> channels)
 {
     m_channels->clear();
     m_channels->append(channels);
@@ -41,49 +44,78 @@ void Plotter::addItem(const Report &msg, Type type)
     if (!m_channels->contains(msg.dataChannelNumber))
         return;
 
-    double scale = 1.0/128.0;
+    double scale = 1.0 / 128.0;
 
-    std::vector<std::complex<double>> iq_data;
+    QVector<std::complex<double>> iqData;
     for (const auto& sample : msg.info) {
-        iq_data.emplace_back(sample[0] * scale, sample[1] * scale);
+        iqData.emplace_back(sample[0] * scale, sample[1] * scale);
     }
 
     QVector<double> x, y;
 
     switch (type) {
-        case Type::I: {
-            for (size_t i = 0; i < iq_data.size(); ++i) {
-                x.append(msg.time + i * 1.0 / (iq_data.size()));
-                y.append(iq_data[i].imag());
+        case Type::Power: {
+            for (int i = 0; i < iqData.size(); ++i) {
+                x.append(msg.time + i * 1.0 / iqData.size());
+                y.append(std::norm(iqData[i]));
+
+                if (std::norm(iqData[i]) > m_maxPower)
+                    m_maxPower = std::norm(iqData[i]);
             }
+            graph(msg.dataChannelNumber)->addData(x, y);
             break;
         }
-        case Type::Q: {
-            for (size_t i = 0; i < iq_data.size(); ++i) {
-                x.append(msg.time + i * 1.0 / (iq_data.size()));
-                y.append(iq_data[i].real());
+        case Type::Signal: {
+            for (int i = 0; i < iqData.size(); ++i) {
+                x.append(msg.time + i * 1.0 / iqData.size());
+                y.append(iqData[i].real());
+
+                if (iqData[i].real() > m_maxSignal)
+                    m_maxSignal = iqData[i].real();
             }
+            graph(msg.dataChannelNumber)->addData(x, y);
             break;
         }
         case Type::Spectrum: {
-            for (size_t i = 0; i < iq_data.size(); ++i) {
-                x.append(msg.time + i * 1.0/(iq_data.size()));
-                y.append(std::abs(iq_data[i]));
+            graph(msg.dataChannelNumber)->data().data()->clear();
+            auto spectrum = m_analyzer->computeSpectrum(iqData);
+
+            QVector<double> amplitudes(spectrum.size());
+            for (int i = 0; i < spectrum.size(); ++i) {
+                amplitudes[i] = std::abs(spectrum[i]);
             }
+
+            int N = spectrum.size();
+            for (int i = 0; i < N; ++i) {
+                int shiftedIndex = (i + N / 2) % N;
+                x.append(i - N / 2);
+                y.append(amplitudes[shiftedIndex]);
+
+                if (amplitudes[shiftedIndex] > m_maxSpectrum)
+                    m_maxSpectrum = amplitudes[shiftedIndex];
+
+            }
+            graph(msg.dataChannelNumber)->addData(x, y);
             break;
         }
     }
 
-    graph(msg.dataChannelNumber)->addData(x, y);
-
-    QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
-    dateTicker->setDateTimeFormat("dd.MM.yyyy\nhh:mm:ss");
-    xAxis->setTicker(dateTicker);
+    if (type == Type::Signal) {
+        QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
+        dateTicker->setDateTimeFormat("hh:mm:ss");
+        xAxis->setTicker(dateTicker);
+        yAxis->setLabel("Amplitude");
+    } else if (type == Type::Spectrum) {
+        xAxis->setLabel("Frequency (bins)");
+        yAxis->setLabel("Magnitude");
+    } else if (type == Type::Power) {
+        QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
+        dateTicker->setDateTimeFormat("hh:mm:ss");
+        xAxis->setTicker(dateTicker);
+        yAxis->setLabel("Power");
+    }
 
     rescaleAxes();
-
     replot();
-
-    graph(msg.dataChannelNumber)->rescaleAxes(true);
 }
 

@@ -12,11 +12,11 @@ public:
     explicit CustomComboBox(QWidget *parent = nullptr);
 
 signals:
-    void checkedChannelsChanged(QList<qint8> &);
+    void checkedChannelsChanged(QVector<qint8> &);
 
 private:
     QStandardItemModel *m_model;
-    QList<qint8> *m_checkedChannels;
+    QVector<qint8> *m_checkedChannels;
 
     qint8 getChannelNumber(QString str);
     void onModelItemChanged(QStandardItem *item);
