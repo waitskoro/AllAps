@@ -23,8 +23,11 @@ class GraphWidget : public QWidget
     Q_OBJECT
 public:
     explicit GraphWidget(QWidget *parent = nullptr);
-    void addItem(const Report &msg);
+
+    void addItemThreadSafe(const Report &msg);
+
 signals:
+    void itemAdded(const Report &msg);
 
 private:
     QVBoxLayout *m_layout;
@@ -35,6 +38,8 @@ private:
     QLabel *m_mainText;
 
     Common::CustomComboBox *m_channelsBox;
+
+    Q_INVOKABLE void addItem(const Report &msg);
 };
 
 }

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include <QTimer>
+#include <QThread>
 #include <QPainter>
 #include <QDateTime>
 
@@ -16,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_label(new QLabel(this))
     , m_tabWidget(new QTabWidget(this))
     , m_infoViewer(new InfoWidget(this))
-    , m_graphViewer(new GraphWidget(this))
+    , m_graphViewer(new GraphWidget())
     , m_serverConnecting(new ServerConnectingWidget(this))
 {
     init();
@@ -27,9 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
             &ServerConnectingWidget::createServer,
             this,
             &MainWindow::createServer);
-
-    m_reportTimer = new QTimer(this);
-    connect(m_reportTimer, &QTimer::timeout, this, &MainWindow::generateReport);
 }
 
 MainWindow::~MainWindow()
@@ -41,10 +39,6 @@ void MainWindow::onServerCreated()
     m_serverConnecting->hide();
 
     m_tabWidget->show();
-
-    m_reportTimer->start(1000);
-
-    generateReport();
 }
 
 void MainWindow::onClientConnected()
@@ -55,48 +49,7 @@ void MainWindow::onClientConnected()
 void MainWindow::onCountMessageRecieved(const Report &msg)
 {
     m_infoViewer->addItem(msg);
-    m_graphViewer->addItem(msg);
-}
-
-void MainWindow::generateReport()
-{
-    Report r;
-
-    m_currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000.0;
-
-    r.time = m_currentTime;
-
-    int end = -127;
-    int start = 127;
-    qint8 x = rand() % (end - start + 1) + start;
-    qint8 y = rand() % (end - start + 1) + start;
-
-    r.info.push_back(std::array<qint8, 2> {x, y});
-
-    x = rand() % (end - start + 1) + start;
-    y = rand() % (end - start + 1) + start;
-
-    r.info.push_back(std::array<qint8, 2> {x, y});
-
-    x = rand() % (end - start + 1) + start;
-    y = rand() % (end - start + 1) + start;
-
-    r.info.push_back(std::array<qint8, 2> {x, y});
-
-    r.dataChannelNumber = 1;
-    r.acState = 0;
-    r.kaNumber = 1234;
-    r.az = {0, 0};
-    r.count = r.info.size();
-
-    m_graphViewer->addItem(r);
-
-    r.info.clear();
-    x = rand() % (end - start + 1) + start;
-    y = rand() % (end - start + 1) + start;
-    r.info.push_back(std::array<qint8, 2> {x, y});
-    r.dataChannelNumber = 2;
-    m_graphViewer->addItem(r);
+    m_graphViewer->addItemThreadSafe(msg);
 }
 
 void MainWindow::init()
@@ -117,7 +70,7 @@ void MainWindow::init()
     m_tabWidget->move(15, 50);
     m_tabWidget->setFixedSize(670, 700);
     m_tabWidget->addTab(m_infoViewer, "Отсчеты");
-    m_tabWidget->addTab(m_graphViewer, "Графики");
+    // m_tabWidget->addTab(m_graphViewer, "Графики");
 
     m_tabWidget->setStyleSheet("color: rgb(119, 133, 255);"
                                "font-weight: 600;");

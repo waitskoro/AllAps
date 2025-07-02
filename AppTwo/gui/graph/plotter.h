@@ -25,17 +25,22 @@ public:
     explicit Plotter(QWidget *parent = nullptr);
 
     void addChannels(const QVector<qint8>);
-    void addItem(const Report &msg, Type);
     void setupGraph(const QString &name, const QColor &color);
 
     double maxPower() { return m_maxPower; }
     double maxSignal() { return m_maxSignal; }
     double maxSpectrum() { return m_maxSpectrum ;}
 
+public slots:
+    void addItemThreadSafe(const Report &msg, Type type);
+
 signals:
+    void itemAdded(const Report &msg, Type type);
 
 private:
-    void convertToComplex();
+    Q_INVOKABLE void addItem(const Report &msg, Type type);
+
+    qint64 convertToPlotTime(double time);
 
     QVector<qint8> *m_channels;
     SpectrumAnalyzer *m_analyzer;

@@ -81,3 +81,5 @@ struct Report {
         return stream;
     }
 };
+
+Q_DECLARE_METATYPE(Report)

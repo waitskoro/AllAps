@@ -51,13 +51,24 @@ GraphWidget::GraphWidget(QWidget *parent)
                 m_signalGraph->addChannels(list);
                 m_spectrumGraph->addChannels(list);
             });
+
+    connect(this,
+            &GraphWidget::itemAdded,
+            this,
+            &GraphWidget::addItem,
+            Qt::QueuedConnection);
+}
+
+void GraphWidget::addItemThreadSafe(const Report &msg)
+{
+    QMetaObject::invokeMethod(this, "addItem", Qt::QueuedConnection, Q_ARG(Report, msg));
 }
 
 void GraphWidget::addItem(const Report &msg)
 {
-    m_powerGraph->addItem(msg, Plotter::Power);
-    m_signalGraph->addItem(msg, Plotter::Signal);
-    m_spectrumGraph->addItem(msg, Plotter::Spectrum);
+    m_powerGraph->addItemThreadSafe(msg, Plotter::Power);
+    m_signalGraph->addItemThreadSafe(msg, Plotter::Signal);
+    m_spectrumGraph->addItemThreadSafe(msg, Plotter::Spectrum);
 
     auto text = QString("Max мощность: %1     Max сигнал: %2    Max спектр: %3");
     m_mainText->setText(text.arg(m_powerGraph->maxPower())

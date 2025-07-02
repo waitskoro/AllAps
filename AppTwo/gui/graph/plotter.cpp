@@ -31,6 +31,14 @@ Plotter::Plotter(QWidget *parent)
     setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     axisRect()->setRangeDrag(Qt::Horizontal | Qt::Vertical);
     axisRect()->setRangeZoom(Qt::Horizontal | Qt::Vertical);
+
+    connect(this, &Plotter::itemAdded,
+            this, &Plotter::addItem,
+            Qt::QueuedConnection);
+}
+
+void Plotter::addItemThreadSafe(const Report &msg, Type type) {
+    emit itemAdded(msg, type);
 }
 
 void Plotter::addChannels(const QVector<qint8> channels)
@@ -39,12 +47,21 @@ void Plotter::addChannels(const QVector<qint8> channels)
     m_channels->append(channels);
 }
 
+qint64 Plotter::convertToPlotTime(double time)
+{
+    const double millisecondsPerDay = 86400.0 * 1000.0;
+
+    double msSinceEpoch = time * millisecondsPerDay;
+
+    return static_cast<qint64>(msSinceEpoch + 0.5);
+}
+
 void Plotter::addItem(const Report &msg, Type type)
 {
     if (!m_channels->contains(msg.dataChannelNumber))
         return;
 
-    double scale = 1.0 / 128.0;
+    double scale = 1.0;
 
     QVector<std::complex<double>> iqData;
     for (const auto& sample : msg.info) {
@@ -56,7 +73,7 @@ void Plotter::addItem(const Report &msg, Type type)
     switch (type) {
         case Type::Power: {
             for (int i = 0; i < iqData.size(); ++i) {
-                x.append(msg.time + i * 1.0 / iqData.size());
+                x.append(convertToPlotTime(msg.time) / 1000.0);
                 y.append(std::norm(iqData[i]));
 
                 if (std::norm(iqData[i]) > m_maxPower)
@@ -67,7 +84,7 @@ void Plotter::addItem(const Report &msg, Type type)
         }
         case Type::Signal: {
             for (int i = 0; i < iqData.size(); ++i) {
-                x.append(msg.time + i * 1.0 / iqData.size());
+                x.append(convertToPlotTime(msg.time) / 1000.0);
                 y.append(iqData[i].real());
 
                 if (iqData[i].real() > m_maxSignal)
