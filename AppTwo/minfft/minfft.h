@@ -1,7 +1,7 @@
 /*
-    A minimalistic FFT library
-    Copyright (c) 2016-2024 Alexander Mukhin
-    SPDX-License-Identifier: MIT
+	A minimalistic FFT library
+	Copyright (c) 2016-2024 Alexander Mukhin
+	SPDX-License-Identifier: MIT
 */
 
 #ifndef MINFFT_H

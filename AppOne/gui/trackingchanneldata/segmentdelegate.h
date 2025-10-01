@@ -5,6 +5,8 @@
 #include <QPushButton>
 #include <QStyledItemDelegate>
 
+class TargetDesignation;
+
 namespace View {
 
 class SegmentDelegate : public QStyledItemDelegate
@@ -26,7 +28,7 @@ private:
                      const QModelIndex &index) override;
 
     QPushButton *m_targetView;
-    std::vector<std::array<short, 2>> m_values;
+    QVector<TargetDesignation> *m_values;
 };
 
 }

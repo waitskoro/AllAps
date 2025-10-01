@@ -1,6 +1,6 @@
 QT       += core gui network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++17
 
@@ -9,7 +9,15 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    gui/featuremanagement/targetdesignationtable.cpp \
+    gui/featuremanagement/coordinatesconverter.cpp \
+    gui/featuremanagement/datetarget.cpp \
+    gui/featuremanagement/generalinfotarget.cpp \
+    gui/featuremanagement/manualtabtargets.cpp \
+    gui/featuremanagement/qcustomplot.cpp \
+    gui/featuremanagement/spiralgraph.cpp \
+    gui/featuremanagement/spiraltabtargets.cpp \
+    gui/featuremanagement/suntabtargets.cpp \
+    gui/featuremanagement/targetdesignations.cpp \
     gui/featuremanagement/targetdesignationwidget.cpp \
     gui/ipconnectionsetupwidget.cpp \
     gui/loader.cpp \
@@ -37,6 +45,7 @@ SOURCES += \
     main.cpp \
     src/connection/connectiondatasaving.cpp \
     src/connection/ipconnectionsetupmanager.cpp \
+    src/featuremanagment/suntargetdesignations.cpp \
     src/featuremanagment/targetdesignationmodel.cpp \
     src/mainmanger.cpp \
     src/socket/sequentialidprovider.cpp \
@@ -49,7 +58,15 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    gui/featuremanagement/targetdesignationtable.h \
+    gui/featuremanagement/coordinatesconverter.h \
+    gui/featuremanagement/datetarget.h \
+    gui/featuremanagement/generalinfotarget.h \
+    gui/featuremanagement/manualtabtargets.h \
+    gui/featuremanagement/qcustomplot.h \
+    gui/featuremanagement/spiralgraph.h \
+    gui/featuremanagement/spiraltabtargets.h \
+    gui/featuremanagement/suntabtargets.h \
+    gui/featuremanagement/targetdesignations.h \
     gui/featuremanagement/targetdesignationwidget.h \
     gui/ipconnectionsetupwidget.h \
     gui/loader.h \
@@ -75,9 +92,11 @@ HEADERS += \
     gui/trackingchanneldata/targetsview.h \
     gui/trackingchanneldata/trackingplanswidget.h \
     src/channelmessage.h \
+    src/common.h \
     src/connection/connectiondatasaving.h \
     src/connection/ipconnectionsetupmanager.h \
     src/contants.h \
+    src/featuremanagment/suntargetdesignations.h \
     src/featuremanagment/targetdesignationmodel.h \
     src/featuremanagment/targetdesignationsinfo.h \
     src/mainmanger.h \
@@ -89,3 +108,6 @@ HEADERS += \
     src/statemessage.h
 
 DISTFILES +=
+
+RESOURCES += \
+    resources.qrc

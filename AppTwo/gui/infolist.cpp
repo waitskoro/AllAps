@@ -1,76 +1,71 @@
+// infolist.cpp
 #include "infolist.h"
-
 #include "common/enums.h"
+#include "infolistdelegate.h"
+#include <QDateTime>
 
 using namespace View;
 
 InformationList::InformationList(QWidget *parent)
-    : QListView(parent)
-    , isNew(false)
-    , m_clearTimer(new QTimer(this))
-    , m_refreshTimer(new QTimer(this))
-    , m_model(new QStandardItemModel(this))
+    : QListView(parent),
+    m_model(new QStandardItemModel(this)),
+    m_delegate(new InfoListDelegate(this))
 {
-    m_delegate = new InfoListDelegate(this);
     setItemDelegate(m_delegate);
-
     setSpacing(5);
     setModel(m_model.get());
-
-    connect(m_refreshTimer.get(), &QTimer::timeout, this, [this]() {
-        isNew = true;
-    });
-
-    m_clearTimer->setSingleShot(true);
-    connect(m_clearTimer.get(), &QTimer::timeout, this, [this]() {
-        m_model->clear();
-    });
-
-    m_refreshTimer->start(1500);
-
     setStyleSheet("background-color: #E4E5FF");
+
+    connect(&m_cleanupTimer, &QTimer::timeout, this, &InformationList::checkDataFreshness);
+    m_cleanupTimer.start(1000);
 }
 
 void InformationList::addInfo(const Report &msg)
 {
-    m_clearTimer->start(2000);
-
-    if (isNew) {
-        m_model->clear();
-        isNew = false;
-    }
-
     QModelIndexList matches = m_model->match(m_model->index(0, 0),
                                              ChannelNumber,
-                                             msg.dataChannelNumber,
+                                             msg.channel,
                                              -1,
                                              Qt::MatchExactly);
 
     for (const QModelIndex &index : matches) {
-        if (index.isValid()) {
-            if (m_model->data(index, KaNumber).toInt() == msg.kaNumber) {
-                QStandardItem *existingItem = m_model->itemFromIndex(index);
-                if (existingItem) {
-                    setData(existingItem, msg);
-
-                    return;
-                }
-            }
+        if (index.isValid() &&
+            m_model->data(index, KaNumber).toInt() == msg.kaNumber) {
+            QStandardItem *existingItem = m_model->itemFromIndex(index);
+            updateExistingItem(existingItem, msg);
+            m_lastUpdateTimes[existingItem] = QDateTime::currentMSecsSinceEpoch();
+            return;
         }
     }
 
     auto *item = new QStandardItem();
     item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-
     setData(item, msg);
     m_model->appendRow(item);
+    m_lastUpdateTimes[item] = QDateTime::currentMSecsSinceEpoch();
 }
 
-void InformationList::setData(QStandardItem *item, const Report &msg)
+void InformationList::checkDataFreshness()
 {
-    item->setData(msg.dataChannelNumber, ChannelNumber);
-    item->setData(msg.kaNumber, KaNumber);
-    item->setData(msg.acState, AcState);
+    const qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+    const qint64 timeout = 2000;
+
+    QList<QStandardItem*> toRemove;
+
+    for (auto it = m_lastUpdateTimes.begin(); it != m_lastUpdateTimes.end(); ++it) {
+        if (currentTime - it.value() > timeout) {
+            toRemove.append(it.key());
+        }
+    }
+
+    foreach (QStandardItem* item, toRemove) {
+        m_model->removeRow(item->row());
+        m_lastUpdateTimes.remove(item);
+    }
+}
+
+void InformationList::updateExistingItem(QStandardItem *item, const Report &msg)
+{
     item->setData(msg.count, Count);
     item->setData(msg.time, Time);
     item->setData(msg.az[0], Az_1);
@@ -79,4 +74,12 @@ void InformationList::setData(QStandardItem *item, const Report &msg)
     QVariant variant;
     variant.setValue(msg.info);
     item->setData(variant, Info);
+}
+
+void InformationList::setData(QStandardItem *item, const Report &msg)
+{
+    item->setData(msg.channel, ChannelNumber);
+    item->setData(msg.kaNumber, KaNumber);
+    item->setData(msg.acState, AcState);
+    updateExistingItem(item, msg);
 }

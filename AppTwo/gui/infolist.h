@@ -1,35 +1,34 @@
+// infolist.h
 #pragma once
 
-#include "common/messages.h"
-#include "infolistdelegate.h"
-
-#include <QTimer>
-#include <QObject>
 #include <QListView>
 #include <QStandardItemModel>
+#include <QTimer>
+#include <memory>
+
+#include "common/messages.h"
+
+class InfoListDelegate;
 
 namespace View {
 
-class InformationList : public QListView
-{
+class InformationList : public QListView {
     Q_OBJECT
-
 public:
     explicit InformationList(QWidget *parent = nullptr);
-
     void addInfo(const Report &msg);
 
+private slots:
+    void checkDataFreshness();
+
 private:
-    bool isNew;
-
     void setData(QStandardItem *item, const Report &msg);
+    void updateExistingItem(QStandardItem *item, const Report &msg);
 
-    QScopedPointer<QTimer> m_clearTimer;
-    QScopedPointer<QTimer> m_refreshTimer;
-    QScopedPointer<QStandardItemModel> m_model;
-
+    std::unique_ptr<QStandardItemModel> m_model;
     InfoListDelegate *m_delegate;
-
+    QTimer m_cleanupTimer;
+    QHash<QStandardItem*, qint64> m_lastUpdateTimes;
 };
 
-}
+} // namespace View

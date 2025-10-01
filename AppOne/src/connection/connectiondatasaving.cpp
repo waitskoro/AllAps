@@ -22,10 +22,14 @@ ConnectionData ConnectionDataSaving::connectionData()
     QJsonDocument doc = QJsonDocument::fromJson(result.toUtf8());
     QJsonObject root = doc.object();
 
-    QString acHost = root.value("acHost").toString();
-    QString acPort = QString::number(root.value("acPort").toInt());
+    auto acPort = root.value("acPort").toInt();
+    auto acHost = root.value("acHost").toString();
 
-    return {acHost, acPort};
+    QUrl url;
+    url.setHost(acHost);
+    url.setPort(acPort);
+
+    return {acHost, acPort, url};
 }
 
 void ConnectionDataSaving::setConnectionData(const QUrl &ac)

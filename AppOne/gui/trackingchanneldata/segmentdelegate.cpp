@@ -3,6 +3,7 @@
 #include "segmentslist.h"
 #include "src/contants.h"
 #include "targetsview.h"
+#include "src/common.h"
 
 #include <QEvent>
 #include <QPainter>
@@ -14,8 +15,8 @@ using namespace View;
 
 SegmentDelegate::SegmentDelegate(QWidget *parent)
     : QStyledItemDelegate(parent)
-{
-}
+    , m_values(new QVector<TargetDesignation>())
+{}
 
 QSize SegmentDelegate::sizeHint(const QStyleOptionViewItem &option,
                                 const QModelIndex &index) const
@@ -64,8 +65,8 @@ void SegmentDelegate::paint(QPainter *painter,
     QDateTime startDate = fromDoubleToDate(startTime.toDouble());
     QDateTime endDate = fromDoubleToDate(endTime.toDouble());
 
-    auto startTimeS = startDate.toString("dd.MM.yy hh:mm:ss");
-    auto endTimeS =  endDate.toString("dd.MM.yy hh:mm:ss");
+    auto startTimeS = startDate.toString("hh:mm:ss");
+    auto endTimeS =  endDate.toString("hh:mm:ss");
 
     auto freq = QString("Частота: %1 кГц").arg(centerFrequency.toString());
 
@@ -119,12 +120,15 @@ bool SegmentDelegate::editorEvent(QEvent *event,
         auto spacecraftNumber = index.data(SegmentsList::SpacecraftNumber);
         auto physicalChannelNumber = index.data(SegmentsList::PhysicalChannelNumber);
 
-        m_values.clear();
+        m_values->clear();
 
         int16_t** vectorData = variant.value<int16_t**>();
 
         for (int i = 0; i < targetCount.toInt(); i++) {
-            m_values.push_back({vectorData[i][0], vectorData[i][1]});
+            TargetDesignation trg;
+            trg.azimut = vectorData[i][0];
+            trg.elev = vectorData[i][1];
+            m_values->push_back(trg);
         }
 
         if (buttonRect.contains(mouseEvent->pos())) {
@@ -137,7 +141,7 @@ bool SegmentDelegate::editorEvent(QEvent *event,
 
             TargetsView *view = new TargetsView(target);
             view->setWindowFlags(Qt::Dialog);
-            view->setTargets(m_values);
+            view->setTargets(*m_values);
             view->show();
             return true;
         }

@@ -1,77 +1,121 @@
 #include "graphwidget.h"
 
-#include "plotter.h"
-#include "gui/common/customcombobox.h"
+#include <QBoxLayout>
 
-#include <QValueAxis>
-#include <QLineSeries>
+#include "plotter.h"
+#include "dftplotter.h"
+#include "timeplotter.h"
+#include "graphtracer.h"
+#include "powerplotter.h"
+
+namespace {
+
+QLabel* createFixedHeightLabel(const QString& text, QWidget* parent, int height = 20)
+{
+    QLabel* label = new QLabel(text, parent);
+    label->setFixedHeight(height);
+    return label;
+}
+
+}
 
 using namespace View::Graphic;
-using namespace View::Common;
 
 GraphWidget::GraphWidget(QWidget *parent)
-    : QWidget{parent}
+    : QWidget(parent)
     , m_layout(new QVBoxLayout(this))
-    , m_powerGraph(new Plotter(this))
-    , m_signalGraph(new Plotter(this))
-    , m_spectrumGraph(new Plotter(this))
-    , m_channelsBox(new CustomComboBox(this))
+    , m_hLayout(new QHBoxLayout())
+    , m_channelData(new QComboBox(this))
+    , m_dftPlotter(new Graph::DftPlotter())
+    , m_timePlotterI(new Graph::TimePlotter())
+    , m_timePlotterQ(new Graph::TimePlotter())
+    , m_powerPlotter(new Graph::PowerPlotter())
 {
-    m_layout->addWidget(m_channelsBox);
+    connect(m_dftPlotter->tracer, &GraphTracer::positionUpdate,
+            this, [this] {
+        m_dftGraphAmpTracerMin = 1e10;
+        m_dftGraphAmpTracerAvg = 0;
+        m_dftGraphAmpTracerMax = 0;
+        m_dftGraphAmpTracerCrt = 0;
+    });
 
-    m_mainText = new QLabel("", this);
-    m_mainText->setFixedHeight(20);
-    m_layout->addWidget(m_mainText);
+    connect(m_dftPlotter->tracer, &GraphTracer::valueUpdate,
+            this, [this] {
+        m_dftGraphAmpTracerCrt = m_dftPlotter->tracer->getValue();
 
-    QLabel *label_1 = new QLabel("Мощность", this);
-    label_1->setFixedHeight(20);
+        if (m_dftGraphAmpTracerCrt > m_dftGraphAmpTracerMax)
+            m_dftGraphAmpTracerMax = m_dftGraphAmpTracerCrt;
+        if (m_dftGraphAmpTracerCrt < m_dftGraphAmpTracerMin)
+            m_dftGraphAmpTracerMin = m_dftGraphAmpTracerCrt;
+        m_dftGraphAmpTracerAvg = (m_dftGraphAmpTracerMax + m_dftGraphAmpTracerMin)/2;
+    });
 
-    QLabel *label_2 = new QLabel("Сигнал", this);
-    label_2->setFixedHeight(20);
+    for (int i = 0; i < 12; i++)
+        m_channelData->addItem(QString::number(i + 1), QVariant(i));
 
-    QLabel *label_3 = new QLabel("Спектр", this);
-    label_3->setFixedHeight(20);
-
-    m_layout->addWidget(label_1);
-    m_layout->addWidget(m_powerGraph);
-
-    m_layout->addWidget(label_2);
-    m_layout->addWidget(m_signalGraph);
-
-    m_layout->addWidget(label_3);
-    m_layout->addWidget(m_spectrumGraph);
-
-    m_layout->setAlignment(m_mainText, Qt::AlignHCenter);
-    m_layout->setAlignment(m_channelsBox, Qt::AlignHCenter);
-
-    connect(m_channelsBox,
-            &CustomComboBox::checkedChannelsChanged,
-            [this](QVector<qint8> &list){
-                m_powerGraph->addChannels(list);
-                m_signalGraph->addChannels(list);
-                m_spectrumGraph->addChannels(list);
-            });
-
-    connect(this,
-            &GraphWidget::itemAdded,
-            this,
-            &GraphWidget::addItem,
-            Qt::QueuedConnection);
+    init();
 }
 
-void GraphWidget::addItemThreadSafe(const Report &msg)
+GraphWidget::~GraphWidget()
+{}
+
+void GraphWidget::init()
 {
-    QMetaObject::invokeMethod(this, "addItem", Qt::QueuedConnection, Q_ARG(Report, msg));
+    m_layout->addWidget(m_channelData);
+    m_layout->addWidget(createFixedHeightLabel("Отображение Q и I графиков", this));
+
+    m_hLayout->addWidget(m_timePlotterI->plotter);
+    m_hLayout->addWidget(m_timePlotterQ->plotter);
+    m_layout->addLayout(m_hLayout);
+
+    m_layout->addWidget(createFixedHeightLabel("Мощность сигнала Q/I", this));
+    m_layout->addWidget(m_powerPlotter->plotter);
+
+    m_layout->addWidget(createFixedHeightLabel("Спектр сигнала Q/I", this));
+
+    m_layout->setAlignment(m_channelData, Qt::AlignHCenter);
+    m_layout->addWidget(m_dftPlotter->plotter);
+
+    connect(m_channelData, &QComboBox::currentIndexChanged, [this]() {
+        m_channel = m_channelData->currentIndex() + 1;
+    });
 }
 
-void GraphWidget::addItem(const Report &msg)
+void GraphWidget::setChannel(int channel)
 {
-    m_powerGraph->addItemThreadSafe(msg, Plotter::Power);
-    m_signalGraph->addItemThreadSafe(msg, Plotter::Signal);
-    m_spectrumGraph->addItemThreadSafe(msg, Plotter::Spectrum);
+    m_channel = channel;
+}
 
-    auto text = QString("Max мощность: %1     Max сигнал: %2    Max спектр: %3");
-    m_mainText->setText(text.arg(m_powerGraph->maxPower())
-                            .arg(m_signalGraph->maxSignal())
-                            .arg(m_spectrumGraph->maxSpectrum()));
+bool GraphWidget::channelMatch(int channel)
+{
+    return m_channel == channel;
+}
+
+void GraphWidget::onSamplesReaded(QVector<std::complex<double>> dataComplex)
+{
+    if (dataComplex.size() == 0)
+        return;
+
+    recreateWindow(dataComplex.size());
+
+    dsp.input(dataComplex,1./110.e3);
+
+    m_timePlotterI->setData(dsp.timeVector(), dsp.i());
+    m_timePlotterI->plotter->yAxis->setLabel("I");
+
+    m_timePlotterQ->setData(dsp.timeVector(), dsp.q());
+    m_timePlotterQ->plotter->yAxis->setLabel("Q");
+
+    m_powerPlotter->addData(dsp.powerFreqDb());
+    m_dftPlotter->setData(dsp.freqVector(), dsp.ampDistDb());
+}
+
+void GraphWidget::recreateWindow(int size)
+{
+    if (recreateWindowNext == false) return;
+    recreateWindowNext = false;
+
+    dsp.window().resize(size);
+
+    return;
 }

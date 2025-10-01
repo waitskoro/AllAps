@@ -16,6 +16,7 @@ Loader::Loader(const QString &text, const QRect &rect, QWidget *parent)
     , m_dotCount(0)
     , m_baseText(text)
 {
+    close();
     setFixedSize(rect.size());
     m_mainRect.moveTo(centeringCoordinates(rect.size(),
                                            m_mainRect.size()));

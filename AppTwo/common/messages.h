@@ -49,22 +49,25 @@ public:
 
 using ComplexSample = std::array<int8_t, 2>;
 
-#include <vector>
-#include <array>
+struct ChannelStats {
+    double avg;
+    double min;
+    double max;
+};
 
 struct Report {
-    quint8 dataChannelNumber;
+    quint8 channel;
     quint8 acState;
     quint16 kaNumber;
     double time;
     std::array<qint16, 2> az;
     quint32 count;
-    std::vector<std::array<qint8, 2>> info;
+    QVector<std::array<qint8, 2>> info;
 
     friend QDataStream &operator>>(QDataStream &stream, Report &report) {
         stream.setByteOrder(QDataStream::LittleEndian);
 
-        stream >> report.dataChannelNumber
+        stream >> report.channel
             >> report.acState
             >> report.kaNumber
             >> report.time

@@ -57,8 +57,8 @@ void CsvParser::appendChannelData(int channelNumber, int iQuadrature, int qQuadr
         return;
     }
 
-    QString str = QString::number(iQuadrature, 'f', 6) + ";" +
-                  QString::number(qQuadrature, 'f', 6) + "\n";
+    QString str = QString::number(iQuadrature, 'f', 0) + ";" +
+                  QString::number(qQuadrature, 'f', 0) + "\n";
 
     write(str, file);
 }
@@ -82,8 +82,8 @@ void CsvParser::appendChannelDataBatch(int channelNumber, const QVector<QPair<in
     buffer.reserve(data.size() * 32);
 
     for (const auto &point : data) {
-        buffer += QString::number(point.first, 'f', 6) + ";" +
-                  QString::number(point.second, 'f', 6) + "\n";
+        buffer += QString::number(point.first, 'f', 0) + ";" +
+                  QString::number(point.second, 'f', 0) + "\n";
     }
 
     write(buffer, file);
@@ -91,7 +91,7 @@ void CsvParser::appendChannelDataBatch(int channelNumber, const QVector<QPair<in
 
 void CsvParser::write(const QString &str, QFile* file)
 {
-    static constexpr qint64 MAX_FILE_SIZE = 55'500'000;
+    static constexpr qint64 MAX_FILE_SIZE = 55'000'000;
     static constexpr int LINES_TO_REMOVE = 500'000;
     static constexpr int FLUSH_THRESHOLD = 8'192;
 
@@ -116,32 +116,29 @@ void CsvParser::removeFirstNLines(QFile *file, int n)
 {
     if (!file || n <= 0 || !file->isOpen()) return;
 
-    QTemporaryFile tempFile;
-    if (!tempFile.open()) {
-        qWarning() << "Failed to create temporary file";
-        return;
-    }
-
     file->seek(0);
-    QTextStream in(file);
-    QTextStream out(&tempFile);
+    QByteArray data = file->readAll();
 
     int linesSkipped = 0;
-    while (linesSkipped < n && !in.atEnd()) {
-        in.readLine();
+    int pos = 0;
+    while (linesSkipped < n && pos < data.size()) {
+        pos = data.indexOf('\n', pos) + 1;
+        if (pos == 0) break;
         linesSkipped++;
     }
 
-    out << in.readAll();
+    if (pos >= data.size()) {
+        file->resize(0);
+        return;
+    }
 
     if (!file->resize(0)) {
         qWarning() << "Failed to truncate file";
         return;
     }
 
-    file->seek(0);
-    tempFile.seek(0);
-    file->write(tempFile.readAll());
+    file->write(data.constData() + pos, data.size() - pos);
+    file->seek(file->size());
 }
 
 bool CsvParser::reopenFile(QFile* file)

@@ -18,8 +18,10 @@ public:
 
     void open();
     void close();
+    void connectingToHost();
+
 signals:
-    void connectToHosts(const QUrl &ac);
+    void connectToHost(const QUrl &ac);
 
 private:
     ConnectionDataSaving *m_connectionData;

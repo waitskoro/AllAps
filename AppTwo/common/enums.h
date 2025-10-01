@@ -18,3 +18,10 @@ enum ReportDelegate {
     Az_2,
     Info
 };
+
+enum Type {
+    Q,
+    I,
+    Spectrum,
+    Power
+};

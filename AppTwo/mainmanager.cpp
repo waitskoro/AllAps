@@ -3,6 +3,8 @@
 #include "src/tcpmanager.h"
 #include "gui/mainwindow.h"
 
+#include <QThread>
+
 MainManager::MainManager(QObject *parent)
     : QObject(parent)
     , m_mainView(new View::MainWindow())
@@ -29,6 +31,8 @@ MainManager::MainManager(QObject *parent)
             &Tcp::TcpManager::countMessage,
             m_mainView,
             &View::MainWindow::onCountMessageRecieved);
+
+
 }
 
 MainManager::~MainManager()

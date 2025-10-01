@@ -5,19 +5,22 @@
 #include <QTableView>
 #include <QPushButton>
 
+struct TargetDesignation;
+
 namespace View {
 
 class TargetDesignationModel;
 
-class TargetDesignationTable : public QWidget
+class ManualTabTargets : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TargetDesignationTable(QWidget *parent = nullptr);
+    explicit ManualTabTargets(QWidget *parent = nullptr);
 
-    const std::vector<std::array<short, 2>>& coordinates() const;
+    const QVector<TargetDesignation> &coordinates() const;
     int countCoordinates() const;
 private:
+    void init();
     void paintEvent(QPaintEvent *event);
 
     QTableView *m_tableView;

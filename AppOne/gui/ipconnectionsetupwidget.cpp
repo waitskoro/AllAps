@@ -21,7 +21,7 @@ IpConnectionSetupWidget::IpConnectionSetupWidget(QWidget *parent)
 void IpConnectionSetupWidget::showWindow(Connection::ConnectionData data)
 {
     m_acIpTextEdit->setText(data.acHost);
-    m_acPortTextEdit->setText(data.acPort);
+    m_acPortTextEdit->setText(QString::number(data.acPort));
 
     m_loader->stop();
 

@@ -8,11 +8,18 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+LIBS += -lfftw3
+
 SOURCES += \
     gui/common/customcombobox.cpp \
+    gui/dsp.cpp \
+    gui/graph/dftplotter.cpp \
+    gui/graph/graphtracer.cpp \
     gui/graph/graphwidget.cpp \
     gui/graph/plotter.cpp \
+    gui/graph/powerplotter.cpp \
     gui/graph/qcustomplot.cpp \
+    gui/graph/timeplotter.cpp \
     gui/infolist.cpp \
     gui/infolistdelegate.cpp \
     gui/infowidget.cpp \
@@ -22,18 +29,25 @@ SOURCES += \
     gui/serverconnectingwidget.cpp \
     main.cpp \
     mainmanager.cpp \
+    minfft/minfft.c \
     src/csvparser.cpp \
-    src/graph/minfft.c \
     src/sequentialidprovider.cpp \
     src/tcpmanager.cpp
 
 HEADERS += \
     common/enums.h \
+    common/functions.h \
     common/messages.h \
     gui/common/customcombobox.h \
+    gui/dsp.h \
+    gui/graph/dftplotter.h \
+    gui/graph/graphtracer.h \
     gui/graph/graphwidget.h \
+    gui/graph/iplotter.h \
     gui/graph/plotter.h \
+    gui/graph/powerplotter.h \
     gui/graph/qcustomplot.h \
+    gui/graph/timeplotter.h \
     gui/infolist.h \
     gui/infolistdelegate.h \
     gui/infowidget.h \
@@ -42,9 +56,8 @@ HEADERS += \
     gui/reportsstable.h \
     gui/serverconnectingwidget.h \
     mainmanager.h \
+    minfft/minfft.h \
     src/csvparser.h \
-    src/graph/minfft.h \
-    src/graph/spectrumanalyzer.h \
     src/sequentialidprovider.h \
     src/tcpmanager.h
 
@@ -55,3 +68,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     gui/resources.qrc
+
+DISTFILES += \
+    minfft/LICENSE \
+    minfft/README.md

@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     MainManager *mainManager = new MainManager(tcpManager);
 
     QObject::connect(ipConnectionManager,
-                     &IpConnectionSetupManager::connectToHosts,
+                     &IpConnectionSetupManager::connectToHost,
                      tcpManager,
                      &TcpSocketManager::connectToHost);
 
@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 
                          tcpManager->disconnect();
                          ipConnectionManager->open();
+                         ipConnectionManager->connectingToHost();
                      });
 
     return a.exec();

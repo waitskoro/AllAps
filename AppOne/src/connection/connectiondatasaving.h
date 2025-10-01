@@ -1,12 +1,14 @@
 #pragma once
 
+#include <QUrl>
 #include <QObject>
 
 namespace Connection {
 
 struct ConnectionData {
     QString acHost;
-    QString acPort;
+    int acPort;
+    QUrl url;
 };
 
 class ConnectionDataSaving : public QObject

@@ -10,6 +10,7 @@ struct EmmiterState{
 
     friend QDataStream &operator >> (QDataStream &stream, EmmiterState &emState)
     {
+        stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
         stream >> emState.number
             >> emState.pol
             >> emState.state
@@ -94,7 +95,6 @@ struct StateMessage {
     friend QDataStream &operator >> (QDataStream &stream, StateMessage &stateMsg)
     {
         stream.setByteOrder(QDataStream::LittleEndian);
-        stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
         stream >> stateMsg.acState
             >> stateMsg.frequencyState
             >> stateMsg.switch1State

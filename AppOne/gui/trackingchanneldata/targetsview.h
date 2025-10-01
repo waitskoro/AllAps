@@ -3,6 +3,8 @@
 #include <QWidget>
 #include <QTableView>
 
+class TargetDesignation;
+
 namespace View {
 
 class TargetDesignationModel;
@@ -22,7 +24,7 @@ public:
 
     explicit TargetsView(Target, QWidget *parent = nullptr);
 
-    void setTargets(std::vector<std::array<short, 2>> &);
+    void setTargets(QVector<TargetDesignation> &);
 
 private:
     void paintEvent(QPaintEvent *event);

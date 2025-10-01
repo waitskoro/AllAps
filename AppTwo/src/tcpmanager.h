@@ -2,6 +2,7 @@
 
 #include "common/messages.h"
 
+#include <QTimer>
 #include <QObject>
 #include <QTcpSocket>
 #include <QTcpServer>
@@ -44,9 +45,14 @@ private:
 
     bool m_headerReaded;
 
+    void resetState();
     Header deserializeHeader(QByteArray& data);
 
     Reports::CsvParser *m_csvParser;
+
+private:
+    int m_packetCounter = 0;
+    QTimer m_ppsTimer;
 };
 
 }

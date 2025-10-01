@@ -37,7 +37,7 @@ MenuWidget::MenuWidget(QWidget *parent)
     , m_trackingPlans(new QPushButton(" Состояния\n каналов данных", this))
     , m_target(new QPushButton(" Передача\n целеуказаний", this))
     , m_stopingPlans(new QPushButton(" Остановка приема", this))
-    , m_disconnect(new QPushButton(" Отключиться ", this))
+    , m_disconnect(new QPushButton(" Переподключиться ", this))
     , m_main(new QPushButton(" Главное окно ", this))
 {
     close();

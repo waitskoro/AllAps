@@ -6,7 +6,7 @@ TargetDesignationModel::TargetDesignationModel(QObject *parent)
     : QAbstractListModel(parent)
 {}
 
-void TargetDesignationModel::append(const std::array<short, 2>& newCoordinates)
+void TargetDesignationModel::append(const TargetDesignation& newCoordinates)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_values.push_back(newCoordinates);
@@ -25,7 +25,7 @@ void TargetDesignationModel::clear()
 
 void TargetDesignationModel::removeRow(int row)
 {
-    if (row < 0 || static_cast<size_t>(row) >= m_values.size())
+    if (row < 0 || static_cast<int>(row) >= m_values.size())
         return;
 
     beginRemoveRows(QModelIndex(), row, row);
@@ -52,7 +52,7 @@ int TargetDesignationModel::columnCount(const QModelIndex &parent) const
 QVariant TargetDesignationModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() < 0 ||
-        static_cast<size_t>(index.row()) >= m_values.size())
+        static_cast<int>(index.row()) >= m_values.size())
     {
         return QVariant();
     }
@@ -61,8 +61,8 @@ QVariant TargetDesignationModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
-            case 0: return coords[0]; //Azimuth
-            case 1: return coords[1]; //Elevation
+            case 0: return coords.azimut;
+            case 1: return coords.elev;
             default: return QVariant();
         }
     }
@@ -74,15 +74,15 @@ QVariant TargetDesignationModel::headerData(int section, Qt::Orientation orienta
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
-        case 0: return QString("Текущий азимут");
-        case 1: return QString("Текущий угол места");
-        default: return QString("");
+            case 0: return QString("Азимут");
+            case 1: return QString("Угол места");
+            default: return QString("");
         }
     }
     return QVariant();
 }
 
-const std::vector<std::array<short, 2>>& TargetDesignationModel::coordinates() const
+const QVector<TargetDesignation> &TargetDesignationModel::coordinates() const
 {
     return m_values;
 }

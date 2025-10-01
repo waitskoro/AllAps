@@ -17,7 +17,7 @@ IpConnectionSetupManager::IpConnectionSetupManager(QObject *parent)
             this,
             [this](const QUrl &ac){
                 m_connectionData->setConnectionData(ac);
-                emit connectToHosts(ac);
+                emit connectToHost(ac);
             });
 }
 
@@ -29,4 +29,9 @@ void IpConnectionSetupManager::open()
 void IpConnectionSetupManager::close()
 {
     m_connectionWidget->close();
+}
+
+void IpConnectionSetupManager::connectingToHost()
+{
+    emit connectToHost(m_connectionData->connectionData().url);
 }

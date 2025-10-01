@@ -11,7 +11,9 @@
 
 namespace View {
 
-class TargetDesignationTable;
+class DateTarget;
+class GeneralInfoTarget;
+class TargetDesignations;
 
 class TargetDesignationWidget : public QWidget
 {
@@ -20,31 +22,22 @@ public:
     explicit TargetDesignationWidget(QWidget *parent);
     ~TargetDesignationWidget();
 
-    void paintEvent(QPaintEvent *event);
-
-    QPushButton *m_exit;
-    QPushButton *m_create;
-
 signals:
     void goBack();
     void createTarget(Application::TargetDesignations m_target);
 
 private:
-    QComboBox *m_numberChannelData;
-    QLineEdit *m_spacecraftNumber;
-    QLineEdit *m_centerFrequency;
+    QPushButton *m_exit;
+    QPushButton *m_create;
 
-    QDateEdit *m_startDate;
-    QTimeEdit *m_startTime;
-    QDateEdit *m_endDate;
-    QTimeEdit *m_endTime;
-
-    TargetDesignationTable *m_coordinatesView;
-
-    QComboBox *m_polarization;
+    DateTarget *m_dates;
+    TargetDesignations *m_targets;
+    GeneralInfoTarget *m_generalInfo;
 
     void initUI();
     void onTargetSend();
+
+    void paintEvent(QPaintEvent *event);
 };
 
 }

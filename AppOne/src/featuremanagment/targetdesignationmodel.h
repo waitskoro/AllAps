@@ -1,6 +1,8 @@
-#include <vector>
-#include <array>
+#pragma once
 
+#include "src/common.h"
+
+#include <QVector>
 #include <QAbstractListModel>
 
 namespace View {
@@ -20,13 +22,13 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
     void append(short azimuth, short elevation);
-    void append(const std::array<short, 2>& newCoordinates);
+    void append(const TargetDesignation& newCoordinates);
 
     int countCoordinates() const;
-    const std::vector<std::array<short, 2>>& coordinates() const;
+    const QVector<TargetDesignation> &coordinates() const;
 
 private:
-    std::vector<std::array<short, 2>> m_values;
+    QVector<TargetDesignation> m_values;
 };
 
 }

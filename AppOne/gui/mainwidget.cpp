@@ -47,11 +47,11 @@ MainWidget::MainWidget(QWidget *parent)
         if (m_menuWidget->isVisible()) {
             m_menuWidget->close();
         } else {
+            QPoint pos = m_menuButton->mapToGlobal(QPoint(0, m_menuButton->height()));
+            m_menuWidget->move(pos);
             m_menuWidget->show();
-            m_menuWidget->raise();
         }
     });
-
     connect(this, &MainWidget::executedTheCommandRecevied, [this](ExecutedTheCommand result){
                 if (m_loader->isVisible())
                     m_loader->stop();
@@ -87,7 +87,6 @@ MainWidget::MainWidget(QWidget *parent)
                 m_currentView = Plans;
             });
 
-    //------Скрытие меню при нажатии вне области------
     m_menuWidget->setWindowFlags(Qt::Popup);
     m_menuWidget->setAttribute(Qt::WA_TranslucentBackground);
 }
@@ -95,7 +94,6 @@ MainWidget::MainWidget(QWidget *parent)
 void MainWidget::showWindow()
 {
     show();
-    // m_logViewer->show();
 }
 
 void MainWidget::addMessage(const ReceivingMessage &msg)

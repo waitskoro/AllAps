@@ -1,17 +1,19 @@
-#include "targetdesignationtable.h"
+#include "manualtabtargets.h"
 
 #include "src/contants.h"
 #include "src/featuremanagment/targetdesignationmodel.h"
 
 #include <QDir>
+#include <QLabel>
 #include <QPainter>
+#include <QBoxLayout>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QRandomGenerator>
 
 using namespace View;
 
-TargetDesignationTable::TargetDesignationTable(QWidget *parent)
+ManualTabTargets::ManualTabTargets(QWidget *parent)
     : QWidget(parent)
     , m_tableView(new QTableView(this))
     , m_currentAzimut(new QLineEdit(this))
@@ -22,34 +24,18 @@ TargetDesignationTable::TargetDesignationTable(QWidget *parent)
     , m_clearAll(new QPushButton(this))
     , m_model(new TargetDesignationModel(this))
 {
-    setFixedSize(600, 200);
+    init();
 
-    m_currentAzimut->setFixedSize(70, 25);
-    m_currentAzimut->move(520, 25);
-    m_currentBeanAzimut->setFixedSize(70, 25);
-    m_currentBeanAzimut->move(520, 55);
-
-    m_addButton->move(470, 90);
-    m_addButton->setText(" Добавить ");
-    m_addButton->setFixedSize(100, 25);
-
-    m_removeButton->move(360, 90);
-    m_removeButton->setText(" Удалить ");
-    m_removeButton->setFixedSize(100, 25);
-
-    m_testButton->move(470, 140);
-    m_testButton->setText(" Тест ");
-    m_testButton->setFixedSize(100, 25);
-
-    m_clearAll->move(360, 140);
-    m_clearAll->setText(" Очистить ");
-    m_clearAll->setFixedSize(100, 25);
+    m_testButton->setText("Тест");
+    m_clearAll->setText("Очистить");
+    m_addButton->setText("Добавить");
+    m_removeButton->setText("Удалить");
 
     m_tableView->setModel(m_model);
     m_tableView->setColumnWidth(0, 130);
     m_tableView->setColumnWidth(1, 150);
-    m_tableView->setFixedSize(300, 150);
-    m_tableView->move(25, 25);
+    m_tableView->setFixedSize(300, 220);
+    m_tableView->move(10, 10);
 
     m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -57,55 +43,73 @@ TargetDesignationTable::TargetDesignationTable(QWidget *parent)
     connect(m_addButton,
             &QPushButton::clicked,
             this,
-            &TargetDesignationTable::onAddCoordinates);
+            &ManualTabTargets::onAddCoordinates);
 
     connect(m_removeButton,
             &QPushButton::clicked,
             this,
-            &TargetDesignationTable::onRemoveCoordinates);
+            &ManualTabTargets::onRemoveCoordinates);
 
     connect(m_testButton,
             &QPushButton::clicked,
             this,
-            &TargetDesignationTable::onTestCreating);
+            &ManualTabTargets::onTestCreating);
 
     connect(m_clearAll,
             &QPushButton::clicked,
             this,
-            &TargetDesignationTable::onClearAllCoordinates);
+            &ManualTabTargets::onClearAllCoordinates);
 }
 
-const std::vector<std::array<short, 2>>& TargetDesignationTable::coordinates() const
+void ManualTabTargets::init()
+{
+    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout->setSpacing(10);
+    gridLayout->setContentsMargins(340, 30, 30, 60);
+
+    setStyleSheet("QLabel { background: transparent; }");
+
+    gridLayout->addWidget(new QLabel("Азимут"), 0, 0);
+    gridLayout->addWidget(m_currentAzimut, 0, 1);
+    gridLayout->addWidget(new QLabel("Угол места"), 1, 0);
+    gridLayout->addWidget(m_currentBeanAzimut, 1, 1);
+
+    QGridLayout *gridLayoutBtns = new QGridLayout();
+
+    gridLayoutBtns->addWidget(m_removeButton, 0, 0);
+    gridLayoutBtns->addWidget(m_addButton, 0, 1);
+    gridLayoutBtns->addWidget(m_clearAll, 1, 0);
+    gridLayoutBtns->addWidget(m_testButton, 1, 1);
+
+    gridLayout->addLayout(gridLayoutBtns, 2, 0, 1, 2);
+}
+const QVector<TargetDesignation> &ManualTabTargets::coordinates() const
 {
     return m_model->coordinates();
 }
 
-int TargetDesignationTable::countCoordinates() const
+int ManualTabTargets::countCoordinates() const
 {
     return m_model->countCoordinates();
 }
 
-void TargetDesignationTable::paintEvent(QPaintEvent *event)
+void ManualTabTargets::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
     QPainter painter(this);
     painter.fillRect(rect(), QColor("#F2F0F0"));
-
-    painter.drawText(350, 45, "Текущий азимут");
-    painter.drawText(350, 75, "Текущий угол азимута");
 }
 
-void TargetDesignationTable::onAddCoordinates()
+void ManualTabTargets::onAddCoordinates()
 {
     auto currentAzimut = fromStrToInt(m_currentAzimut->text());
     auto currentElevationAngle = fromStrToInt(m_currentBeanAzimut->text());
 
-    if (currentAzimut != -1 && currentElevationAngle != -1)
-        m_model->append(currentAzimut, currentElevationAngle);
+    m_model->append(currentAzimut, currentElevationAngle);
 }
 
-void TargetDesignationTable::onRemoveCoordinates()
+void ManualTabTargets::onRemoveCoordinates()
 {
     QModelIndexList selected = m_tableView->selectionModel()->selectedRows();
     if (selected.isEmpty())
@@ -123,7 +127,7 @@ void TargetDesignationTable::onRemoveCoordinates()
     }
 }
 
-void TargetDesignationTable::onTestCreating()
+void ManualTabTargets::onTestCreating()
 {
     QInputDialog dialog;
     dialog.setWindowTitle(tr("Укажите количество координат"));
@@ -150,7 +154,7 @@ void TargetDesignationTable::onTestCreating()
         }
     }
 }
-void TargetDesignationTable::onClearAllCoordinates()
+void ManualTabTargets::onClearAllCoordinates()
 {
     m_model->clear();
 }

@@ -1,47 +1,66 @@
 #pragma once
 
-#include <QLabel>
+#include <QMap>
 #include <QWidget>
+#include <QVector>
 #include <QComboBox>
-#include <QChartView>
-#include <QHBoxLayout>
 
+#include <complex>
+
+#include "../dsp.h"
+#include "qcustomplot.h"
+#include "common/enums.h"
 #include "common/messages.h"
 
-namespace View {
-
-namespace Common {
-class CustomComboBox;
+namespace Graph {
+class DftPlotter;
+class TimePlotter;
+class PowerPlotter;
 }
 
-namespace Graphic {
+class QLabel;
+class QVBoxLayout;
+class QHBoxLayout;
 
-class Plotter;
+typedef std::complex<double> Complex;
+typedef QVector<Complex> ComplexVector;
 
 class GraphWidget : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit GraphWidget(QWidget *parent = nullptr);
+    explicit GraphWidget(QWidget* parent = nullptr);
+    ~GraphWidget();
 
-    void addItemThreadSafe(const Report &msg);
+    // set ------------------------
+    void setChannel(int channel);
 
-signals:
-    void itemAdded(const Report &msg);
+    // get ------------------------
+    int channel() { return m_channel; };
+    bool channelMatch(int channel);
+    void recreateWindow(int size);
+    void onSamplesReaded(QVector<std::complex<double> > dataComplex);
 
 private:
-    QVBoxLayout *m_layout;
-    Plotter *m_powerGraph;
-    Plotter *m_signalGraph;
-    Plotter *m_spectrumGraph;
+    void init();
 
-    QLabel *m_mainText;
+    Dsp dsp;
+    int m_channel = 1;
 
-    Common::CustomComboBox *m_channelsBox;
+    bool recreateWindowNext = true;
+    double m_dftGraphAmpTracerMax = 0;
+    double m_dftGraphAmpTracerMin = 0;
+    double m_dftGraphAmpTracerAvg = 0;
+    double m_dftGraphAmpTracerCrt = 0;
 
-    Q_INVOKABLE void addItem(const Report &msg);
+    QVBoxLayout* m_layout;
+    QHBoxLayout* m_hLayout;
+
+    QComboBox *m_channelData;
+
+    Graph::DftPlotter *m_dftPlotter;
+    Graph::TimePlotter *m_timePlotterI;
+    Graph::TimePlotter *m_timePlotterQ;
+    Graph::PowerPlotter *m_powerPlotter;
 };
-
-}
-
-}

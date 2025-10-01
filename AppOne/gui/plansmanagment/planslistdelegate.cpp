@@ -125,9 +125,9 @@ void PlansListDelegate::paint(QPainter *painter,
     }
 
 
-    if (state == "0") {
+    if (state == "1") {
         state = "в норме";
-    } else if (state == "1") {
+    } else if (state == "0") {
         state = "были самовосстанавливающиеся отказы (сбои), сбрасывается после выдачи сообщения";
     } else if (state == "2") {
         state = "имеются некритичные отказы, не приводят к существенным ухудшениям характеристик";

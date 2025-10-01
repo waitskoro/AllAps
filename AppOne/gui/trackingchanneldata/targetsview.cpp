@@ -24,9 +24,9 @@ TargetsView::TargetsView(Target target, QWidget *parent)
     setWindowTitle(QString("Канал данных: %1").arg(target.channelData));
 }
 
-void TargetsView::setTargets(std::vector<std::array<short, 2>> &data)
+void TargetsView::setTargets(QVector<TargetDesignation> &data)
 {
-    for (size_t i = 0; i < data.size(); i++) {
+    for (int i = 0; i < data.size(); i++) {
         m_model->append(data[i]);
     }
 }
