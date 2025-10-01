@@ -51,8 +51,13 @@ private:
     Reports::CsvParser *m_csvParser;
 
 private:
+    QByteArray m_buffer;
+
+private:
     int m_packetCounter = 0;
     QTimer m_ppsTimer;
+
+    bool first = true;
 };
 
 }

@@ -48,7 +48,7 @@ void TcpManager::onMessageRecieved(Packet &packet)
             data.append({result.info[i][0], result.info[i][1]});
         }
 
-        m_csvParser->appendChannelDataBatch(result.channel, data);
+//        m_csvParser->appendChannelDataBatch(result.channel, data);
     }
 }
 
@@ -80,30 +80,39 @@ void TcpManager::onClientConnected()
 
 void TcpManager::onReadyRead()
 {
-    qDebug() << m_tcpSocket->bytesAvailable();
+    if (m_tcpSocket->bytesAvailable() > 1320 * HEADER_SIZE) {
+        qWarning() << "Buffer overflow detected. Clearing" << m_tcpSocket->bytesAvailable() << "bytes";
+        m_tcpSocket->readAll();
+        resetState();
+        return;
+    }
 
-    while (m_tcpSocket->bytesAvailable() >= HEADER_SIZE) {
-        if (!m_headerReaded) {
-            m_headerBytes = m_tcpSocket->read(HEADER_SIZE);
-            m_header = deserializeHeader(m_headerBytes);
+    QDataStream stream(m_tcpSocket);
+    stream.setByteOrder(QDataStream::LittleEndian);
+
+    while (!stream.atEnd()) {
+        if (!m_headerReaded && m_tcpSocket->bytesAvailable() >= HEADER_SIZE) {
+            stream >> m_header.version
+                   >> m_header.msgType
+                   >> m_header.zero
+                   >> m_header.timeCreated
+                   >> m_header.countBytes;
+
             m_dataSize = qMin<qint32>(m_header.countBytes, 10000);
             m_headerReaded = true;
         }
 
-        if (m_headerReaded && m_dataSize > 0) {
-            QByteArray chunk = m_tcpSocket->read(m_dataSize);
-            m_msgBytes += chunk;
-            m_dataSize -= chunk.size();
+        if (m_headerReaded && m_dataSize > 0 && m_tcpSocket->bytesAvailable() >= m_dataSize) {
+            m_msgBytes.resize(m_dataSize);
+            stream.readRawData(m_msgBytes.data(), m_dataSize);
 
-            if (m_dataSize == 0) {
-                auto &provider = SequentialIdProvider::get();
-                Packet packet(m_header, m_msgBytes, provider.next());
-                onMessageRecieved(packet);
+            auto &provider = SequentialIdProvider::get();
+            Packet packet(m_header, m_msgBytes, provider.next());
+            onMessageRecieved(packet);
 
-                m_headerReaded = false;
-                m_msgBytes.clear();
-                m_headerBytes.clear();
-            }
+            resetState();
+        } else {
+            break;
         }
     }
 }
