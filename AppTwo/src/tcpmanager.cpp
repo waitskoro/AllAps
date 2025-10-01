@@ -48,7 +48,7 @@ void TcpManager::onMessageRecieved(Packet &packet)
             data.append({result.info[i][0], result.info[i][1]});
         }
 
-//        m_csvParser->appendChannelDataBatch(result.channel, data);
+        m_csvParser->appendChannelDataBatch(result.channel, data);
     }
 }
 
