@@ -1,10 +1,8 @@
 #pragma once
 
 #include <QObject>
-#include <QFile>
 #include <QThread>
 #include <QMutex>
-#include <QTextStream>
 #include <memory>
 #include <array>
 
@@ -24,13 +22,18 @@ public:
     void appendChannelDataBatch(int channelNumber, const QVector<QPair<int, int>> &data);
 
 private:
-    void write(const QString &str, QFile* file);
-    void removeFirstNLines(QFile *file, int n);
-    bool reopenFile(QFile* file);
+    struct DataPoint {
+        int iQuadrature;
+        int qQuadrature;
+    };
 
-    std::array<std::unique_ptr<QFile>, CHANNEL_COUNT> m_files;
+    void write(const DataPoint* data, size_t count, FILE* file);
+    void removeFirstNPoints(FILE* file, int n);
+    bool reopenFile(FILE*& file, const QString& filename);
+
+    std::array<FILE*, CHANNEL_COUNT> m_files;
     std::unique_ptr<QThread> m_thread;
     QMutex m_fileMutex;
 };
 
-} // namespace Reports
+}

@@ -21,7 +21,7 @@ class TcpManager : public QObject
 public:
     explicit TcpManager(QObject *parent = nullptr);
 
-    void onMessageRecieved(Packet &);
+    void onMessageRecieved(const Packet &);
     void onServerCreating(const int &port);
 
 signals:
@@ -31,7 +31,7 @@ signals:
 
 private:
     QTcpServer *m_tcpServer;
-    QTcpSocket* m_tcpSocket;
+    QTcpSocket *m_tcpSocket;
 
     void onReadyRead();
 
