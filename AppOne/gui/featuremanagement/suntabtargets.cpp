@@ -19,10 +19,6 @@ SunTabTargets::SunTabTargets(QWidget *parent)
     , m_lon(new QLineEdit(this))
     , m_lonConverter(new QPushButton(this))
     , m_latConverter(new QPushButton(this))
-    , m_azimut(new QLineEdit(this))
-    , m_beanAngle(new QLineEdit(this))
-    , m_temp(new QLineEdit(this))
-    , m_press(new QLineEdit(this))
     , m_btnClear(new QPushButton("Очистить", this))
     , m_buttonCreate(new QPushButton("Создать", this))
     , m_model(new TargetDesignationModel(this))
@@ -81,16 +77,6 @@ void SunTabTargets::init()
     gridLayout_2->addWidget(m_lon, 0, 4);
     gridLayout_2->addWidget(m_lonConverter, 0, 5);
 
-    gridLayout->addWidget(new QLabel("Азимут"), 1, 0);
-    gridLayout->addWidget(m_azimut, 1, 1);
-    gridLayout->addWidget(new QLabel("Угол места"), 1, 2);
-    gridLayout->addWidget(m_beanAngle, 1, 3);
-
-    gridLayout->addWidget(new QLabel("Темп. t°"), 2, 0);
-    gridLayout->addWidget(m_temp, 2, 1);
-    gridLayout->addWidget(new QLabel("Давление"), 2, 2);
-    gridLayout->addWidget(m_press, 2, 3);
-
     gridLayout->addWidget(m_btnClear, 3, 0, 1, 2, Qt::AlignRight);
     gridLayout->addWidget(m_buttonCreate, 3, 2, 1, 2, Qt::AlignLeft);
 
@@ -125,20 +111,12 @@ void SunTabTargets::onButtonCreate(Dates dates)
 {
     m_model->clear();
 
-    if (m_lat->text() != "" && m_lon->text() != "" &&
-        m_azimut->text() != "" && m_beanAngle->text() != "" &&
-        m_temp->text() != "" && m_press->text() != "") {
+    if (m_lat->text() != "" && m_lon->text() != "") {
 
         auto lat = m_lat->text().toDouble();
         auto lon = m_lon->text().toDouble();
 
-        auto az = m_azimut->text().toDouble();
-        auto bean = m_beanAngle->text().toDouble();
-
-        auto temp = m_temp->text().toDouble();
-        auto press = m_press->text().toDouble();
-
-        Coordinates *coords = new Coordinates(lat, lon, az, bean, temp, press);
+        Coordinates *coords = new Coordinates(lat, lon);
 
         m_sunTargetParser->setCoords(*coords);
         auto targets = m_sunTargetParser->getTargets(dates.start, dates.end);

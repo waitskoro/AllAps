@@ -38,12 +38,6 @@ private:
     QPushButton *m_lonConverter;
     QPushButton *m_latConverter;
 
-    QLineEdit *m_azimut;
-    QLineEdit *m_beanAngle;
-
-    QLineEdit *m_temp;
-    QLineEdit *m_press;
-
     QPushButton *m_btnClear;
     QPushButton *m_buttonCreate;
 

@@ -51,8 +51,8 @@ Target SunTargetDesignations::convertToTargets(Coordinates &coords, QDateTime da
     double lon = coords.longitude();
 
     const int CHP = 7;
-    const double temperature = coords.temp();
     const double pres = coords.press();
+    const double temperature = coords.temp();
 
     int year = date.date().year();
     int month = date.date().month();
