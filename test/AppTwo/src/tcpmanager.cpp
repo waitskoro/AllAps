@@ -27,6 +27,27 @@ TcpManager::TcpManager(QObject *parent)
     });
 }
 
+void TcpManager::onServerStoped()
+{
+    if (m_tcpServer->isListening()) {
+        if (m_tcpSocket && m_tcpSocket->state() == QAbstractSocket::ConnectedState) {
+            m_tcpSocket->disconnectFromHost();
+            if (m_tcpSocket->state() != QAbstractSocket::UnconnectedState) {
+                m_tcpSocket->waitForDisconnected(1000);
+            }
+        }
+
+        m_tcpServer->close();
+        qInfo() << "Сервер остановлен";
+
+        resetState();
+        m_ppsTimer.stop();
+        m_packetCounter = 0;
+    } else {
+        qWarning() << "Сервер уже остановлен";
+    }
+}
+
 void TcpManager::onMessageRecieved(const Packet &packet)
 {
     QDataStream stream(packet.data);

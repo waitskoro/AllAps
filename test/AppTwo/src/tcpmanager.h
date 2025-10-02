@@ -16,6 +16,7 @@ class TcpManager : public QObject
 public:
     explicit TcpManager(QObject *parent = nullptr);
 
+    void onServerStoped();
     void onMessageRecieved(const Packet &);
     void onServerCreating(const int &port);
 

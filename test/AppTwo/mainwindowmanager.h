@@ -27,10 +27,10 @@ public:
     void setWidget(QWidget *widget);
 
     void onServerCreated();
-    void onClientConnected();
     void onCountMessageRecieved(const Report &);
 
 signals:
+    void serverStopped();
     void createServer(const int port);
 
 private:

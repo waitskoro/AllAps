@@ -17,8 +17,14 @@ void MainWindowManager::setUi(Ui::MainWindow *ui)
     m_infoManager->setListView(ui->listView);
 
     connect(m_ui->pushButtonCreate, &QPushButton::clicked, [this](){
-        int port = m_ui->lineEditPort->text().toInt();
-        emit createServer(port);
+        if (m_ui->lineEditPort->isEnabled()) {
+            int port = m_ui->lineEditPort->text().toInt();
+            emit createServer(port);
+        } else {
+            emit serverStopped();
+            m_ui->lineEditPort->setEnabled(true);
+            m_ui->pushButtonCreate->setText("Создать сервер");
+        }
     });
 }
 
@@ -31,11 +37,6 @@ void MainWindowManager::onServerCreated()
 {
     m_ui->lineEditPort->setEnabled(false);
     m_ui->pushButtonCreate->setText("Отключить сервер");
-}
-
-void MainWindowManager::onClientConnected()
-{
-
 }
 
 void MainWindowManager::onCountMessageRecieved(const Report &msg)

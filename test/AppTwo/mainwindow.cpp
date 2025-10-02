@@ -21,11 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
             &MainWindowManager::onServerCreated);
 
     connect(m_tcpManager,
-            &TcpManager::clientConnected,
-            m_mainWindowManager,
-            &MainWindowManager::onClientConnected);
-
-    connect(m_tcpManager,
             &TcpManager::countMessage,
             m_mainWindowManager,
             &MainWindowManager::onCountMessageRecieved);
@@ -34,6 +29,11 @@ MainWindow::MainWindow(QWidget *parent)
             &MainWindowManager::createServer,
             m_tcpManager,
             &TcpManager::onServerCreating);
+
+    connect(m_mainWindowManager,
+            &MainWindowManager::serverStopped,
+            m_tcpManager,
+            &TcpManager::onServerStoped);
 }
 
 MainWindow::~MainWindow()
