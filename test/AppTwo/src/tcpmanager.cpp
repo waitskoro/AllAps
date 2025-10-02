@@ -14,7 +14,7 @@ const qint32 HEADER_SIZE = 16;
 TcpManager::TcpManager(QObject *parent)
     : QObject(parent)
     , m_tcpServer(new QTcpServer(this))
-    , m_binParser(new BinParser(this))
+    , m_binParser(new BinParser())
 {
     connect(m_tcpServer,
             &QTcpServer::newConnection,
@@ -86,7 +86,7 @@ void TcpManager::onReadyRead()
         if (!m_headerReaded) {
             m_headerBytes = m_tcpSocket->read(HEADER_SIZE);
             m_header = deserializeHeader(m_headerBytes);
-            m_dataSize = qMin<quint32>(m_header.countBytes, 10000);
+            m_dataSize = m_header.countBytes;
             m_headerReaded = true;
         }
 

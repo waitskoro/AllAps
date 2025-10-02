@@ -34,7 +34,7 @@ private:
     void onClientDisconnected();
 
     Header m_header;
-    qint64 m_dataSize = 0;
+    quint32 m_dataSize = 0;
     QByteArray m_msgBytes;
     QByteArray  m_headerBytes;
 
