@@ -33,5 +33,6 @@ void IpConnectionSetupManager::close()
 
 void IpConnectionSetupManager::connectingToHost()
 {
-    emit connectToHost(m_connectionData->connectionData().url);
+    m_connectionWidget->onPushButtonClicked();
+//    emit connectToHost(m_connectionData->connectionData().url);
 }
