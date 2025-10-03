@@ -27,18 +27,30 @@ void GraphManager::setUi(Ui::MainWindow *ui)
 
     connect(m_ui->stopI, &QPushButton::clicked, [this]() {
         m_plotterI->autoRescaleEnable();
+
+        bool isRescale = m_plotterI->isRescale();
+        m_ui->stopI->setText(isRescale ? "Стоп" : "Запуск");
     });
 
     connect(m_ui->stopQ, &QPushButton::clicked, [this]() {
         m_plotterQ->autoRescaleEnable();
+
+        bool isRescale = m_plotterQ->isRescale();
+        m_ui->stopQ->setText(isRescale ? "Стоп" : "Запуск");
     });
 
     connect(m_ui->stopPower, &QPushButton::clicked, [this]() {
         m_powerPlotter->autoRescaleEnable();
+
+        bool isRescale = m_powerPlotter->isRescale();
+        m_ui->stopPower->setText(isRescale ? "Стоп" : "Запуск");
     });
 
     connect(m_ui->stopSpectrum, &QPushButton::clicked, [this]() {
         m_dftPlotter->autoRescaleEnable();
+
+        bool isRescale = m_dftPlotter->isRescale();
+        m_ui->stopSpectrum->setText(isRescale ? "Стоп" : "Запуск");
     });
 }
 

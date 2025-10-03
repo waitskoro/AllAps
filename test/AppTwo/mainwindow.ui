@@ -54,6 +54,13 @@
              </property>
             </spacer>
            </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="pushButtonCreate">
+             <property name="text">
+              <string>Создать сервер</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <spacer name="horizontalSpacer">
              <property name="orientation">
@@ -66,13 +73,6 @@
               </size>
              </property>
             </spacer>
-           </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="pushButtonCreate">
-             <property name="text">
-              <string>Создать сервер</string>
-             </property>
-            </widget>
            </item>
           </layout>
          </item>
@@ -158,6 +158,9 @@
           </item>
           <item>
            <widget class="Line" name="line">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(119, 118, 123);</string>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
