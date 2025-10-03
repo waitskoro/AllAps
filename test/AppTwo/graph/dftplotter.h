@@ -11,12 +11,12 @@ class DftPlotter : public QObject
 public:
     explicit DftPlotter(QCustomPlot* plotter, QObject *parent = nullptr);
 
-signals:
-    void ampDistDataUpdate();
-
-public slots:
+    bool isRescale();
     void autoRescaleEnable();
     void setData(const QVector<double> &freq, const QVector<double> &amp);
+
+signals:
+    void ampDistDataUpdate();
 
 public:
     QCustomPlot* plot;

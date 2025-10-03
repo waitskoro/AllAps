@@ -16,6 +16,11 @@ DftPlotter::DftPlotter(QCustomPlot* plotter, QObject *parent)
     ampDistTracer = new GraphTracer(ampDistGraph, this);
 }
 
+bool DftPlotter::isRescale()
+{
+    return useAutRescale;
+}
+
 void DftPlotter::autoRescaleEnable()
 {
     useAutRescale = !useAutRescale;

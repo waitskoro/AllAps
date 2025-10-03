@@ -11,6 +11,7 @@ class PowerPlotter : public QObject
 public:
     explicit PowerPlotter(QCustomPlot* plotter, QObject *parent = nullptr);
 
+    bool isRescale();
     void addData(double power);
     void clearData();
     void setTimeRange(int minutes);

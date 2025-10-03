@@ -10,6 +10,8 @@ class TimePlotter : public QObject
 public:
     explicit TimePlotter(QString title, QCustomPlot* plotter, QObject *parent = nullptr);
 
+    bool isRescale();
+
 signals:
     void iDataUpdate();
 

@@ -28,13 +28,5 @@ private:
     TimePlotter *m_plotterQ;
     DftPlotter *m_dftPlotter;
     PowerPlotter *m_powerPlotter;
-
-    void onUpdateDftGraphTracerKey();
-    void onUpdateDftGraphTracerValue();
-
-    double dftGraphAmpTracerMax = 0;
-    double dftGraphAmpTracerMin = 0;
-    double dftGraphAmpTracerAvg = 0;
-    double dftGraphAmpTracerCrt = 0;
 };
 

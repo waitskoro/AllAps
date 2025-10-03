@@ -12,6 +12,11 @@ TimePlotter::TimePlotter(QString title, QCustomPlot* plotter, QObject *parent) :
                           QCP::iRangeZoom);
 }
 
+bool TimePlotter::isRescale()
+{
+    return useAutRescale;
+}
+
 void TimePlotter::setData(const QVector<double> &time, const QVector<double> &i)
 {
     iGraph->setData(time, i);

@@ -25,6 +25,11 @@ PowerPlotter::PowerPlotter(QCustomPlot* plotter, QObject *parent)
     processTimer->start();
 }
 
+bool PowerPlotter::isRescale()
+{
+    return useAutRescale;
+}
+
 void PowerPlotter::autoRescaleEnable()
 {
     useAutRescale = !useAutRescale;

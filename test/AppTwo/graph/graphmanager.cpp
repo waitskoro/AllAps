@@ -25,16 +25,6 @@ void GraphManager::setUi(Ui::MainWindow *ui)
         m_ui->channel->addItem(QString::number(i));
     }
 
-    connect(m_dftPlotter->ampDistTracer,
-            &GraphTracer::positionUpdate,
-            this,
-            &GraphManager::onUpdateDftGraphTracerKey);
-
-    connect(m_dftPlotter->ampDistTracer,
-            &GraphTracer::valueUpdate,
-            this,
-            &GraphManager::onUpdateDftGraphTracerValue);
-
     connect(m_ui->stopI, &QPushButton::clicked, [this]() {
         m_plotterI->autoRescaleEnable();
     });
@@ -58,27 +48,16 @@ void GraphManager::onSamplesReaded(QVector<std::complex<double> > dataComplex)
         return;
 
     m_dsp->input(dataComplex,1./110.e3);
-    m_powerPlotter->addData(m_dsp->powerFreqDb());
-    m_plotterI->setData(m_dsp->timeVector(), m_dsp->i());
-    m_plotterQ->setData(m_dsp->timeVector(), m_dsp->q());
-    m_dftPlotter->setData(m_dsp->freqVector(), m_dsp->ampDistDb());
-}
 
-void GraphManager::onUpdateDftGraphTracerKey()
-{
-    dftGraphAmpTracerMin = 1e10;
-    dftGraphAmpTracerAvg = 0;
-    dftGraphAmpTracerMax = 0;
-    dftGraphAmpTracerCrt = 0;
-}
+    if (m_powerPlotter->isRescale())
+        m_powerPlotter->addData(m_dsp->powerFreqDb());
 
-void GraphManager::onUpdateDftGraphTracerValue()
-{
-    dftGraphAmpTracerCrt = m_dftPlotter->ampDistTracer->getValue();
+    if (m_plotterI->isRescale())
+        m_plotterI->setData(m_dsp->timeVector(), m_dsp->i());
 
-    if (dftGraphAmpTracerCrt > dftGraphAmpTracerMax)
-        dftGraphAmpTracerMax = dftGraphAmpTracerCrt;
-    if (dftGraphAmpTracerCrt < dftGraphAmpTracerMin)
-        dftGraphAmpTracerMin = dftGraphAmpTracerCrt;
-    dftGraphAmpTracerAvg = (dftGraphAmpTracerMax + dftGraphAmpTracerMin)/2;
+    if (m_plotterQ->isRescale())
+        m_plotterQ->setData(m_dsp->timeVector(), m_dsp->q());
+
+    if (m_dftPlotter->isRescale())
+        m_dftPlotter->setData(m_dsp->freqVector(), m_dsp->ampDistDb());
 }

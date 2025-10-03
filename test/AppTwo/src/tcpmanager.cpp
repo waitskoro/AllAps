@@ -67,7 +67,7 @@ void TcpManager::onMessageRecieved(const Packet &packet)
             data.append({result.info[i][0], result.info[i][1]});
         }
 
-        m_binParser->appendChannelDataBatch(result.channel, data);
+//        m_binParser->appendChannelDataBatch(result.channel, data);
     }
 }
 
