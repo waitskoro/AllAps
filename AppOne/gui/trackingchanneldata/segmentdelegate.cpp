@@ -72,12 +72,12 @@ void SegmentDelegate::paint(QPainter *painter,
 
     QString polS;
     switch (polarizationDirection.toInt()) {
-        case 0: polS = "правая круговая"; break;
-        case 1: polS = "левая круговая"; break;
-        case 2: polS = "вертикальная"; break;
-        case 3: polS = "горизонтальная"; break;
-        case 4: polS = "линейная +45°"; break;
-        case 5: polS = "линейная –45°"; break;
+        case 1: polS = "правая круговая"; break;
+        case 2: polS = "левая круговая"; break;
+        case 3: polS = "вертикальная"; break;
+        case 4: polS = "горизонтальная"; break;
+        case 5: polS = "линейная +45°"; break;
+        case 6: polS = "линейная –45°"; break;
         default: polS = "неизвестно"; break;
     }
 

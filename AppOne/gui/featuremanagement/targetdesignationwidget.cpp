@@ -97,7 +97,7 @@ void TargetDesignationWidget::onTargetSend()
 {
     double freq = m_generalInfo->freq();
     int channel = m_generalInfo->channel();
-    int polar = m_generalInfo->polarization();
+    int polar = m_generalInfo->polarization() + 1;
     int spacecraft = m_generalInfo->spacecraftNumber();
 
     auto endDate = m_dates->dates().end;
