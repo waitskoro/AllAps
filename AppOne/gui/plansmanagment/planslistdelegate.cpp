@@ -97,17 +97,17 @@ void PlansListDelegate::paint(QPainter *painter,
 
     auto polarizaion = index.data(PlansList::DirectionOfPolarizaion).toString();
 
-    if (polarizaion == "0") {
+    if (polarizaion == "1") {
         polarizaion = "правая круговая";
-    } else if (polarizaion == "1") {
-        polarizaion = "левая круговая";
     } else if (polarizaion == "2") {
-        polarizaion = "вертикальная";
+        polarizaion = "левая круговая";
     } else if (polarizaion == "3") {
-        polarizaion = "горизонтальная";
+        polarizaion = "вертикальная";
     } else if (polarizaion == "4") {
-        polarizaion = "линейная +45°";
+        polarizaion = "горизонтальная";
     } else if (polarizaion == "5") {
+        polarizaion = "линейная +45°";
+    } else if (polarizaion == "6") {
         polarizaion = "линейная –45°";
     }
 
@@ -125,9 +125,9 @@ void PlansListDelegate::paint(QPainter *painter,
     }
 
 
-    if (state == "1") {
+    if (state == "0") {
         state = "в норме";
-    } else if (state == "0") {
+    } else if (state == "1") {
         state = "были самовосстанавливающиеся отказы (сбои), сбрасывается после выдачи сообщения";
     } else if (state == "2") {
         state = "имеются некритичные отказы, не приводят к существенным ухудшениям характеристик";

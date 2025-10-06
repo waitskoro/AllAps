@@ -18,12 +18,12 @@ GeneralInfoTarget::GeneralInfoTarget(QWidget *parent)
     for (int i = 0; i < 12; i++)
         m_channelData->addItem(QString::number(i + 1), QVariant(i));
 
-    m_polarization->addItem("Правая круговая", QVariant(0));
-    m_polarization->addItem("Левая круговая", QVariant(1));
-    m_polarization->addItem("Вертикальная", QVariant(2));
-    m_polarization->addItem("Горизонтальная", QVariant(3));
-    m_polarization->addItem("Линейная +45%", QVariant(4));
-    m_polarization->addItem("Линейная -45%", QVariant(5));
+    m_polarization->addItem("Правая круговая", QVariant(1));
+    m_polarization->addItem("Левая круговая", QVariant(2));
+    m_polarization->addItem("Вертикальная", QVariant(3));
+    m_polarization->addItem("Горизонтальная", QVariant(4));
+    m_polarization->addItem("Линейная +45%", QVariant(5));
+    m_polarization->addItem("Линейная -45%", QVariant(6));
 }
 
 void GeneralInfoTarget::init()
