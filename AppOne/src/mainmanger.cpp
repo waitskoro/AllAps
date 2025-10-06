@@ -57,6 +57,11 @@ MainManager::MainManager(TcpSocketManager *tcpManager, QObject *parent)
             &View::MainWidget::disconnect,
             this,
             &MainManager::disconnect);
+
+    connect(m_tcpManager,
+            &TcpSocketManager::remoteHostClosed,
+            m_mainWidget,
+            &View::MainWidget::onRemoteHostClosed);
 }
 
 void MainManager::showWindow()

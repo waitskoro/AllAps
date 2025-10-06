@@ -10,7 +10,6 @@ using namespace Application;
 TcpSocketManager::TcpSocketManager(QObject *parent)
     : QObject(parent)
     , m_socket(new TcpSocket())
-    , m_logFile("../log.txt")
 {
     connect(m_socket,
             &TcpSocket::connected,
@@ -21,6 +20,11 @@ TcpSocketManager::TcpSocketManager(QObject *parent)
             &TcpSocket::msgReceived,
             this,
             &TcpSocketManager::onSocketAcPacketReceived);
+
+    connect(m_socket,
+            &TcpSocket::remoteHostClosed,
+            this,
+            &TcpSocketManager::remoteHostClosed);
 }
 
 void TcpSocketManager::disconnect()
@@ -84,7 +88,7 @@ void TcpSocketManager::sendRequestTraskingPlans()
     qInfo() << "Запрос о состоянии каналов данных отправлен";
 }
 
-void TcpSocketManager::sendEmptyPacket(uint8_t type)
+void TcpSocketManager::sendEmptyPacket(quint8 type)
 {
     Header header;
     header.msg_type = type;

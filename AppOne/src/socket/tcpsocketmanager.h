@@ -40,6 +40,7 @@ public:
 
 signals:
     void connected();
+    void remoteHostClosed();
 
     void receivingMessageEmpty();
     void recieveState(StateMessage &);
@@ -54,13 +55,11 @@ private:
     QUrl m_url;
     TcpSocket *m_socket;
 
-    std::ofstream m_logFile;
-
     bool isSocketsConnected = false;
 
     void onConnected();
 
-    void sendEmptyPacket(uint8_t);
+    void sendEmptyPacket(quint8);
     void onSocketAcPacketReceived(Packet packet);
 };
 

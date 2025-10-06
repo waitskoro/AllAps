@@ -39,6 +39,7 @@ public:
     explicit MainWidget(QWidget *parent = nullptr);
 
     void showWindow();
+    void onRemoteHostClosed();
     void addMessage(const ReceivingMessage &);
 signals:
     void disconnect();

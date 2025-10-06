@@ -96,6 +96,13 @@ void MainWidget::showWindow()
     show();
 }
 
+void MainWidget::onRemoteHostClosed()
+{
+    m_menuWidget->close();
+    onGoBack();
+    emit disconnect();
+}
+
 void MainWidget::addMessage(const ReceivingMessage &msg)
 {
     m_plansWidget->addMessage(msg);
@@ -218,5 +225,4 @@ void MainWidget::onGoBack()
     m_mainLayout->addWidget(m_plansWidget);
 
     m_currentView = Plans;
-
 }
