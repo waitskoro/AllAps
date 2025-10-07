@@ -37,7 +37,7 @@ void GeneralInfoTarget::init()
     gridLayout->addWidget(new QLabel("Номер КА"), 0, 2);
     gridLayout->addWidget(m_spacecraftNumber, 0, 3);
 
-    gridLayout->addWidget(new QLabel("Поларизация"), 1, 0);
+    gridLayout->addWidget(new QLabel("Поляризация"), 1, 0);
     gridLayout->addWidget(m_polarization, 1, 1);
     gridLayout->addWidget(new QLabel("Частота, кГц"), 1, 2);
     gridLayout->addWidget(m_frequency, 1, 3);

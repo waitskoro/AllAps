@@ -70,7 +70,7 @@ void SunTabTargets::init()
     QGridLayout *gridLayout_2 = new QGridLayout();
     gridLayout->addLayout(gridLayout_2, 0, 0, 1, 4);
 
-    gridLayout_2->addWidget(new QLabel("Ширина"), 0, 0);
+    gridLayout_2->addWidget(new QLabel("Широта"), 0, 0);
     gridLayout_2->addWidget(m_lat, 0, 1);
     gridLayout_2->addWidget(m_latConverter, 0, 2);
     gridLayout_2->addWidget(new QLabel("Долгота"), 0, 3);
