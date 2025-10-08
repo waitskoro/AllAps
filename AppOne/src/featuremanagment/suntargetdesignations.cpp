@@ -124,8 +124,8 @@ Target SunTargetDesignations::convertToTargets(Coordinates &coords, QDateTime da
     bean = qBound(-M_PI/2, bean, M_PI/2);
 
     Target result;
-    result.azumit = az * 180 / M_PI;
-    result.bean = bean * 180 / M_PI;
+    result.azumit = az * 180 / M_PI * 10;
+    result.bean = bean * 180 / M_PI * 10;
 
     return result;
 }
