@@ -19,6 +19,7 @@ SOURCES += \
     gui/featuremanagement/suntabtargets.cpp \
     gui/featuremanagement/targetdesignations.cpp \
     gui/featuremanagement/targetdesignationwidget.cpp \
+    gui/featuremanagement/test/targetdesignationstest.cpp \
     gui/ipconnectionsetupwidget.cpp \
     gui/loader.cpp \
     gui/mainwidget.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     gui/featuremanagement/suntabtargets.h \
     gui/featuremanagement/targetdesignations.h \
     gui/featuremanagement/targetdesignationwidget.h \
+    gui/featuremanagement/test/targetdesignationstest.h \
     gui/ipconnectionsetupwidget.h \
     gui/loader.h \
     gui/mainwidget.h \
@@ -111,3 +113,6 @@ DISTFILES +=
 
 RESOURCES += \
     resources.qrc
+
+FORMS += \
+    gui/featuremanagement/test/targetdesignationstest.ui

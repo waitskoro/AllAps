@@ -25,10 +25,11 @@ public:
 signals:
     void goBack();
     void createTarget(Application::TargetDesignations m_target);
-
+    void createTargetTest(Application::TargetDesignations m_target);
 private:
     QPushButton *m_exit;
     QPushButton *m_create;
+    QPushButton *m_testButton;
 
     DateTarget *m_dates;
     TargetDesignations *m_targets;

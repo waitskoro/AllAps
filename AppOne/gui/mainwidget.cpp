@@ -203,6 +203,13 @@ void MainWidget::onButtonMenuClicked(CurrentView nextView)
                         m_loader->show();
                         m_loader->start();
                     });
+
+            connect(target,
+                    &TargetDesignationWidget::createTargetTest,
+                    this,
+                    [this](Application::TargetDesignations target) {
+                        emit sendTarget(target);
+                    });
             break;
         }
         case StopingPlans: {

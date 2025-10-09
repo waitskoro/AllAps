@@ -15,6 +15,7 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
     : QWidget(parent)
     , m_exit(new QPushButton(this))
     , m_create(new QPushButton(this))
+    , m_testButton(new QPushButton(this))
     , m_dates(new DateTarget(this))
     , m_targets(new TargetDesignations(this))
     , m_generalInfo(new GeneralInfoTarget(this))
@@ -36,6 +37,54 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
             [this](){
                 m_targets->setDates(m_dates->dates());
             });
+
+    connect(m_testButton, &QPushButton::clicked, [this](){
+        auto startDate = QDateTime::currentDateTime();
+        auto endDate =  startDate.addSecs(600);
+
+        Application::TargetDesignations target;
+
+        target.spacecraftNumber = m_generalInfo->spacecraftNumber();
+        target.centerFrequency = m_generalInfo->freq();
+
+        for (int sector = 0; sector < 4; sector++) {
+            qint16 azimuth = 0;
+            switch(sector) {
+                case 0: azimuth = 0; break;
+                case 1: azimuth = 900; break;
+                case 2: azimuth = 1800; break;
+                case 3: azimuth = 2700; break;
+            }
+
+            qint16 elevation = 890;
+
+            for (int polarization = 0; polarization < 2; polarization++) {
+                int channel = sector * 2 + polarization;
+
+                target.channelNumber = channel + 1;
+                target.directionOfPolarizaion = polarization + 1;
+
+                target.planStartTime = fromDateToDouble(startDate);
+                target.planEndTime = fromDateToDouble(endDate);
+
+                target.count = 2;
+                target.coordinates = new qint16*[target.count];
+
+                for(quint16 coordIndex = 0; coordIndex < target.count; coordIndex++) {
+                    target.coordinates[coordIndex] = new qint16[2];
+                    target.coordinates[coordIndex][0] = azimuth;
+                    target.coordinates[coordIndex][1] = elevation;
+                }
+
+                emit createTargetTest(target);
+
+                for(quint16 coordIndex = 0; coordIndex < target.count; coordIndex++) {
+                    delete[] target.coordinates[coordIndex];
+                }
+                delete[] target.coordinates;
+            }
+        }
+    });
 }
 
 void TargetDesignationWidget::initUI()
@@ -61,6 +110,9 @@ void TargetDesignationWidget::initUI()
     m_exit->setText(" Назад ");
     m_exit->setStyleSheet("background-color: #CEA898;"
                           "font-size: 20px;");
+
+    m_testButton->setText(" Множественное создание ");
+    m_testButton->move(450, 216);
 }
 
 void TargetDesignationWidget::paintEvent(QPaintEvent *event)
@@ -91,6 +143,9 @@ void TargetDesignationWidget::paintEvent(QPaintEvent *event)
     font.setPixelSize(16);
     font.setBold(false);
     painter.setFont(font);
+
+    m_testButton->raise();
+    m_testButton->update();
 }
 
 void TargetDesignationWidget::onTargetSend()
