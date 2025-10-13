@@ -14,6 +14,7 @@ SOURCES += \
     gui/featuremanagement/generalinfotarget.cpp \
     gui/featuremanagement/manualtabtargets.cpp \
     gui/featuremanagement/qcustomplot.cpp \
+    gui/featuremanagement/rangetabtargets.cpp \
     gui/featuremanagement/spiralgraph.cpp \
     gui/featuremanagement/spiraltabtargets.cpp \
     gui/featuremanagement/suntabtargets.cpp \
@@ -64,6 +65,7 @@ HEADERS += \
     gui/featuremanagement/generalinfotarget.h \
     gui/featuremanagement/manualtabtargets.h \
     gui/featuremanagement/qcustomplot.h \
+    gui/featuremanagement/rangetabtargets.h \
     gui/featuremanagement/spiralgraph.h \
     gui/featuremanagement/spiraltabtargets.h \
     gui/featuremanagement/suntabtargets.h \

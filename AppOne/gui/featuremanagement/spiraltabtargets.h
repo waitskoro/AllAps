@@ -17,11 +17,8 @@ public:
     explicit SpiralTabTargets(QWidget *parent = nullptr);
     QVector<TargetDesignation> coordinates();
 
-signals:
-
 private:
     void init();
-    // void paintEvent(QPaintEvent *event);
 
     void calculateFromInputs();
     void calculate(const double spiralStep,

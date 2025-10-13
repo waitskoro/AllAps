@@ -4,6 +4,7 @@
 #include <QTabWidget>
 
 #include "suntabtargets.h"
+#include "rangetabtargets.h"
 #include "manualtabtargets.h"
 #include "spiraltabtargets.h"
 
@@ -13,6 +14,7 @@ TargetDesignations::TargetDesignations(QWidget *parent)
     : QWidget(parent)
     , m_tabWidget(new QTabWidget(this))
     , m_sunTab(new SunTabTargets(this))
+    , m_rangeTab(new RangeTabTargets(this))
     , m_manualTab(new ManualTabTargets(this))
     , m_spiralTab(new SpiralTabTargets(this))
 {
@@ -29,6 +31,7 @@ void TargetDesignations::init()
     m_tabWidget->addTab(m_manualTab, "Ручной ввод");
     m_tabWidget->addTab(m_sunTab, "По солнцу");
     m_tabWidget->addTab(m_spiralTab, "Спираль");
+    m_tabWidget->addTab(m_rangeTab, "По диапазону");
 }
 
 void TargetDesignations::paintEvent(QPaintEvent *event)
@@ -52,6 +55,8 @@ QVector<TargetDesignation> TargetDesignations::coordinates()
         return m_sunTab->coordinates();
     } else if (m_tabWidget->currentIndex() == 2) {
         return m_spiralTab->coordinates();
+    } else if (m_tabWidget->currentIndex() == 3) {
+        return m_rangeTab->coordinates();
     }
 
     return {};

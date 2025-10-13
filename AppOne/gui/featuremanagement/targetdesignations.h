@@ -9,6 +9,7 @@
 namespace View {
 
 class SunTabTargets;
+class RangeTabTargets;
 class ManualTabTargets;
 class SpiralTabTargets;
 
@@ -29,6 +30,7 @@ private:
 
     QTabWidget *m_tabWidget;
     SunTabTargets *m_sunTab;
+    RangeTabTargets *m_rangeTab;
     ManualTabTargets *m_manualTab;
     SpiralTabTargets *m_spiralTab;
 };

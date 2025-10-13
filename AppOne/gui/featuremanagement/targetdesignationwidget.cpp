@@ -112,7 +112,7 @@ void TargetDesignationWidget::initUI()
                           "font-size: 20px;");
 
     m_testButton->setText(" Множественное создание ");
-    m_testButton->move(450, 216);
+    m_testButton->move(475, 216);
 }
 
 void TargetDesignationWidget::paintEvent(QPaintEvent *event)
