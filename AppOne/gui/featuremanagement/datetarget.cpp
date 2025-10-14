@@ -43,7 +43,7 @@ void DateTarget::init()
     m_startDate->setDate(QDate::currentDate());
     m_startTime->setTime(QTime::currentTime());
     m_endDate->setDate(QDate::currentDate());
-    m_endTime->setTime(QTime::currentTime().addSecs(3600));
+    m_endTime->setTime(QTime::currentTime().addSecs(420));
 }
 
 void DateTarget::paintEvent(QPaintEvent *event)
