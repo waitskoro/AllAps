@@ -52,6 +52,10 @@ void GraphManager::setUi(Ui::MainWindow *ui)
         bool isRescale = m_dftPlotter->isRescale();
         m_ui->stopSpectrum->setText(isRescale ? "Стоп" : "Запуск");
     });
+
+    connect(m_ui->pushButtonPwrClean, &QPushButton::clicked, [this] () {
+        m_powerPlotter->clearData();
+    });
 }
 
 void GraphManager::onSamplesReaded(QVector<std::complex<double> > dataComplex)

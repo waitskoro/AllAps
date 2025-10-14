@@ -40,6 +40,20 @@ void PowerPlotter::addData(double power)
     currentSecondValues.append(power);
 }
 
+void PowerPlotter::clearData()
+{
+    currentSecondValues.clear();
+    dataMap.clear();
+
+    ampDistGraph->data()->clear();
+
+    emit ampDistDataUpdate();
+    ampDistTracer->onDataUpdate();
+
+    ampDistGraph->rescaleAxes();
+    plot->replot();
+}
+
 void PowerPlotter::processCurrentData() {
     if (currentSecondValues.isEmpty())
         return;
