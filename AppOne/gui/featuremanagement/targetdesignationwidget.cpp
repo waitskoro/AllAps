@@ -39,8 +39,8 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
             });
 
     connect(m_testButton, &QPushButton::clicked, [this](){
-        auto startDate = QDateTime::currentDateTime();
-        auto endDate =  startDate.addSecs(600);
+        auto startDate = m_dates->dates().start;
+        auto endDate = m_dates->dates().end;
 
         Application::TargetDesignations target;
 
