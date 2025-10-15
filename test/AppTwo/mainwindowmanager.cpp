@@ -41,11 +41,8 @@ void MainWindowManager::onServerCreated()
 
 void MainWindowManager::onCountMessageRecieved(const Report &msg)
 {
-    if (msg.channel == m_ui->channel->currentIndex() + 1) {
-        m_graphManager->onSamplesReaded(convertToComplex(msg.info));
-    }
-
     m_infoManager->addInfo(msg);
+    m_graphManager->onSamplesReaded(msg.channel, convertToComplex(msg.info));
 }
 
 ComplexVector MainWindowManager::convertToComplex(const QVector<std::array<qint8, 2>> &data)

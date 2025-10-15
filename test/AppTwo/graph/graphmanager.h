@@ -19,7 +19,7 @@ public:
     explicit GraphManager(QObject *parent = nullptr);
 
     void setUi(Ui::MainWindow *ui);
-    void onSamplesReaded(QVector<std::complex<double> > dataComplex);
+    void onSamplesReaded(int channel, QVector<std::complex<double>> dataComplex);
 
 private:
     Dsp *m_dsp;

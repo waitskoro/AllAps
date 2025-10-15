@@ -5,90 +5,128 @@ PowerPlotter::PowerPlotter(QCustomPlot* plotter, QObject *parent)
 {
     this->plot = plotter;
 
-    ampDistGraph = plot->addGraph();
+    distGraph = plot->addGraph();
     plot->xAxis->setLabel("f, Гц");
     plot->yAxis->setLabel("дБ");
     plot->setInteractions(QCP::iRangeDrag |
                           QCP::iRangeZoom |
                           QCP::iSelectPlottables);
-    ampDistGraph->setSelectable(QCP::stSingleData);
 
-    ampDistTracer = new GraphTracer(ampDistGraph, this);
+    distGraph->setSelectable(QCP::stSingleData);
+    distTracer = new GraphTracer(distGraph, this);
 
     QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
     dateTicker->setDateTimeFormat("hh:mm:ss");
     plotter->xAxis->setTicker(dateTicker);
 
-    processTimer = new QTimer(this);
-    processTimer->setInterval(1000);
-    connect(processTimer, &QTimer::timeout, this, &PowerPlotter::processCurrentData);
-    processTimer->start();
+    m_processTimer = new QTimer(this);
+    m_processTimer->setInterval(1000);
+    m_processTimer->start();
+
+    connect(m_processTimer,
+            &QTimer::timeout,
+            this,
+            &PowerPlotter::processCurrentData);
 }
 
 bool PowerPlotter::isRescale()
 {
-    return useAutRescale;
+    return m_autoRescale;
 }
 
 void PowerPlotter::autoRescaleEnable()
 {
-    useAutRescale = !useAutRescale;
-}
-
-void PowerPlotter::addData(double power)
-{
-    currentSecondValues.append(power);
+    m_autoRescale = !m_autoRescale;
 }
 
 void PowerPlotter::clearData()
 {
-    currentSecondValues.clear();
-    dataMap.clear();
+    m_dataMap.clear();
+    m_currentSecondValues.clear();
+    distGraph->data()->clear();
 
-    ampDistGraph->data()->clear();
-
-    emit ampDistDataUpdate();
-    ampDistTracer->onDataUpdate();
-
-    ampDistGraph->rescaleAxes();
+    distTracer->onDataUpdate();
+    distGraph->rescaleAxes();
     plot->replot();
 }
 
-void PowerPlotter::processCurrentData() {
-    if (currentSecondValues.isEmpty())
-        return;
+void PowerPlotter::setRangeGraph(int range)
+{
+    m_range = range * 60;
 
-    double sum = 0;
-    for (double value : currentSecondValues) {
-        sum += value;
-    }
-    double average = sum / currentSecondValues.size();
+    double currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000.0;
+    double startTime = currentTime - m_range;
 
-    double key = QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000.0;
-    dataMap[key] = average;
+    distGraph->keyAxis()->setRange(startTime, currentTime);
+}
 
-    const int MAX_POINTS = 300;
+void PowerPlotter::setCurrentChannel(int channel)
+{
+    m_processTimer->stop();
+    clearData();
 
-    while (dataMap.size() > MAX_POINTS) {
-        auto it = dataMap.begin();
-        dataMap.erase(it);
-    }
+    m_currentChannel = channel;
 
-    QVector<double> keys, values;
-    keys.reserve(dataMap.size());
-    values.reserve(dataMap.size());
+    for (auto& pair : m_powerOnChannel[m_currentChannel])
+        distGraph->addData(pair.first, pair.second);
 
-    for (auto it = dataMap.begin(); it != dataMap.end(); ++it) {
-        keys.append(it.key());
-        values.append(it.value());
-    }
-
-    ampDistGraph->setData(keys, values);
-    ampDistGraph->rescaleAxes();
+    distGraph->rescaleAxes();
     plot->replot();
 
-    currentSecondValues.clear();
+    m_currentSecondValues.clear();
+    distTracer->onDataUpdate();
 
-    emit ampDistDataUpdate();
-    ampDistTracer->onDataUpdate();
+    m_processTimer->start();
+}
+
+void PowerPlotter::addData(int channel, double power)
+{
+    m_currentSecondValues[channel].append(power);
+}
+
+double PowerPlotter::avg(QVector<double> vector)
+{
+    double sum = 0;
+
+    for (double value : vector)
+        sum += value;
+
+    return sum / vector.size();
+}
+
+void PowerPlotter::processCurrentData()
+{
+    distGraph->data()->clear();
+
+    // Обновление времени по всем каналам
+    for (int i = 1; i <= 12; i++) {
+        double avgPower = avg(m_currentSecondValues[i]);
+        double date = QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000.0;
+
+        m_powerOnChannel[i].append({date, avgPower});
+
+        // Удаление первых элементов из сохранения если их больше часа
+        while (m_powerOnChannel[i].size() > 3600) {
+            auto it = m_powerOnChannel[i].begin();
+            m_powerOnChannel[i].erase(it);
+        }
+    }
+
+    m_currentSecondValues.clear();
+
+    // Построение графика
+    for (auto& pair : m_powerOnChannel[m_currentChannel])
+        distGraph->addData(pair.first, pair.second);
+
+    if (isRescale()) {
+        double currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000.0;
+        double startTime = currentTime - m_range;
+
+        distGraph->keyAxis()->setRange(startTime, currentTime);
+        distGraph->valueAxis()->rescale();
+//        distGraph->rescaleAxes();
+    }
+
+    plot->replot();
+    distTracer->onDataUpdate();
 }

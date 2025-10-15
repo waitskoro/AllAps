@@ -21,10 +21,6 @@ void GraphManager::setUi(Ui::MainWindow *ui)
     m_powerPlotter = new PowerPlotter(ui->plotterPower, this);
     m_dftPlotter = new DftPlotter(m_ui->plotterSpector, this);
 
-    for (int i = 1; i <= 12; i++) {
-        m_ui->channel->addItem(QString::number(i));
-    }
-
     connect(m_ui->stopI, &QPushButton::clicked, [this]() {
         m_plotterI->autoRescaleEnable();
 
@@ -56,17 +52,27 @@ void GraphManager::setUi(Ui::MainWindow *ui)
     connect(m_ui->pushButtonPwrClean, &QPushButton::clicked, [this] () {
         m_powerPlotter->clearData();
     });
+
+    connect(ui->comboBoxChannel, &QComboBox::currentIndexChanged, [this, ui]() {
+        m_powerPlotter->setCurrentChannel(ui->comboBoxChannel->currentIndex() + 1);
+    });
+
+    connect(ui->spinBoxRange, &QSpinBox::valueChanged, [this] (int i) {
+        m_powerPlotter->setRangeGraph(i);
+    });
 }
 
-void GraphManager::onSamplesReaded(QVector<std::complex<double> > dataComplex)
+void GraphManager::onSamplesReaded(int channel, QVector<std::complex<double>> dataComplex)
 {
     if (dataComplex.size() == 0)
         return;
 
-    m_dsp->input(dataComplex,1./110.e3);
+    m_dsp->input(dataComplex, 1./110.e3);
 
-    if (m_powerPlotter->isRescale())
-        m_powerPlotter->addData(m_dsp->powerFreqDb());
+    m_powerPlotter->addData(channel, m_dsp->powerFreqDb());
+
+    if (channel != m_ui->comboBoxChannel->currentIndex() + 1)
+        return;
 
     if (m_plotterI->isRescale())
         m_plotterI->setData(m_dsp->timeVector(), m_dsp->i());
