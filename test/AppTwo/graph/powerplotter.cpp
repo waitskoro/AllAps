@@ -21,7 +21,6 @@ PowerPlotter::PowerPlotter(QCustomPlot* plotter, QObject *parent)
 
     m_processTimer = new QTimer(this);
     m_processTimer->setInterval(1000);
-    m_processTimer->start();
 
     connect(m_processTimer,
             &QTimer::timeout,
@@ -81,6 +80,10 @@ void PowerPlotter::setCurrentChannel(int channel)
 
 void PowerPlotter::addData(int channel, double power)
 {
+    if (!m_processTimer->isActive()) {
+        m_processTimer->start();
+    }
+
     m_currentSecondValues[channel].append(power);
 }
 

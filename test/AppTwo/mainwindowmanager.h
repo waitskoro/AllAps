@@ -27,11 +27,13 @@ public:
     void setWidget(QWidget *widget);
 
     void onServerCreated();
+
     void onCountMessageRecieved(const Report &);
 
 signals:
     void serverStopped();
     void createServer(const int port);
+    void checkableChanged(bool checkable);
 
 private:
     InfoManager *m_infoManager;
@@ -40,6 +42,7 @@ private:
     QWidget *m_widget;
     Ui::MainWindow *m_ui;
 
-    ComplexVector convertToComplex(const QVector<std::array<qint8, 2>> &data);
+    template<typename T>
+    ComplexVector convertToComplex(const QVector<std::array<T, 2>> &data);
 };
 

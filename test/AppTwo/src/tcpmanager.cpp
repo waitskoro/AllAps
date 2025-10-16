@@ -54,20 +54,11 @@ void TcpManager::onMessageRecieved(const Packet &packet)
     stream.setByteOrder(QDataStream::LittleEndian);
 
     if (packet.header.msgType == 0x82) {
-        Report result;
-        stream >> result;
-
-        m_packetCounter++;
-
-        emit countMessage(result);
-
-        QVector<QPair<int, int>> data;
-        data.reserve(result.count);
-        for (quint32 i = 0; i < result.count; i++) {
-            data.append({result.info[i][0], result.info[i][1]});
+        if (m_is16Bit) {
+            processReport<qint16>(packet);
+        } else {
+            processReport<qint8>(packet);
         }
-
-//        m_binParser->appendChannelDataBatch(result.channel, data);
     }
 }
 
@@ -84,6 +75,11 @@ void TcpManager::onServerCreating(const int &port)
         qInfo() << "Сервер запущен";
         emit serverCreated();
     }
+}
+
+void TcpManager::onCheckableChanged(bool checkable)
+{
+    m_is16Bit = checkable;
 }
 
 void TcpManager::onClientConnected()
@@ -151,6 +147,36 @@ Header TcpManager::deserializeHeader(QByteArray& data)
 
     return header;
 }
+
+template<typename T>
+void TcpManager::processReport(const Packet &packet)
+{
+    QDataStream stream(packet.data);
+    stream.setByteOrder(QDataStream::LittleEndian);
+
+    Report result;
+    result.is16 = m_is16Bit;
+    stream >> result;
+    m_packetCounter++;
+
+    QVector<QPair<int, int>> data;
+    data.reserve(result.count);
+
+    if (m_is16Bit) {
+        for (const auto &item : result.info_16) {
+            data.append({item[0], item[1]});
+        }
+    } else {
+        for (const auto &item : result.info_8) {
+            data.append({item[0], item[1]});
+        }
+    }
+
+    emit countMessage(result);
+
+    // m_binParser->appendChannelDataBatch(result.channel, data);
+}
+
 void TcpManager::onClientDisconnected()
 {
     m_ppsTimer.start(1000);

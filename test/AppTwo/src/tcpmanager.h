@@ -19,6 +19,7 @@ public:
     void onServerStoped();
     void onMessageRecieved(const Packet &);
     void onServerCreating(const int &port);
+    void onCheckableChanged(bool checkable);
 
 signals:
     void serverCreated();
@@ -54,4 +55,9 @@ private:
     QTimer m_ppsTimer;
 
     bool first = true;
+    bool m_is16Bit = false;
+
+private:
+    template<typename T>
+    void processReport(const Packet &packet);
 };

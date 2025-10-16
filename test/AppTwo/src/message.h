@@ -55,7 +55,10 @@ struct Report {
     double time;
     std::array<qint16, 2> az;
     quint32 count;
-    QVector<std::array<qint8, 2>> info;
+    bool is16;
+    QVector<std::array<qint8, 2>> info_8;
+    QVector<std::array<qint16, 2>> info_16;
+
 
     friend QDataStream &operator>>(QDataStream &stream, Report &report) {
         stream.setByteOrder(QDataStream::LittleEndian);
@@ -68,10 +71,17 @@ struct Report {
             >> report.az[1]
             >> report.count;
 
-        report.info.resize(report.count);
+        if (report.is16) {
+            report.info_16.resize(report.count);
+            for (auto &sample : report.info_16) {
+                stream >> sample[0] >> sample[1];
+            }
 
-        for (auto &sample : report.info) {
-            stream >> sample[0] >> sample[1];
+        } else {
+            report.info_8.resize(report.count);
+            for (auto &sample : report.info_8) {
+                stream >> sample[0] >> sample[1];
+            }
         }
 
         return stream;
