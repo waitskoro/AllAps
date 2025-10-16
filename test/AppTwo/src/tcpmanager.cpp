@@ -154,8 +154,7 @@ void TcpManager::processReport(const Packet &packet)
     QDataStream stream(packet.data);
     stream.setByteOrder(QDataStream::LittleEndian);
 
-    Report result;
-    result.is16 = m_is16Bit;
+    Report result(m_is16Bit);
     stream >> result;
     m_packetCounter++;
 

@@ -59,6 +59,10 @@ struct Report {
     QVector<std::array<qint8, 2>> info_8;
     QVector<std::array<qint16, 2>> info_16;
 
+    Report(bool is16)
+        : is16(is16) {
+
+    }
 
     friend QDataStream &operator>>(QDataStream &stream, Report &report) {
         stream.setByteOrder(QDataStream::LittleEndian);
