@@ -99,6 +99,9 @@ double PowerPlotter::avg(QVector<double> vector)
 
 void PowerPlotter::processCurrentData()
 {
+    if (m_currentSecondValues.isEmpty())
+        m_processTimer->stop();
+
     distGraph->data()->clear();
 
     // Обновление времени по всем каналам
