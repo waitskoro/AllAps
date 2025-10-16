@@ -18,8 +18,10 @@ InfoManager::InfoManager(QObject *parent)
     m_cleanupTimer.start(1000);
 }
 
-void InfoManager::addInfo(const Report &msg)
+void InfoManager::addInfo(bool isQint16, const Report &msg)
 {
+    m_isQint16 = isQint16;
+
     QModelIndexList matches = m_model->match(m_model->index(0, 0),
                                              ChannelNumber,
                                              msg.channel,
@@ -80,7 +82,11 @@ void InfoManager::updateExistingItem(QStandardItem *item, const Report &msg)
     item->setData(msg.az[1], Az_2);
 
     QVariant variant;
-    variant.setValue(msg.info);
+    if (m_isQint16) {
+        variant.setValue(msg.info_16);
+    } else {
+        variant.setValue(msg.info_8);
+    }
     item->setData(variant, Info);
 }
 

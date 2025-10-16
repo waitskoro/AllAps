@@ -15,13 +15,15 @@ class InfoManager : public QObject
 public:
     explicit InfoManager(QObject *parent = nullptr);
 
-    void addInfo(const Report &msg);
+    void addInfo(bool isQint16, const Report &msg);
     void setListView(QListView *listView);
 
 private slots:
     void checkDataFreshness();
 
 private:
+    bool m_isQint16 = false;
+
     void setData(QStandardItem *item, const Report &msg);
     void updateExistingItem(QStandardItem *item, const Report &msg);
 

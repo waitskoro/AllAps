@@ -26,6 +26,12 @@ void MainWindowManager::setUi(Ui::MainWindow *ui)
             m_ui->pushButtonCreate->setText("Создать сервер");
         }
     });
+
+    connect(m_ui->action16_bit, &QAction::triggered,
+            [this](){
+        auto checked = m_ui->action16_bit->isChecked();
+        emit checkableChanged(checked);
+    });
 }
 
 void MainWindowManager::setWidget(QWidget *widget)
@@ -41,11 +47,18 @@ void MainWindowManager::onServerCreated()
 
 void MainWindowManager::onCountMessageRecieved(const Report &msg)
 {
-    m_infoManager->addInfo(msg);
-    m_graphManager->onSamplesReaded(msg.channel, convertToComplex(msg.info));
+    auto checked = m_ui->action16_bit->isChecked();
+    m_infoManager->addInfo(checked, msg);
+
+    if (checked) {
+        m_graphManager->onSamplesReaded(msg.channel, convertToComplex(msg.info_16));
+    } else {
+        m_graphManager->onSamplesReaded(msg.channel, convertToComplex(msg.info_8));
+    }
 }
 
-ComplexVector MainWindowManager::convertToComplex(const QVector<std::array<qint8, 2>> &data)
+template<typename T>
+ComplexVector MainWindowManager::convertToComplex(const QVector<std::array<T, 2>> &data)
 {
     ComplexVector result;
 

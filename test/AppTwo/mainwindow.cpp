@@ -34,6 +34,11 @@ MainWindow::MainWindow(QWidget *parent)
             &MainWindowManager::serverStopped,
             m_tcpManager,
             &TcpManager::onServerStoped);
+
+    connect(m_mainWindowManager,
+            &MainWindowManager::checkableChanged,
+            m_tcpManager,
+            &TcpManager::onCheckableChanged);
 }
 
 MainWindow::~MainWindow()
