@@ -117,7 +117,7 @@ void PlansListDelegate::paint(QPainter *painter,
     painter->drawText(QRect(left + 20, top + 95, 150, 50),
                       QString("Поляризация: %1").arg(polarizaion));
 
-    auto state = index.data(PlansList::DirectionOfPolarizaion).toString();
+    auto state = index.data(PlansList::State).toString();
 
     if (state != "0") {
         font.setPixelSize(14);
