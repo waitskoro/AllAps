@@ -17,8 +17,9 @@ class ManualTabTargets : public QWidget
 public:
     explicit ManualTabTargets(QWidget *parent = nullptr);
 
-    const QVector<TargetDesignation> &coordinates() const;
+    int beam();
     int countCoordinates() const;
+    const QVector<TargetDesignation> &coordinates() const;
 private:
     void init();
     void paintEvent(QPaintEvent *event);

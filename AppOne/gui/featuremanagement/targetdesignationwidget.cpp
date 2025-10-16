@@ -56,7 +56,7 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
                 case 3: azimuth = 2700; break;
             }
 
-            qint16 elevation = 890;
+            qint16 elevation = m_targets->beam();
 
             for (int polarization = 0; polarization < 2; polarization++) {
                 int channel = sector * 2 + polarization;

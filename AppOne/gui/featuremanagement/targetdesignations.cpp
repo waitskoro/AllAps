@@ -42,6 +42,11 @@ void TargetDesignations::paintEvent(QPaintEvent *event)
     painter.fillRect(rect(), QColor("#C3D7E4"));
 }
 
+int TargetDesignations::beam()
+{
+    return m_manualTab->beam();
+}
+
 void TargetDesignations::setDates(Dates dates)
 {
     m_sunTab->onButtonCreate(dates);

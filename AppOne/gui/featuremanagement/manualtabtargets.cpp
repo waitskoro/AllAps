@@ -88,6 +88,12 @@ const QVector<TargetDesignation> &ManualTabTargets::coordinates() const
     return m_model->coordinates();
 }
 
+int ManualTabTargets::beam()
+{
+    auto currentElevationAngle = fromStrToInt(m_currentBeanAzimut->text());
+    return currentElevationAngle;
+}
+
 int ManualTabTargets::countCoordinates() const
 {
     return m_model->countCoordinates();
