@@ -55,6 +55,11 @@ void MainWindowManager::onCountMessageRecieved(const Report &msg)
     } else {
         m_graphManager->onSamplesReaded(msg.channel, convertToComplex(msg.info_8));
     }
+
+    if (msg.channel == m_ui->comboBoxChannel->currentIndex() + 1) {
+        m_ui->label_azimut->setText(QString::number(msg.az[0]));
+        m_ui->label_beam->setText(QString::number(msg.az[1]));
+    }
 }
 
 template<typename T>
