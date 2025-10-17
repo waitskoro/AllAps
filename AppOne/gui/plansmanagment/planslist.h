@@ -18,7 +18,7 @@ public:
         CenterFrequency  = Qt::UserRole + 1,
         SpacecraftNumber,
         CurrentAzimut,
-        CurrentBeanAzimut,
+        CurrentAngle,
         ChannelNumber,
         DirectionOfPolarizaion,
         LevelOfSignal,

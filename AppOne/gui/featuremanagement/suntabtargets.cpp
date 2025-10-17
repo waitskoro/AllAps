@@ -122,7 +122,7 @@ void SunTabTargets::onButtonCreate(Dates dates)
         auto targets = m_sunTargetParser->getTargets(dates.start, dates.end);
 
         for (int i = 0; i < targets.count(); i++) {
-            m_model->append(targets[i].azumit, targets[i].bean);
+            m_model->append(targets[i].azimut / 10.0, targets[i].angle / 10.0);
         }
     }
 }

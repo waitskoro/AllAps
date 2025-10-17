@@ -126,8 +126,8 @@ bool SegmentDelegate::editorEvent(QEvent *event,
 
         for (int i = 0; i < targetCount.toInt(); i++) {
             TargetDesignation trg;
-            trg.azimut = vectorData[i][0];
-            trg.elev = vectorData[i][1];
+            trg.azimut = vectorData[i][0] / 10.0;
+            trg.elev = vectorData[i][1] / 10.0;
             m_values->push_back(trg);
         }
 

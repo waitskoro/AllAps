@@ -84,10 +84,10 @@ void PlansListDelegate::paint(QPainter *painter,
     auto signal = index.data(PlansList::LevelOfSignal).toString();
 
     auto azimut = index.data(PlansList::CurrentAzimut).toString();
-    auto azimutBean = index.data(PlansList::CurrentBeanAzimut).toString();
+    auto angle = index.data(PlansList::CurrentAngle).toString();
 
     painter->drawText(QRect(left + 230, top + 40, 330, 25),
-                      QString("Азимут: %1°      Угол места: %2°").arg(azimut).arg(azimutBean));
+                      QString("Азимут: %1°      Угол места: %2°").arg(azimut).arg(angle));
     painter->drawText(QRect(left + 230, top + 65, 330, 25),
                       QString("Частота: %1 МГц      Сигнал: %2 мкВ").arg(freq).arg(signal));
 

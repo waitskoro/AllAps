@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QMap>
 #include <QObject>
 #include <complex>
 
@@ -19,6 +20,7 @@ public:
     explicit GraphManager(QObject *parent = nullptr);
 
     void setUi(Ui::MainWindow *ui);
+    void setAzimutAngle(int channel, double azimut, double angle);
     void onSamplesReaded(int channel, QVector<std::complex<double>> dataComplex);
 
 private:
@@ -28,5 +30,7 @@ private:
     TimePlotter *m_plotterQ;
     DftPlotter *m_dftPlotter;
     PowerPlotter *m_powerPlotter;
+
+    QMap<int, std::pair<double, double>> m_azimutAngleOnChannel;
 };
 

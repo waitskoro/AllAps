@@ -54,12 +54,35 @@ void GraphManager::setUi(Ui::MainWindow *ui)
     });
 
     connect(ui->comboBoxChannel, &QComboBox::currentIndexChanged, [this, ui]() {
-        m_powerPlotter->setCurrentChannel(ui->comboBoxChannel->currentIndex() + 1);
-    });
+        int channel = ui->comboBoxChannel->currentIndex() + 1;
 
+        m_powerPlotter->setCurrentChannel(channel);
+
+        auto it = m_azimutAngleOnChannel.find(channel);
+        if (it != m_azimutAngleOnChannel.end()) {
+            double azimuth = it->first;
+            double angle = it->second;
+
+            m_ui->label_azimut->setText(QString::number(azimuth, 'f', 1));
+            m_ui->label_angle->setText(QString::number(angle, 'f', 1));
+        } else {
+            m_ui->label_azimut->setText("0.0");
+            m_ui->label_angle->setText("0.0");
+        }
+    });
     connect(ui->spinBoxRange, &QSpinBox::valueChanged, [this] (int i) {
         m_powerPlotter->setRangeGraph(i);
     });
+}
+
+void GraphManager::setAzimutAngle(int channel, double azimut, double angle)
+{
+    if (channel == m_ui->comboBoxChannel->currentIndex() + 1) {
+        m_ui->label_azimut->setText(QString::number(azimut, 'f', 1));
+        m_ui->label_angle->setText(QString::number(angle, 'f', 1));
+
+        m_azimutAngleOnChannel[channel] = std::make_pair(azimut, angle);
+    }
 }
 
 void GraphManager::onSamplesReaded(int channel, QVector<std::complex<double>> dataComplex)

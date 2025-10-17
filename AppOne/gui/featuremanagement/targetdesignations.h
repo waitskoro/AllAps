@@ -20,7 +20,7 @@ class TargetDesignations : public QWidget
 public:
     explicit TargetDesignations(QWidget *parent = nullptr);
 
-    int beam();
+    int angle();
     void setDates(Dates);
     QVector<TargetDesignation> coordinates();
 

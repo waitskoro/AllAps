@@ -108,24 +108,24 @@ Target SunTargetDesignations::convertToTargets(Coordinates &coords, QDateTime da
 
     az = wrapTo2Pi(az + M_PI);
 
-    double bean = asin(cos(lha * M_PI / 180) * cos(bDecl) * cos(lat * M_PI / 180)
+    double angle = asin(cos(lha * M_PI / 180) * cos(bDecl) * cos(lat * M_PI / 180)
                        + sin(bDecl) * sin(lat * M_PI / 180));
 
-    if (bean * 180/M_PI > 1.0) {
+    if (angle * 180/M_PI > 1.0) {
         if (pres > 80 && pres < 110 && temperature > 200) {
-            double term = bean + (3.1376e-3 / (bean + 8.92e-2));
+            double term = angle + (3.1376e-3 / (angle + 8.92e-2));
             if (fabs(term) > 1e-10 && fabs(cos(term)) > 1e-10) {
                 double refraction = (2.967e-4 / tan(term)) * (pres/101.325) * (283.15/temperature);
-                bean += refraction;
+                angle += refraction;
             }
         }
     }
 
-    bean = qBound(-M_PI/2, bean, M_PI/2);
+    angle = qBound(-M_PI/2, angle, M_PI/2);
 
     Target result;
-    result.azumit = az * 180 / M_PI * 10;
-    result.bean = bean * 180 / M_PI * 10;
+    result.azimut = az * 180 / M_PI * 10;
+    result.angle = angle * 180 / M_PI * 10;
 
     return result;
 }

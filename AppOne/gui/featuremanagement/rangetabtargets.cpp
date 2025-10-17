@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QLineEdit>
 #include <QGridLayout>
+#include <QSpacerItem>
 
 #include "src/featuremanagment/targetdesignationmodel.h"
 
@@ -14,9 +15,10 @@ RangeTabTargets::RangeTabTargets(TargetDesignationModel *model, QWidget *parent)
     , m_tableView(new QTableView(this))
     , m_btnClear(new QPushButton("Очистить", this))
     , m_buttonCreate(new QPushButton("Создать", this))
-    , m_step(new QLineEdit(this))
-    , m_beamStart(new QLineEdit(this))
-    , m_azimutStart(new QLineEdit(this))
+    , m_step(new QDoubleSpinBox(this))
+    , m_angleStart(new QDoubleSpinBox(this))
+    , m_azimutStart(new QDoubleSpinBox(this))
+    , m_endParam(new QDoubleSpinBox(this))
     , m_increase(new QComboBox(this))
     , m_model(model)
 {
@@ -24,7 +26,6 @@ RangeTabTargets::RangeTabTargets(TargetDesignationModel *model, QWidget *parent)
 
     m_increase->addItem("Азимут");
     m_increase->addItem("Угол места");
-    m_increase->addItem("Совместно");
 
     connect(m_buttonCreate, &QPushButton::clicked,
             this, &RangeTabTargets::onButtonCreate);
@@ -33,26 +34,22 @@ RangeTabTargets::RangeTabTargets(TargetDesignationModel *model, QWidget *parent)
         m_model->clear();
     });
 
-    Sector sector_1;
-    sector_1.start = 0;
-    sector_1.end = 899;
+    connect(m_increase, &QComboBox::currentTextChanged, [this](){
+        QString increaseMode = m_increase->currentText();
+        if (increaseMode == "Азимут") {
+            m_step->setRange(1, 360);
+            m_endParam->setRange(0, 360);
+        } else {
+            m_step->setRange(1, 90);
+            m_endParam->setRange(0, 90);
+        }
+    });
 
-    Sector sector_2;
-    sector_2.start = 900;
-    sector_2.end = 1799;
+    m_endParam->setRange(0, 360);
+    m_angleStart->setRange(0, 89.99);
+    m_azimutStart->setRange(0, 359.99);
 
-    Sector sector_3;
-    sector_3.start = 1800;
-    sector_3.end = 2699;
-
-    Sector sector_4;
-    sector_4.start = 2700;
-    sector_4.end = 3599;
-
-    m_sectors.push_back(sector_1);
-    m_sectors.push_back(sector_2);
-    m_sectors.push_back(sector_3);
-    m_sectors.push_back(sector_4);
+    m_step->setRange(1, 360);
 }
 
 void RangeTabTargets::onButtonCreate()
@@ -60,86 +57,81 @@ void RangeTabTargets::onButtonCreate()
     m_model->clear();
 
     if (m_azimutStart->text() != "" && m_step->text() != "" &&
-        m_beamStart->text() != "") {
+        m_angleStart->text() != "") {
 
-        double azStart = m_azimutStart->text().toDouble();
-        double beamStart = m_beamStart->text().toDouble();
-        double step = m_step->text().toDouble();
+        double step = m_step->value();
+        double azStart = m_azimutStart->value();
+        double angleStart = m_angleStart->value();
         QString increaseMode = m_increase->currentText();
-
-        // Находим сектор для начального азимута
-        Sector targetSector;
-        for (const Sector& sector : m_sectors) {
-            if (azStart >= sector.start && azStart <= sector.end) {
-                targetSector = sector;
-                break;
-            }
-        }
 
         if (increaseMode == "Азимут") {
             // Увеличиваем только азимут
-            for (double az = azStart; az <= targetSector.end; az += step) {
-                m_model->append(az, beamStart);
+            for (double az = azStart; az <= m_endParam->value(); az += step) {
+                m_model->append(az, angleStart);
             }
         }
-        else if (increaseMode == "Угол места") {
-            // Увеличиваем только угол места (в диапазоне 0-899)
-            for (double beam = beamStart; beam <= 899; beam += step) {
-                m_model->append(azStart, beam);
-            }
-        }
-        else if (increaseMode == "Совместно") {
-            // Увеличиваем одновременно азимут и угол места
-            double az = azStart;
-            double beam = beamStart;
-
-            while (az <= targetSector.end && beam <= 899) {
-                m_model->append(az, beam);
-                az += step;
-                beam += step;
+        else{
+            // Увеличиваем только угол места (в диапазоне 0-89.9)
+            for (double angle = angleStart; angle <= m_endParam->value(); angle += step) {
+                m_model->append(azStart, angle);
             }
         }
     }
 }
 
-QVector<TargetDesignation> RangeTabTargets::coordinates()
-{
-    return m_model->coordinates();
-}
-
 void RangeTabTargets::init()
 {
-    QGridLayout *gridLayout = new QGridLayout(this);
+    setStyleSheet("QLabel { background: transparent; color: black;}");
+
+    //Общий
+    QHBoxLayout *gridLayout = new QHBoxLayout(this);
     gridLayout->setContentsMargins(240, 0, 30, 0);
 
-    setStyleSheet("QLabel { background: transparent; }");
-
+    // Левая сторона (список указаний)
     QGridLayout *gridLayout_2 = new QGridLayout();
-    gridLayout->addLayout(gridLayout_2, 0, 0, 1, 4);
+    gridLayout->addLayout(gridLayout_2);
 
+    // Правая
+    QVBoxLayout *gridLayout_3 = new QVBoxLayout();
+    gridLayout->addLayout(gridLayout_3);
 
-    gridLayout_2->addWidget(m_increase, 0, 0);
-    gridLayout_2->addWidget(new QLabel("Шаг"), 0, 1);
-    gridLayout_2->addWidget(m_step, 0, 2);
+    //=============================================
+    QHBoxLayout *hBoxLayout = new QHBoxLayout();
+    gridLayout_3->addLayout(hBoxLayout);
 
-    gridLayout_2 ->addWidget(new QLabel("Азимут"), 1, 0);
-    gridLayout_2 ->addWidget(m_azimutStart, 1, 1);
+    QHBoxLayout *hBoxLayout_2 = new QHBoxLayout();
+    gridLayout_3->addLayout(hBoxLayout_2);
 
-    gridLayout_2 ->addWidget(new QLabel("Угол места"), 2, 0);
-    gridLayout_2 ->addWidget(m_beamStart, 2, 1);
+    QHBoxLayout *hBoxLayout_3 = new QHBoxLayout();
+    gridLayout_3->addLayout(hBoxLayout_3);
 
-    m_azimutStart->setFixedWidth(50);
-    m_beamStart->setFixedWidth(50);
+    QHBoxLayout *hBoxLayout_4 = new QHBoxLayout();
+    gridLayout_3->addLayout(hBoxLayout_4);
+
+    hBoxLayout->addWidget(m_increase);
+    hBoxLayout->addSpacerItem(new QSpacerItem(110, 10));
+    hBoxLayout->addWidget(new QLabel("Шаг"));
+    hBoxLayout->addWidget(m_step);
+
+    hBoxLayout_2 ->addWidget(new QLabel("Конец выбранного параметра"));
+    hBoxLayout_2 ->addWidget(m_endParam);
+
+    hBoxLayout_3 ->addWidget(new QLabel("Азимут"));
+    hBoxLayout_3 ->addWidget(m_azimutStart);
+    hBoxLayout_3->addSpacerItem(new QSpacerItem(30, 10));
+    hBoxLayout_3 ->addWidget(new QLabel("Угол места"));
+    hBoxLayout_3 ->addWidget(m_angleStart);
+
+    hBoxLayout_4->addSpacerItem(new QSpacerItem(50, 10));
+    hBoxLayout_4->addWidget(m_btnClear);
+    hBoxLayout_4->addWidget(m_buttonCreate);
+    hBoxLayout_4->addSpacerItem(new QSpacerItem(50, 10));
 
     m_tableView->setModel(m_model);
     m_tableView->setColumnWidth(0, 90);
     m_tableView->setColumnWidth(1, 90);
     m_tableView->setFixedSize(200, 220);
     m_tableView->move(10, 10);
-
-    m_buttonCreate->setFixedWidth(80);
-    gridLayout->addWidget(m_btnClear, 3, 0, 1, 2, Qt::AlignRight);
-    gridLayout->addWidget(m_buttonCreate, 3, 2, 1, 2, Qt::AlignLeft);
 
     m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);

@@ -50,22 +50,15 @@ void MainWindowManager::onCountMessageRecieved(const Report &msg)
     auto checked = m_ui->action16_bit->isChecked();
     m_infoManager->addInfo(checked, msg);
 
-    if (checked) {
-        m_graphManager->onSamplesReaded(msg.channel, convertToComplex(msg.info_16));
-    } else {
-        m_graphManager->onSamplesReaded(msg.channel, convertToComplex(msg.info_8));
-    }
+    m_graphManager->onSamplesReaded(msg.channel, convertToComplex(msg.info_16));
 
-    if (msg.channel == m_ui->comboBoxChannel->currentIndex() + 1) {
-        double azimut = msg.az[0] / 10.0;
-        double beam = msg.az[1] / 10.0;
-        m_ui->label_azimut->setText(QString::number(azimut, 'f', 1));
-        m_ui->label_beam->setText(QString::number(beam, 'f', 1));
-    }
+    double azimut = msg.az[0] / 10.0;
+    double angle = msg.az[1] / 10.0;
+    m_graphManager->setAzimutAngle(msg.channel, azimut, angle);
+
 }
 
-template<typename T>
-ComplexVector MainWindowManager::convertToComplex(const QVector<std::array<T, 2>> &data)
+ComplexVector MainWindowManager::convertToComplex(const QVector<std::array<qint16, 2>> &data)
 {
     ComplexVector result;
 

@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QTableView>
 #include <QPushButton>
+#include <QDoubleSpinBox>
 
 struct TargetDesignation;
 
@@ -17,16 +18,16 @@ class ManualTabTargets : public QWidget
 public:
     explicit ManualTabTargets(TargetDesignationModel *model, QWidget *parent = nullptr);
 
-    int beam();
+    int angle();
     int countCoordinates() const;
-    const QVector<TargetDesignation> &coordinates() const;
+
 private:
     void init();
     void paintEvent(QPaintEvent *event);
 
     QTableView *m_tableView;
-    QLineEdit *m_currentAzimut;
-    QLineEdit *m_currentBeanAzimut;
+    QDoubleSpinBox *m_currentAzimut;
+    QDoubleSpinBox *m_currentAngle;
 
     QPushButton *m_addButton;
     QPushButton *m_removeButton;

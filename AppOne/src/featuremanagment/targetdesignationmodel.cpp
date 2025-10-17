@@ -33,7 +33,7 @@ void TargetDesignationModel::removeRow(int row)
     endRemoveRows();
 }
 
-void TargetDesignationModel::append(short azimuth, short elevation)
+void TargetDesignationModel::append(double azimuth, double elevation)
 {
     append({azimuth, elevation});
 }

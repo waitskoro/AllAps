@@ -58,6 +58,5 @@ private:
     bool m_is16Bit = false;
 
 private:
-    template<typename T>
     void processReport(const Packet &packet);
 };

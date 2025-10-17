@@ -19,7 +19,7 @@ TargetDesignations::TargetDesignations(QWidget *parent)
     , m_sunTab(new SunTabTargets(m_model, this))
     , m_rangeTab(new RangeTabTargets(m_model, this))
     , m_manualTab(new ManualTabTargets(m_model, this))
-    , m_spiralTab(new SpiralTabTargets(this)) // Пока списка указаний нет
+    , m_spiralTab(new SpiralTabTargets(m_model, this)) // Пока списка указаний нет
 {
     init();
 
@@ -45,9 +45,9 @@ void TargetDesignations::paintEvent(QPaintEvent *event)
     painter.fillRect(rect(), QColor("#C3D7E4"));
 }
 
-int TargetDesignations::beam()
+int TargetDesignations::angle()
 {
-    return m_manualTab->beam();
+    return m_manualTab->angle();
 }
 
 void TargetDesignations::setDates(Dates dates)

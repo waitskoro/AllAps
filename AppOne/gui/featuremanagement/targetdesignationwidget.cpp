@@ -56,7 +56,7 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
                 case 3: azimuth = 2700; break;
             }
 
-            qint16 elevation = m_targets->beam();
+            qint16 elevation = m_targets->angle();
 
             if (elevation < 0)
                 elevation = 0;
@@ -75,8 +75,8 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
 
                 for(quint16 coordIndex = 0; coordIndex < target.count; coordIndex++) {
                     target.coordinates[coordIndex] = new qint16[2];
-                    target.coordinates[coordIndex][0] = azimuth;
-                    target.coordinates[coordIndex][1] = elevation;
+                    target.coordinates[coordIndex][0] = azimuth * 10;
+                    target.coordinates[coordIndex][1] = elevation * 10;
                 }
 
                 emit createTargetTest(target);
@@ -208,8 +208,8 @@ void TargetDesignationWidget::onTargetSend()
 
     for(quint16 i = 0; i < target.count; i++) {
         target.coordinates[i] = new qint16[2];
-        target.coordinates[i][0] = m_targets->coordinates()[i].azimut;
-        target.coordinates[i][1] = m_targets->coordinates()[i].elev;
+        target.coordinates[i][0] = m_targets->coordinates()[i].azimut * 10;
+        target.coordinates[i][1] = m_targets->coordinates()[i].elev * 10;
     }
 
     emit createTarget(target);

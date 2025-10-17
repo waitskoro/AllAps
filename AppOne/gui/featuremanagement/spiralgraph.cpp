@@ -1,7 +1,5 @@
 #include "spiralgraph.h"
-
 #include <QDebug>
-
 #include "src/common.h"
 
 using namespace View;
@@ -25,13 +23,28 @@ SpiralGraph::SpiralGraph(QWidget *parent)
     yAxis->grid()->setSubGridVisible(true);
 }
 
-void SpiralGraph::setData(QVector<TargetDesignation> &targets)
+void SpiralGraph::clear()
 {
-    m_spiralCurve->data().clear();
-    clearGraphs();
+    m_spiralCurve->data()->clear();
+
+    clearPlottables();
+
+    m_spiralCurve = new QCPCurve(xAxis, yAxis);
+    QPen spiralPen(QColor(40, 110, 255), 2);
+    m_spiralCurve->setPen(spiralPen);
+    m_spiralCurve->setScatterStyle(QCPScatterStyle::ssNone);
+    m_spiralCurve->setLineStyle(QCPCurve::lsLine);
+
+    rescaleAxes();
+    replot();
+}
+
+void SpiralGraph::setData(QVector<TargetDesignation> targets)
+{
+    m_spiralCurve->data()->clear();
 
     if (targets.isEmpty()) {
-        qDebug() << "Empty targets data";
+        replot();
         return;
     }
 

@@ -42,7 +42,6 @@ private:
     QWidget *m_widget;
     Ui::MainWindow *m_ui;
 
-    template<typename T>
-    ComplexVector convertToComplex(const QVector<std::array<T, 2>> &data);
+    ComplexVector convertToComplex(const QVector<std::array<qint16, 2>> &data);
 };
 

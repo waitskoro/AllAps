@@ -21,7 +21,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    void append(short azimuth, short elevation);
+    void append(double azimuth, double elevation);
     void append(const TargetDesignation& newCoordinates);
 
     int countCoordinates() const;

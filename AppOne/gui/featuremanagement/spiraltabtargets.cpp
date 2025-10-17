@@ -5,26 +5,33 @@
 
 #include "src/common.h"
 #include "spiralgraph.h"
+#include "src/featuremanagment/targetdesignationmodel.h"
 
 using namespace View;
 
-SpiralTabTargets::SpiralTabTargets(QWidget *parent)
+SpiralTabTargets::SpiralTabTargets(TargetDesignationModel *model, QWidget *parent)
     : QWidget{parent}
+    , m_model(model)
     , m_step(new QLineEdit("0.1", this))
     , m_plotLimit(new QLineEdit("3.0", this))
     , m_spiralStep(new QLineEdit("0.5", this))
     , m_graph(new SpiralGraph(this))
     , m_calcButton(new QPushButton("Построить спираль", this))
-    , m_targets(new QVector<TargetDesignation>())
+    , m_cleanButton(new QPushButton("Очистить", this))
 {
     init();
 
-    connect(m_calcButton, &QPushButton::clicked, this, &SpiralTabTargets::calculateFromInputs);
-}
+    connect(m_calcButton,
+            &QPushButton::clicked,
+            this,
+            &SpiralTabTargets::calculateFromInputs);
 
-QVector<TargetDesignation> SpiralTabTargets::coordinates()
-{
-    return *m_targets;
+    connect(m_cleanButton,
+            &QPushButton::clicked,
+            [this]() {
+        m_model->clear();
+        m_graph->clear();
+    });
 }
 
 void SpiralTabTargets::calculateFromInputs()
@@ -40,7 +47,7 @@ void SpiralTabTargets::calculateFromInputs()
     if (!ok || spiralStep <= 0) spiralStep = 0.5;
 
     calculate(spiralStep, plotLimit, step);
-    m_graph->setData(*m_targets);
+    m_graph->setData(m_model->coordinates());
 }
 
 void SpiralTabTargets::init()
@@ -66,7 +73,8 @@ void SpiralTabTargets::init()
     rightLayout->addWidget(new QLabel("Шаг между витками:", this), 2, 0);
     rightLayout->addWidget(m_spiralStep, 2, 1);
 
-    rightLayout->addWidget(m_calcButton, 3, 0, 1, 2);
+    rightLayout->addWidget(m_calcButton, 3, 0);
+    rightLayout->addWidget(m_cleanButton, 3, 1);
 }
 
 void SpiralTabTargets::calculate(const double spiralStep,
@@ -78,16 +86,13 @@ void SpiralTabTargets::calculate(const double spiralStep,
 
     const int numPoints = static_cast<int>(maxAngle / step) + 1;
 
-    m_targets->clear();
-    m_targets->reserve(numPoints);
-
     double minAzimut = 0.0;
     double minElev = 0.0;
 
     QVector<double> azimuts;
-    QVector<double> elevs;
+    QVector<double> angles;
     azimuts.reserve(numPoints);
-    elevs.reserve(numPoints);
+    angles.reserve(numPoints);
 
     for (int n = 0; n < numPoints; ++n) {
         const double t = n * step;
@@ -96,22 +101,19 @@ void SpiralTabTargets::calculate(const double spiralStep,
         double azimut = k * (cos(t) + t * sin(t));
 
         azimuts.append(azimut);
-        elevs.append(elev);
+        angles.append(elev);
 
         if (azimut < minAzimut) minAzimut = azimut;
         if (elev < minElev) minElev = elev;
     }
 
     double azimutOffset = fabs(minAzimut);
-    double elevOffset = fabs(minElev);
+    double angleOffset = fabs(minElev);
 
     for (int n = 0; n < numPoints; ++n) {
-        TargetDesignation target;
-        target.azimut = azimuts[n] + azimutOffset;
-        target.elev = elevs[n] + elevOffset;
-        m_targets->append(target);
+        m_model->append(azimuts[n] + azimutOffset,
+                        angles[n] + angleOffset);
     }
 
-    qDebug() << "Generated" << m_targets->size() << "points for spiral";
-    qDebug() << "Offset applied - azimut:" << azimutOffset << "elev:" << elevOffset;
+    qDebug() << "Generated" << m_model->coordinates().count() << "points for spiral";
 }

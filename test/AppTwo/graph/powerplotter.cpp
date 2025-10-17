@@ -135,7 +135,7 @@ void PowerPlotter::processCurrentData()
 
         distGraph->keyAxis()->setRange(startTime, currentTime);
         distGraph->valueAxis()->rescale();
-//        distGraph->rescaleAxes();
+        distGraph->rescaleAxes();
     }
 
     plot->replot();

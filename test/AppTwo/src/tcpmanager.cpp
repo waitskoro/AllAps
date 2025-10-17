@@ -54,11 +54,7 @@ void TcpManager::onMessageRecieved(const Packet &packet)
     stream.setByteOrder(QDataStream::LittleEndian);
 
     if (packet.header.msgType == 0x82) {
-        if (m_is16Bit) {
-            processReport<qint16>(packet);
-        } else {
-            processReport<qint8>(packet);
-        }
+        processReport(packet);
     }
 }
 
@@ -148,7 +144,6 @@ Header TcpManager::deserializeHeader(QByteArray& data)
     return header;
 }
 
-template<typename T>
 void TcpManager::processReport(const Packet &packet)
 {
     QDataStream stream(packet.data);
@@ -168,6 +163,31 @@ void TcpManager::processReport(const Packet &packet)
     } else {
         for (const auto &item : result.info_8) {
             data.append({item[0], item[1]});
+        }
+
+        int16_t max = 0;
+        for (int i = 0; i < 16 && i < data.size(); ++i) {
+            max |= ((data[i].first & 1) << i);
+        }
+
+        result.info_16.clear();
+
+        if (max != 0) {
+            for (const auto& item : data) {
+                std::array<qint16, 2> newItem = {
+                    static_cast<qint16>(item.first / 127.0 * max),
+                    static_cast<qint16>(item.second / 127.0 * max)
+                };
+                result.info_16.append(newItem);
+            }
+        } else {
+            for (const auto& item : data) {
+                std::array<qint16, 2> newItem = {
+                    static_cast<qint16>(item.first),
+                    static_cast<qint16>(item.second)
+                };
+                result.info_16.append(newItem);
+            }
         }
     }
 

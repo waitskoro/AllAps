@@ -14,7 +14,8 @@ class SpiralGraph : public QCustomPlot
 public:
     explicit SpiralGraph(QWidget *parent = nullptr);
 
-    void setData(QVector<TargetDesignation> &targets);
+    void clear();
+    void setData(QVector<TargetDesignation> targets);
 
 signals:
 

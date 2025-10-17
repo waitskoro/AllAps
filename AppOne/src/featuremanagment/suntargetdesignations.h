@@ -25,8 +25,8 @@ private:
 };
 
 struct Target {
-    double azumit;
-    double bean;
+    double azimut;
+    double angle;
 };
 
 class SunTargetDesignations : public QObject

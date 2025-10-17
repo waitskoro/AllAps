@@ -1,6 +1,6 @@
 #pragma once
 
 struct TargetDesignation {
-    short azimut;
-    short elev;
+    double azimut;
+    double elev;
 };

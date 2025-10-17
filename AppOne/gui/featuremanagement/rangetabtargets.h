@@ -4,17 +4,13 @@
 #include <QComboBox>
 #include <QTableView>
 #include <QPushButton>
+#include <QDoubleSpinBox>
 
 #include "datetarget.h"
 
 struct TargetDesignation;
 
 namespace View {
-
-struct Sector {
-    int start;
-    int end;
-};
 
 class TargetDesignationModel;
 
@@ -25,26 +21,22 @@ public:
     explicit RangeTabTargets(TargetDesignationModel *model, QWidget *parent = nullptr);
 
     void onButtonCreate();
-    QVector<TargetDesignation> coordinates();
-
-signals:
 
 private:
     void init();
     void paintEvent(QPaintEvent *event);
 
     QTableView *m_tableView;
+
     QPushButton *m_btnClear;
     QPushButton *m_buttonCreate;
-
-    QLineEdit *m_step;
-    QLineEdit *m_beamStart;
-    QLineEdit *m_azimutStart;
-
+    QDoubleSpinBox *m_step;
+    QDoubleSpinBox *m_angleStart;
+    QDoubleSpinBox *m_azimutStart;
+    QDoubleSpinBox *m_endParam;
     QComboBox *m_increase;
 
     TargetDesignationModel *m_model;
-    QVector<Sector> m_sectors;
 };
 
 }

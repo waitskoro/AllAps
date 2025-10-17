@@ -16,8 +16,8 @@ using namespace View;
 ManualTabTargets::ManualTabTargets(TargetDesignationModel *model, QWidget *parent)
     : QWidget(parent)
     , m_tableView(new QTableView(this))
-    , m_currentAzimut(new QLineEdit(this))
-    , m_currentBeanAzimut(new QLineEdit(this))
+    , m_currentAzimut(new QDoubleSpinBox(this))
+    , m_currentAngle(new QDoubleSpinBox(this))
     , m_addButton(new QPushButton(this))
     , m_removeButton(new QPushButton(this))
     , m_testButton(new QPushButton(this))
@@ -25,6 +25,9 @@ ManualTabTargets::ManualTabTargets(TargetDesignationModel *model, QWidget *paren
     , m_model(model)
 {
     init();
+
+    m_currentAzimut->setRange(0, 360);
+    m_currentAngle->setRange(0, 90);
 
     m_testButton->setText("Тест");
     m_clearAll->setText("Очистить");
@@ -72,7 +75,7 @@ void ManualTabTargets::init()
     gridLayout->addWidget(new QLabel("Азимут"), 0, 0);
     gridLayout->addWidget(m_currentAzimut, 0, 1);
     gridLayout->addWidget(new QLabel("Угол места"), 1, 0);
-    gridLayout->addWidget(m_currentBeanAzimut, 1, 1);
+    gridLayout->addWidget(m_currentAngle, 1, 1);
 
     QGridLayout *gridLayoutBtns = new QGridLayout();
 
@@ -83,14 +86,10 @@ void ManualTabTargets::init()
 
     gridLayout->addLayout(gridLayoutBtns, 2, 0, 1, 2);
 }
-const QVector<TargetDesignation> &ManualTabTargets::coordinates() const
-{
-    return m_model->coordinates();
-}
 
-int ManualTabTargets::beam()
+int ManualTabTargets::angle()
 {
-    return fromStrToInt(m_currentBeanAzimut->text());
+    return fromStrToInt(m_currentAngle->text());
 }
 
 int ManualTabTargets::countCoordinates() const
@@ -108,8 +107,8 @@ void ManualTabTargets::paintEvent(QPaintEvent *event)
 
 void ManualTabTargets::onAddCoordinates()
 {
-    auto currentAzimut = fromStrToInt(m_currentAzimut->text());
-    auto currentElevationAngle = fromStrToInt(m_currentBeanAzimut->text());
+    auto currentAzimut = m_currentAzimut->value();
+    auto currentElevationAngle = m_currentAngle->value();
 
     m_model->append(currentAzimut, currentElevationAngle);
 }
@@ -146,19 +145,20 @@ void ManualTabTargets::onTestCreating()
         int count = dialog.intValue();
         count = qMin(count, 65536);
 
-        const int maxAzimuth = 3600;
-        const int maxAngle = 899;
+        const double maxAzimuth = 359.9;
+        const double maxAngle = 89.9;
 
         double azimuthStep = static_cast<double>(maxAzimuth) / count;
 
         for (int i = 0; i < count; i++) {
-            int azimuth = static_cast<int>(i * azimuthStep) % (maxAzimuth + 1);
-            int angle = (i * 19) % (maxAngle + 1);
+            double azimuth = std::fmod(i * azimuthStep, maxAzimuth + 1);
+            double angle = std::fmod(i * 19, maxAngle + 1);
 
             m_model->append(azimuth, angle);
         }
     }
 }
+
 void ManualTabTargets::onClearAllCoordinates()
 {
     m_model->clear();
