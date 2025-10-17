@@ -1,4 +1,4 @@
-#include "spiraltabtargets.h"
+ #include "spiraltabtargets.h"
 #include <QDebug>
 #include <QLabel>
 #include <QGridLayout>
@@ -34,6 +34,24 @@ SpiralTabTargets::SpiralTabTargets(TargetDesignationModel *model, QWidget *paren
     });
 }
 
+void SpiralTabTargets::roundData()
+{
+    if (!m_model) return;
+
+    auto coordinates = m_model->coordinates();
+
+    for (auto &coord : coordinates) {
+        coord.azimut = std::round(coord.azimut * 10.0) / 10.0;
+        coord.elev = std::round(coord.elev * 10.0) / 10.0;
+    }
+
+    m_model->clear();
+
+    for (const auto &coord : coordinates) {
+        m_model->append(coord.azimut, coord.elev);
+    }
+}
+
 void SpiralTabTargets::calculateFromInputs()
 {
     bool ok;
@@ -47,7 +65,8 @@ void SpiralTabTargets::calculateFromInputs()
     if (!ok || spiralStep <= 0) spiralStep = 0.5;
 
     calculate(spiralStep, plotLimit, step);
-    m_graph->setData(m_model->coordinates());
+
+    m_graph->setData(m_valuesGraph);
 }
 
 void SpiralTabTargets::init()
@@ -81,6 +100,8 @@ void SpiralTabTargets::calculate(const double spiralStep,
                                  const double plotLimit,
                                  const double step)
 {
+    m_valuesGraph.clear();
+
     const double k = spiralStep / (2 * M_PI);
     const double maxAngle = plotLimit / k;
 
@@ -111,8 +132,13 @@ void SpiralTabTargets::calculate(const double spiralStep,
     double angleOffset = fabs(minElev);
 
     for (int n = 0; n < numPoints; ++n) {
-        m_model->append(azimuts[n] + azimutOffset,
-                        angles[n] + angleOffset);
+        TargetDesignation target;
+        target.azimut = azimuts[n] + azimutOffset;
+        target.elev = angles[n] + angleOffset;
+
+        m_valuesGraph.push_back(target);
+        m_model->append(std::round(std::round(target.azimut * 10.0) / 10.0),
+                        std::round(std::round(target.elev * 10.0) / 10.0));
     }
 
     qDebug() << "Generated" << m_model->coordinates().count() << "points for spiral";

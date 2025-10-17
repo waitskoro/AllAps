@@ -4,6 +4,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+#include "src/common.h"
+
 struct TargetDesignation;
 
 namespace View {
@@ -20,6 +22,7 @@ public:
 private:
     void init();
 
+    void roundData();
     void calculateFromInputs();
     void calculate(const double spiralStep,
                    const double plotLimit,
@@ -34,6 +37,8 @@ private:
     SpiralGraph *m_graph;
     QPushButton *m_calcButton;
     QPushButton *m_cleanButton;
+
+    QVector<TargetDesignation> m_valuesGraph;
 };
 
 }
