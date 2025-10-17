@@ -34,24 +34,6 @@ SpiralTabTargets::SpiralTabTargets(TargetDesignationModel *model, QWidget *paren
     });
 }
 
-void SpiralTabTargets::roundData()
-{
-    if (!m_model) return;
-
-    auto coordinates = m_model->coordinates();
-
-    for (auto &coord : coordinates) {
-        coord.azimut = std::round(coord.azimut * 10.0) / 10.0;
-        coord.elev = std::round(coord.elev * 10.0) / 10.0;
-    }
-
-    m_model->clear();
-
-    for (const auto &coord : coordinates) {
-        m_model->append(coord.azimut, coord.elev);
-    }
-}
-
 void SpiralTabTargets::calculateFromInputs()
 {
     bool ok;

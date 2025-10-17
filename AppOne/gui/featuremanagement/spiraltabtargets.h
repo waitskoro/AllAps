@@ -22,7 +22,6 @@ public:
 private:
     void init();
 
-    void roundData();
     void calculateFromInputs();
     void calculate(const double spiralStep,
                    const double plotLimit,
