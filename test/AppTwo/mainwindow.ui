@@ -228,42 +228,22 @@
           </item>
           <item>
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_8">
+            <item row="0" column="2">
+             <layout class="QGridLayout" name="gridLayout_9">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="maximumSize">
+               <spacer name="horizontalSpacer_10">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
                  <size>
-                  <width>16777215</width>
+                  <width>40</width>
                   <height>20</height>
                  </size>
                 </property>
-                <property name="text">
-                 <string>Отображение  I</string>
-                </property>
-               </widget>
+               </spacer>
               </item>
               <item row="0" column="1">
-               <widget class="QPushButton" name="stopI">
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Стоп</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" colspan="2">
-               <widget class="QCustomPlot" name="plotterI" native="true"/>
-              </item>
-             </layout>
-            </item>
-            <item row="0" column="1">
-             <layout class="QGridLayout" name="gridLayout_9">
-              <item row="0" column="0">
                <widget class="QLabel" name="label_3">
                 <property name="maximumSize">
                  <size>
@@ -276,7 +256,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="0" column="2">
                <widget class="QPushButton" name="stopQ">
                 <property name="maximumSize">
                  <size>
@@ -289,17 +269,113 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0" colspan="2">
+              <item row="0" column="3">
+               <spacer name="horizontalSpacer_11">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0" colspan="4">
                <widget class="QCustomPlot" name="plotterQ" native="true"/>
               </item>
              </layout>
             </item>
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="2">
+               <widget class="QPushButton" name="stopI">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Стоп</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <spacer name="horizontalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_2">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Отображение  I</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <spacer name="horizontalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0" colspan="4">
+               <widget class="QCustomPlot" name="plotterI" native="true"/>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <widget class="Line" name="line_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <layout class="QGridLayout" name="gridLayout_6">
-            <item row="0" column="8">
-             <spacer name="horizontalSpacer_7">
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Диапазон: </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <spacer name="horizontalSpacer_6">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -311,20 +387,17 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="7">
-             <widget class="QPushButton" name="stopPower">
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>16777215</height>
-               </size>
+            <item row="0" column="4">
+             <widget class="QSpinBox" name="spinBoxRange">
+              <property name="minimum">
+               <number>1</number>
               </property>
-              <property name="text">
-               <string>Стоп</string>
+              <property name="maximum">
+               <number>60</number>
               </property>
              </widget>
             </item>
-            <item row="0" column="6">
+            <item row="0" column="7">
              <widget class="QPushButton" name="pushButtonPwrClean">
               <property name="maximumSize">
                <size>
@@ -338,7 +411,27 @@
              </widget>
             </item>
             <item row="0" column="5">
-             <spacer name="horizontalSpacer_5">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>минут(-а, -ы)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="8">
+             <widget class="QPushButton" name="stopPower">
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Стоп</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="9">
+             <spacer name="horizontalSpacer_7">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -350,27 +443,10 @@
               </property>
              </spacer>
             </item>
-            <item row="1" column="0" colspan="10">
+            <item row="1" column="0" colspan="11">
              <widget class="QCustomPlot" name="plotterPower" native="true"/>
             </item>
-            <item row="0" column="4">
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>минут</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Диапазон: </string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
+            <item row="0" column="1">
              <widget class="QLabel" name="label_4">
               <property name="maximumSize">
                <size>
@@ -383,8 +459,8 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <spacer name="horizontalSpacer_6">
+            <item row="0" column="0">
+             <spacer name="horizontalSpacer_12">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -396,34 +472,47 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="3">
-             <widget class="QSpinBox" name="spinBoxRange">
-              <property name="minimum">
-               <number>1</number>
+            <item row="0" column="6">
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-              <property name="maximum">
-               <number>60</number>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
               </property>
-             </widget>
+             </spacer>
             </item>
            </layout>
           </item>
           <item>
+           <widget class="Line" name="line_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
            <layout class="QGridLayout" name="gridLayout_7">
+            <item row="1" column="0" colspan="4">
+             <widget class="QCustomPlot" name="plotterSpector" native="true"/>
+            </item>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="maximumSize">
+             <spacer name="horizontalSpacer_13">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
                <size>
-                <width>16777215</width>
+                <width>40</width>
                 <height>20</height>
                </size>
               </property>
-              <property name="text">
-               <string>Спектр сигнала I/Q</string>
-              </property>
-             </widget>
+             </spacer>
             </item>
-            <item row="0" column="1">
+            <item row="0" column="2">
              <widget class="QPushButton" name="stopSpectrum">
               <property name="maximumSize">
                <size>
@@ -436,8 +525,31 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0" colspan="2">
-             <widget class="QCustomPlot" name="plotterSpector" native="true"/>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_5">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Спектр сигнала I/Q</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <spacer name="horizontalSpacer_14">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>

@@ -44,6 +44,8 @@ void PowerPlotter::clearData()
     m_currentSecondValues.clear();
     distGraph->data()->clear();
 
+    m_powerOnChannel[m_currentChannel].clear();
+
     distTracer->onDataUpdate();
     distGraph->rescaleAxes();
     plot->replot();
