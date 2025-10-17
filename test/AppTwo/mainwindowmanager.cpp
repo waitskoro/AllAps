@@ -55,7 +55,6 @@ void MainWindowManager::onCountMessageRecieved(const Report &msg)
     double azimut = msg.az[0] / 10.0;
     double angle = msg.az[1] / 10.0;
     m_graphManager->setAzimutAngle(msg.channel, azimut, angle);
-
 }
 
 ComplexVector MainWindowManager::convertToComplex(const QVector<std::array<qint16, 2>> &data)

@@ -49,7 +49,7 @@ void TcpSocket::handleReadyRead()
         }
     }
     if(header_readed) {
-        if(data_size >0) {
+        if(data_size > 0) {
             QByteArray chunk = m_socket->read(qMin(data_size, m_socket->bytesAvailable()));
             msg_bytes += chunk;
             data_size -= chunk.size();

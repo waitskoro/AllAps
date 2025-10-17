@@ -51,9 +51,9 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
             qint16 azimuth = 0;
             switch(sector) {
                 case 0: azimuth = 0; break;
-                case 1: azimuth = 900; break;
-                case 2: azimuth = 1800; break;
-                case 3: azimuth = 2700; break;
+                case 1: azimuth = 90.0; break;
+                case 2: azimuth = 180.0; break;
+                case 3: azimuth = 270.0; break;
             }
 
             qint16 elevation = m_targets->angle();
