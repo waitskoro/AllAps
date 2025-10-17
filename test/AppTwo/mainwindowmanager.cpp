@@ -1,4 +1,4 @@
-#include "mainwindowmanager.h"
+﻿#include "mainwindowmanager.h"
 
 #include "ui_mainwindow.h"
 #include "graph/graphmanager.h"
@@ -57,8 +57,10 @@ void MainWindowManager::onCountMessageRecieved(const Report &msg)
     }
 
     if (msg.channel == m_ui->comboBoxChannel->currentIndex() + 1) {
-        m_ui->label_azimut->setText(QString::number(msg.az[0]));
-        m_ui->label_beam->setText(QString::number(msg.az[1]));
+        double azimut = msg.az[0] / 10.0;
+        double beam = msg.az[1] / 10.0;
+        m_ui->label_azimut->setText(QString::number(azimut, 'f', 1));
+        m_ui->label_beam->setText(QString::number(beam, 'f', 1));
     }
 }
 

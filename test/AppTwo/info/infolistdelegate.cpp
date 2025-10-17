@@ -73,8 +73,11 @@ void InfoListDelegate::paint(QPainter *painter,
         }
     }
 
-    painter->drawText(left + 410, top + 45, index.data(Az_1).toString());
-    painter->drawText(left + 570, top + 45, index.data(Az_2).toString());
+    double beam = index.data(Az_2).toInt() / 10.0;
+    double azimut = index.data(Az_1).toInt() / 10.0;
+
+    painter->drawText(left + 410, top + 45, QString::number(azimut));
+    painter->drawText(left + 570, top + 45, QString::number(beam));
 
     double data = index.data(Time).toDouble();
     QDateTime dateTime = fromDoubleToDate(data);
