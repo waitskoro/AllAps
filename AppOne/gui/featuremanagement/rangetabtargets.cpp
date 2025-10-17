@@ -9,7 +9,7 @@
 
 using namespace View;
 
-RangeTabTargets::RangeTabTargets(QWidget *parent)
+RangeTabTargets::RangeTabTargets(TargetDesignationModel *model, QWidget *parent)
     : QWidget(parent)
     , m_tableView(new QTableView(this))
     , m_btnClear(new QPushButton("Очистить", this))
@@ -18,8 +18,7 @@ RangeTabTargets::RangeTabTargets(QWidget *parent)
     , m_beamStart(new QLineEdit(this))
     , m_azimutStart(new QLineEdit(this))
     , m_increase(new QComboBox(this))
-    , m_model(new TargetDesignationModel(this))
-
+    , m_model(model)
 {
     init();
 

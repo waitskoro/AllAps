@@ -19,7 +19,7 @@ class SunTabTargets : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SunTabTargets(QWidget *parent = nullptr);
+    explicit SunTabTargets(TargetDesignationModel *model, QWidget *parent = nullptr);
 
     void onButtonCreate(Dates);
     QVector<TargetDesignation> coordinates();
@@ -31,6 +31,7 @@ private:
     void init();
     void paintEvent(QPaintEvent *event);
 
+    TargetDesignationModel *m_model;
     QTableView *m_tableView;
 
     QLineEdit *m_lat;
@@ -41,7 +42,6 @@ private:
     QPushButton *m_btnClear;
     QPushButton *m_buttonCreate;
 
-    TargetDesignationModel *m_model;
     CoordinatesConverter *m_coordsConverter;
     SunTargetDesignations *m_sunTargetParser;
 };

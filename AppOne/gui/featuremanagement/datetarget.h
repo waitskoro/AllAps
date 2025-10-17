@@ -18,8 +18,6 @@ public:
 
     Dates dates();
 
-signals:
-
 private:
     void init();
     void paintEvent(QPaintEvent *event);

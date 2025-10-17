@@ -13,7 +13,7 @@
 
 using namespace View;
 
-ManualTabTargets::ManualTabTargets(QWidget *parent)
+ManualTabTargets::ManualTabTargets(TargetDesignationModel *model, QWidget *parent)
     : QWidget(parent)
     , m_tableView(new QTableView(this))
     , m_currentAzimut(new QLineEdit(this))
@@ -22,7 +22,7 @@ ManualTabTargets::ManualTabTargets(QWidget *parent)
     , m_removeButton(new QPushButton(this))
     , m_testButton(new QPushButton(this))
     , m_clearAll(new QPushButton(this))
-    , m_model(new TargetDesignationModel(this))
+    , m_model(model)
 {
     init();
 
@@ -90,8 +90,7 @@ const QVector<TargetDesignation> &ManualTabTargets::coordinates() const
 
 int ManualTabTargets::beam()
 {
-    auto currentElevationAngle = fromStrToInt(m_currentBeanAzimut->text());
-    return currentElevationAngle;
+    return fromStrToInt(m_currentBeanAzimut->text());
 }
 
 int ManualTabTargets::countCoordinates() const

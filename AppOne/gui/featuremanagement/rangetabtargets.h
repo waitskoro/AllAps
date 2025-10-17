@@ -22,7 +22,7 @@ class RangeTabTargets : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RangeTabTargets(QWidget *parent = nullptr);
+    explicit RangeTabTargets(TargetDesignationModel *model, QWidget *parent = nullptr);
 
     void onButtonCreate();
     QVector<TargetDesignation> coordinates();

@@ -49,8 +49,8 @@ void GraphManager::setUi(Ui::MainWindow *ui)
         m_ui->stopSpectrum->setText(isRescale ? "Стоп" : "Запуск");
     });
 
-    connect(m_ui->pushButtonPwrClean, &QPushButton::clicked, [this] () {
-        m_powerPlotter->clearData();
+    connect(m_ui->pushButtonPwrClean, &QPushButton::clicked, [this, ui] () {
+        m_powerPlotter->clearData(ui->comboBoxChannel->currentIndex() + 1);
     });
 
     connect(ui->comboBoxChannel, &QComboBox::currentIndexChanged, [this, ui]() {

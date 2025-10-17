@@ -12,7 +12,8 @@ public:
     explicit PowerPlotter(QCustomPlot* plotter, QObject *parent = nullptr);
 
     bool isRescale();
-    void clearData();
+    void clearGraph();
+    void clearData(int channel);
     void setRangeGraph(int range);
     void setCurrentChannel(int channel);
     void addData(int channel, double power);

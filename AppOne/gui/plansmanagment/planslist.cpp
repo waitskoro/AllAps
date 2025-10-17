@@ -61,14 +61,14 @@ void PlansList::addMessage(const ReceivingMessage& msg)
         item->setData(msg.centerFrequency, CenterFrequency);
         item->setData(msg.spacecraftNumber, SpacecraftNumber);
 
-        item->setData(msg.coordinates[0] / 10, CurrentAzimut);
-        item->setData(msg.coordinates[1] / 10, CurrentBeanAzimut);
+        item->setData(msg.coordinates[0] / 10.0, CurrentAzimut);
+        item->setData(msg.coordinates[1] / 10.0, CurrentBeanAzimut);
 
         item->setData(msg.state, State);
         item->setData(msg.levelOfSignal, LevelOfSignal);
 
-        qint32 azimutEndSector = msg.azimutEndSector / 10;
-        qint32 azimutStartSector = msg.azimutStartSector / 10;
+        double azimutEndSector = msg.azimutEndSector / 10.0;
+        double azimutStartSector = msg.azimutStartSector / 10.0;
 
         item->setData(azimutEndSector, AzimutEndSector);
         item->setData(azimutStartSector, AzimutStartSector);

@@ -12,6 +12,7 @@ class SunTabTargets;
 class RangeTabTargets;
 class ManualTabTargets;
 class SpiralTabTargets;
+class TargetDesignationModel;
 
 class TargetDesignations : public QWidget
 {
@@ -30,6 +31,9 @@ private:
     void paintEvent(QPaintEvent *event);
 
     QTabWidget *m_tabWidget;
+
+    TargetDesignationModel *m_model;
+
     SunTabTargets *m_sunTab;
     RangeTabTargets *m_rangeTab;
     ManualTabTargets *m_manualTab;

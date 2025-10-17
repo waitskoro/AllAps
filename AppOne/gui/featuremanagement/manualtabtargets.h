@@ -15,7 +15,7 @@ class ManualTabTargets : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ManualTabTargets(QWidget *parent = nullptr);
+    explicit ManualTabTargets(TargetDesignationModel *model, QWidget *parent = nullptr);
 
     int beam();
     int countCoordinates() const;

@@ -8,15 +8,18 @@
 #include "manualtabtargets.h"
 #include "spiraltabtargets.h"
 
+#include "src/featuremanagment/targetdesignationmodel.h"
+
 using namespace View;
 
 TargetDesignations::TargetDesignations(QWidget *parent)
     : QWidget(parent)
     , m_tabWidget(new QTabWidget(this))
-    , m_sunTab(new SunTabTargets(this))
-    , m_rangeTab(new RangeTabTargets(this))
-    , m_manualTab(new ManualTabTargets(this))
-    , m_spiralTab(new SpiralTabTargets(this))
+    , m_model(new TargetDesignationModel(this))
+    , m_sunTab(new SunTabTargets(m_model, this))
+    , m_rangeTab(new RangeTabTargets(m_model, this))
+    , m_manualTab(new ManualTabTargets(m_model, this))
+    , m_spiralTab(new SpiralTabTargets(this)) // Пока списка указаний нет
 {
     init();
 
@@ -54,15 +57,5 @@ void TargetDesignations::setDates(Dates dates)
 
 QVector<TargetDesignation> TargetDesignations::coordinates()
 {
-    if (m_tabWidget->currentIndex() == 0) {
-        return m_manualTab->coordinates();
-    } else if (m_tabWidget->currentIndex() == 1) {
-        return m_sunTab->coordinates();
-    } else if (m_tabWidget->currentIndex() == 2) {
-        return m_spiralTab->coordinates();
-    } else if (m_tabWidget->currentIndex() == 3) {
-        return m_rangeTab->coordinates();
-    }
-
-    return {};
+    return m_model->coordinates();
 }

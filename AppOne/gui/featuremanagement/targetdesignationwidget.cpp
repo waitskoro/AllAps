@@ -39,13 +39,13 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
             });
 
     connect(m_testButton, &QPushButton::clicked, [this](){
-        auto startDate = m_dates->dates().start;
         auto endDate = m_dates->dates().end;
+        auto startDate = m_dates->dates().start;
 
         Application::TargetDesignations target;
 
-        target.spacecraftNumber = m_generalInfo->spacecraftNumber();
         target.centerFrequency = m_generalInfo->freq();
+        target.spacecraftNumber = m_generalInfo->spacecraftNumber();
 
         for (int sector = 0; sector < 4; sector++) {
             qint16 azimuth = 0;
@@ -57,6 +57,9 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
             }
 
             qint16 elevation = m_targets->beam();
+
+            if (elevation < 0)
+                elevation = 0;
 
             for (int polarization = 0; polarization < 2; polarization++) {
                 int channel = sector * 2 + polarization;

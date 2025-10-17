@@ -38,17 +38,19 @@ void PowerPlotter::autoRescaleEnable()
     m_autoRescale = !m_autoRescale;
 }
 
-void PowerPlotter::clearData()
+void PowerPlotter::clearGraph()
 {
     m_dataMap.clear();
     m_currentSecondValues.clear();
     distGraph->data()->clear();
-
-    m_powerOnChannel[m_currentChannel].clear();
-
     distTracer->onDataUpdate();
     distGraph->rescaleAxes();
     plot->replot();
+}
+
+void PowerPlotter::clearData(int channel)
+{
+    m_powerOnChannel[channel].clear();
 }
 
 void PowerPlotter::setRangeGraph(int range)
@@ -64,7 +66,8 @@ void PowerPlotter::setRangeGraph(int range)
 void PowerPlotter::setCurrentChannel(int channel)
 {
     m_processTimer->stop();
-    clearData();
+
+    clearGraph();
 
     m_currentChannel = channel;
 

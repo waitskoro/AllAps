@@ -12,8 +12,9 @@
 
 using namespace View;
 
-SunTabTargets::SunTabTargets(QWidget *parent)
+SunTabTargets::SunTabTargets(TargetDesignationModel *model, QWidget *parent)
     : QWidget(parent)
+    , m_model(model)
     , m_tableView(new QTableView(this))
     , m_lat(new QLineEdit(this))
     , m_lon(new QLineEdit(this))
@@ -21,7 +22,6 @@ SunTabTargets::SunTabTargets(QWidget *parent)
     , m_latConverter(new QPushButton(this))
     , m_btnClear(new QPushButton("Очистить", this))
     , m_buttonCreate(new QPushButton("Создать", this))
-    , m_model(new TargetDesignationModel(this))
     , m_coordsConverter(new CoordinatesConverter())
     , m_sunTargetParser(new SunTargetDesignations(this))
 {
