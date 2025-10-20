@@ -12,14 +12,22 @@ using namespace View;
 SpiralTabTargets::SpiralTabTargets(TargetDesignationModel *model, QWidget *parent)
     : QWidget{parent}
     , m_model(model)
-    , m_step(new QLineEdit("0.1", this))
-    , m_plotLimit(new QLineEdit("3.0", this))
-    , m_spiralStep(new QLineEdit("0.5", this))
+    , m_step(new QDoubleSpinBox(this))
+    , m_plotLimit(new QDoubleSpinBox(this))
+    , m_spiralStep(new QDoubleSpinBox(this))
+    , m_leftOffset(new QDoubleSpinBox(this))
+    , m_bottomOffset(new QDoubleSpinBox(this))
     , m_graph(new SpiralGraph(this))
     , m_calcButton(new QPushButton("Построить спираль", this))
     , m_cleanButton(new QPushButton("Очистить", this))
 {
     init();
+
+    m_step->setValue(0.1);
+    m_plotLimit->setValue(3.0);
+    m_spiralStep->setValue(0.5);
+    m_leftOffset->setRange(0, 360);
+    m_bottomOffset->setRange(0, 360);
 
     connect(m_calcButton,
             &QPushButton::clicked,
@@ -46,7 +54,10 @@ void SpiralTabTargets::calculateFromInputs()
     double spiralStep = m_spiralStep->text().toDouble(&ok);
     if (!ok || spiralStep <= 0) spiralStep = 0.5;
 
-    calculate(spiralStep, plotLimit, step);
+    double leftOffset = m_leftOffset->value();
+    double bottomOffset = m_bottomOffset->value();
+
+    calculate(spiralStep, plotLimit, step, leftOffset, bottomOffset);
 
     m_graph->setData(m_valuesGraph);
 }
@@ -74,13 +85,21 @@ void SpiralTabTargets::init()
     rightLayout->addWidget(new QLabel("Шаг между витками:", this), 2, 0);
     rightLayout->addWidget(m_spiralStep, 2, 1);
 
-    rightLayout->addWidget(m_calcButton, 3, 0);
-    rightLayout->addWidget(m_cleanButton, 3, 1);
+    rightLayout->addWidget(new QLabel("Смещение слева:", this), 3, 0);
+    rightLayout->addWidget(m_leftOffset, 3, 1);
+
+    rightLayout->addWidget(new QLabel("Смещение от низа:", this), 4, 0);
+    rightLayout->addWidget(m_bottomOffset, 4, 1);
+
+    rightLayout->addWidget(m_calcButton, 5, 0);
+    rightLayout->addWidget(m_cleanButton, 5, 1);
 }
 
 void SpiralTabTargets::calculate(const double spiralStep,
                                  const double plotLimit,
-                                 const double step)
+                                 const double step,
+                                 const double leftOffset,
+                                 const double bottomOffset)
 {
     m_valuesGraph.clear();
 
@@ -110,8 +129,8 @@ void SpiralTabTargets::calculate(const double spiralStep,
         if (elev < minElev) minElev = elev;
     }
 
-    double azimutOffset = fabs(minAzimut);
-    double angleOffset = fabs(minElev);
+    double azimutOffset = fabs(minAzimut) + leftOffset;
+    double angleOffset = fabs(minElev) + bottomOffset;
 
     for (int n = 0; n < numPoints; ++n) {
         TargetDesignation target;
