@@ -43,7 +43,7 @@ MainWidget::MainWidget(QWidget *parent)
     m_menuWidget->move(10, 50);
     m_menuWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
 
-    connect(m_menuButton, &QPushButton::clicked, [this](){
+    connect(m_menuButton, &QPushButton::clicked, [this]() {
         if (m_menuWidget->isVisible()) {
             m_menuWidget->close();
         } else {
@@ -52,7 +52,7 @@ MainWidget::MainWidget(QWidget *parent)
             m_menuWidget->show();
         }
     });
-    connect(this, &MainWidget::executedTheCommandRecevied, [this](ExecutedTheCommand result){
+    connect(this, &MainWidget::executedTheCommandRecevied, [this](ExecutedTheCommand result) {
                 if (m_loader->isVisible())
                     m_loader->stop();
 
@@ -60,7 +60,13 @@ MainWidget::MainWidget(QWidget *parent)
                     m_stopingPlans->messageRecivied(result);
             });
 
-    connect(m_menuWidget, &MenuWidget::disconnect, [this](){
+    connect(m_menuWidget, &MenuWidget::reconnect, [this]() {
+                m_menuWidget->close();
+                onGoBack();
+                emit reconnect();
+            });
+
+    connect(m_menuWidget, &MenuWidget::disconnect, [this]() {
                 m_menuWidget->close();
                 onGoBack();
                 emit disconnect();

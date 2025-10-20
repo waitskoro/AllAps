@@ -42,6 +42,7 @@ public:
     void onRemoteHostClosed();
     void addMessage(const ReceivingMessage &);
 signals:
+    void reconnect();
     void disconnect();
 
     void sendStopingPlans();

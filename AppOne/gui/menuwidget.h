@@ -14,8 +14,9 @@ public:
     explicit MenuWidget(QWidget *parent = nullptr);
 
 signals:
-    void sendFeature(CurrentView);
+    void reconnect();
     void disconnect();
+    void sendFeature(CurrentView);
 
 private:
     void paintEvent(QPaintEvent *e);
@@ -26,6 +27,7 @@ private:
     QPushButton *m_target;
     QPushButton *m_stopingPlans;
 
+    QPushButton *m_reconnect;
     QPushButton *m_disconnect;
 
     QPushButton *m_main;

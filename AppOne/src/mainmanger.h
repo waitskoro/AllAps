@@ -22,6 +22,7 @@ public:
     void closeWindow();
 
 signals:
+    void reconnect();
     void disconnect();
 
 private:

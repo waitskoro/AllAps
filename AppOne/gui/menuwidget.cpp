@@ -37,11 +37,12 @@ MenuWidget::MenuWidget(QWidget *parent)
     , m_trackingPlans(new QPushButton(" Состояния\n каналов данных", this))
     , m_target(new QPushButton(" Передача\n целеуказаний", this))
     , m_stopingPlans(new QPushButton(" Остановка приема", this))
-    , m_disconnect(new QPushButton(" Переподключиться ", this))
+    , m_reconnect(new QPushButton(" Переподключиться ", this))
+    , m_disconnect(new QPushButton(" Отключиться ", this))
     , m_main(new QPushButton(" Главное окно ", this))
 {
     close();
-    setFixedSize(300, 450);
+    setFixedSize(300, 490);
 
     m_stateWorking->setFixedSize(230, 50);
     m_stateWorking->setStyleSheet(baseSetButtonRequest);
@@ -63,7 +64,11 @@ MenuWidget::MenuWidget(QWidget *parent)
     m_main->setFixedSize(250, 30);
     m_main->setStyleSheet(mainButton);
 
-    m_disconnect->move(50, 390);
+    m_reconnect->move(50, 390);
+    m_reconnect->setFixedSize(230, 40);
+    m_reconnect->setStyleSheet(baseSetButtonSystem);
+
+    m_disconnect->move(50, 435);
     m_disconnect->setFixedSize(230, 40);
     m_disconnect->setStyleSheet(baseSetButtonSystem);
 
@@ -86,6 +91,11 @@ MenuWidget::MenuWidget(QWidget *parent)
     connect(m_main, &QPushButton::clicked, [this](){
         emit sendFeature(Plans);
     });
+
+    connect(m_reconnect,
+            &QPushButton::clicked,
+            this,
+            &MenuWidget::reconnect);
 
     connect(m_disconnect,
             &QPushButton::clicked,

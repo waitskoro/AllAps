@@ -37,20 +37,27 @@ int main(int argc, char *argv[])
 
     QObject::connect(tcpManager,
                      &TcpSocketManager::connected,
-                     [mainManager, ipConnectionManager](){
-                         ipConnectionManager->close();
-                         mainManager->showWindow();
-                     });
+                     [mainManager, ipConnectionManager]() {
+        ipConnectionManager->close();
+        mainManager->showWindow();
+    });
+
+    QObject::connect(mainManager,
+                     &MainManager::reconnect,
+                     [tcpManager, ipConnectionManager, mainManager]() {
+        mainManager->closeWindow();
+        tcpManager->disconnect();
+        ipConnectionManager->open();
+        ipConnectionManager->connectingToHost();
+    });
 
     QObject::connect(mainManager,
                      &MainManager::disconnect,
-                     [tcpManager, ipConnectionManager, mainManager](){
-                         mainManager->closeWindow();
-
-                         tcpManager->disconnect();
-                         ipConnectionManager->open();
-                         ipConnectionManager->connectingToHost();
-                     });
+                     [tcpManager, ipConnectionManager, mainManager]() {
+        mainManager->closeWindow();
+        tcpManager->disconnect();
+        ipConnectionManager->open();
+    });
 
     return a.exec();
 }
