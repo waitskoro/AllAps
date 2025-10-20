@@ -54,8 +54,6 @@ RangeTabTargets::RangeTabTargets(TargetDesignationModel *model, QWidget *parent)
 
 void RangeTabTargets::onButtonCreate()
 {
-    m_model->clear();
-
     if (m_azimutStart->text() != "" && m_step->text() != "" &&
         m_angleStart->text() != "") {
 

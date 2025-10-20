@@ -109,8 +109,6 @@ void SunTabTargets::paintEvent(QPaintEvent *event)
 
 void SunTabTargets::onButtonCreate(Dates dates)
 {
-    m_model->clear();
-
     if (m_lat->text() != "" && m_lon->text() != "") {
 
         auto lat = m_lat->text().toDouble();
