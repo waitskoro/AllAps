@@ -10,7 +10,27 @@
 GraphManager::GraphManager(QObject *parent)
     : QObject(parent)
     , m_dsp(new Dsp(this))
-{}
+{
+    QTimer *timer = new QTimer(this);
+    timer->setInterval(1000);
+
+    connect(timer, &QTimer::timeout, [this]() {
+
+        QVector<std::complex<double>> dataComplex;
+
+        for (int i = 0; i < 1024; i++) {
+            int minVal = -127;
+            int maxVal = 127;
+            int randomInRange = QRandomGenerator::global()->bounded(minVal, maxVal);
+            std::complex<double> complexNumber(randomInRange, randomInRange);
+            dataComplex.append(complexNumber);
+        }
+
+        onSamplesReaded(1, dataComplex);
+    });
+
+    timer->start();
+}
 
 void GraphManager::setUi(Ui::MainWindow *ui)
 {
@@ -70,6 +90,7 @@ void GraphManager::setUi(Ui::MainWindow *ui)
             m_ui->label_angle->setText("0.0");
         }
     });
+
     connect(ui->spinBoxRange, &QSpinBox::valueChanged, [this] (int i) {
         m_powerPlotter->setRangeGraph(i);
     });

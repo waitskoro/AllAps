@@ -27,8 +27,8 @@ public slots:
     void onDataUpdate();
 
 public:
-    QCustomPlot* plot = nullptr;
+    QColor color = "#FF5900";
     QCPGraph* graph = nullptr;
-    QCPItemTracer* tracer = nullptr;
-    QColor color = Qt::red;
+    QCustomPlot* plot = nullptr;
+    QVector<QCPItemTracer*> tracers;
 };

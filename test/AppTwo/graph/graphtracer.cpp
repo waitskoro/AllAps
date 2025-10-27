@@ -12,12 +12,12 @@ GraphTracer::GraphTracer(QCPGraph* graph, QObject *parent)
 
 double GraphTracer::getValue()
 {
-    return tracer->position->value();
+    return tracers.last()->position->value();
 }
 
 double GraphTracer::getKey()
 {
-    return tracer->position->key();
+    return tracers.last()->position->key();
 }
 
 void GraphTracer::setColor(QColor color)
@@ -27,12 +27,16 @@ void GraphTracer::setColor(QColor color)
 
 void GraphTracer::setPosition(double pos)
 {
-    if ( tracer == nullptr ) {
-        tracer = new QCPItemTracer(plot);
-        tracer->setGraph(graph);
-        tracer->setStyle(QCPItemTracer::tsCrosshair);
-        tracer->setPen(QPen(color));
-    }
+    QPen pen(color);
+    pen.setWidthF(3);
+
+    QCPItemTracer *tracer = new QCPItemTracer(plot);
+    tracer->setGraph(graph);
+    tracer->setStyle(QCPItemTracer::tsPlus);
+    tracer->setPen(pen);
+    tracer->setBrush(QBrush(color));
+
+    tracers.push_back(tracer);
 
     tracer->setGraphKey(pos);
     plot->replot();
@@ -58,6 +62,8 @@ void GraphTracer::setPositionByPixel(int x, int y, int r)
 
         int dotPosX = static_cast<int>(plot->xAxis->coordToPixel(dataIter->key));
         int dotPosY = static_cast<int>(plot->yAxis->coordToPixel(dataIter->value));
+
+        // Манхэттенское расстояние
         int rCur = std::abs(dotPosX - x) + std::abs(dotPosY - y);
 
         if (rCur < r) {
@@ -77,19 +83,18 @@ void GraphTracer::setPositionByPixel(int x, int y, int r)
 
 void GraphTracer::reset()
 {
-    if ( tracer == nullptr ) return;
-    tracer->setVisible(false);
-    tracer->deleteLater();
-    tracer = nullptr;
+    if ( tracers.isEmpty() ) return;
+
+    tracers.clear();
     plot->replot();
 }
 
-void GraphTracer::onMousePress(QMouseEvent *evt)
+void GraphTracer::onMousePress(QMouseEvent *event)
 {
-    int x = evt->pos().x();
-    int y = evt->pos().y();
+    int x = event->pos().x();
+    int y = event->pos().y();
 
-    if(evt->button() == Qt::RightButton) {
+    if (event->button() == Qt::RightButton) {
         setPositionByPixel(x, y);
         return;
     }
@@ -97,6 +102,6 @@ void GraphTracer::onMousePress(QMouseEvent *evt)
 
 void GraphTracer::onDataUpdate()
 {
-    if (tracer == nullptr) return;
+    if (tracers.isEmpty()) return;
     emit valueUpdate();
 }
