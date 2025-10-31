@@ -1,19 +1,14 @@
 #pragma once
 
-#include "common/messages.h"
+#include "message.h"
 
 #include <QTimer>
 #include <QObject>
 #include <QTcpSocket>
 #include <QTcpServer>
 
-namespace Reports {
-class CsvParser;
-}
-
-namespace Tcp {
-
 class TcpSocket;
+class BinParser;
 
 class TcpManager : public QObject
 {
@@ -21,8 +16,10 @@ class TcpManager : public QObject
 public:
     explicit TcpManager(QObject *parent = nullptr);
 
+    void onServerStoped();
     void onMessageRecieved(const Packet &);
     void onServerCreating(const int &port);
+    void onCheckableChanged(bool checkable);
 
 signals:
     void serverCreated();
@@ -39,16 +36,16 @@ private:
     void onClientDisconnected();
 
     Header m_header;
-    qint64 m_dataSize = 0;
+    quint32 m_dataSize = 0;
     QByteArray m_msgBytes;
     QByteArray  m_headerBytes;
 
     bool m_headerReaded;
 
+    BinParser *m_binParser;
+
     void resetState();
     Header deserializeHeader(QByteArray& data);
-
-    Reports::CsvParser *m_csvParser;
 
 private:
     QByteArray m_buffer;
@@ -58,6 +55,8 @@ private:
     QTimer m_ppsTimer;
 
     bool first = true;
-};
+    bool m_is16Bit = false;
 
-}
+private:
+    void processReport(const Packet &packet);
+};
