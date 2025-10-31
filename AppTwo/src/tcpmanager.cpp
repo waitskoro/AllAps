@@ -1,12 +1,11 @@
 #include "tcpmanager.h"
 
-#include "src/csvparser.h"
+#include "binparser.h"
 #include "sequentialidprovider.h"
+
 
 #include <QMessageBox>
 #include <QtConcurrent/QtConcurrent>
-
-using namespace Tcp;
 
 namespace {
 const qint32 HEADER_SIZE = 16;
@@ -15,7 +14,7 @@ const qint32 HEADER_SIZE = 16;
 TcpManager::TcpManager(QObject *parent)
     : QObject(parent)
     , m_tcpServer(new QTcpServer(this))
-    , m_csvParser(new Reports::CsvParser())
+    , m_binParser(new BinParser())
 {
     connect(m_tcpServer,
             &QTcpServer::newConnection,
@@ -26,7 +25,27 @@ TcpManager::TcpManager(QObject *parent)
         qDebug() << "PACKETS PER SECOND:" << m_packetCounter;
         m_packetCounter = 0;
     });
-    m_ppsTimer.start(1000);
+}
+
+void TcpManager::onServerStoped()
+{
+    if (m_tcpServer->isListening()) {
+        if (m_tcpSocket && m_tcpSocket->state() == QAbstractSocket::ConnectedState) {
+            m_tcpSocket->disconnectFromHost();
+            if (m_tcpSocket->state() != QAbstractSocket::UnconnectedState) {
+                m_tcpSocket->waitForDisconnected(1000);
+            }
+        }
+
+        m_tcpServer->close();
+        qInfo() << "Сервер остановлен";
+
+        resetState();
+        m_ppsTimer.stop();
+        m_packetCounter = 0;
+    } else {
+        qWarning() << "Сервер уже остановлен";
+    }
 }
 
 void TcpManager::onMessageRecieved(const Packet &packet)
@@ -35,20 +54,7 @@ void TcpManager::onMessageRecieved(const Packet &packet)
     stream.setByteOrder(QDataStream::LittleEndian);
 
     if (packet.header.msgType == 0x82) {
-        Report result;
-        stream >> result;
-
-        m_packetCounter++;
-
-        emit countMessage(result);
-
-        QVector<QPair<int, int>> data;
-        data.reserve(result.count);
-        for (quint32 i = 0; i < result.count; i++) {
-            data.append({result.info[i][0], result.info[i][1]});
-        }
-
-        m_csvParser->appendChannelDataBatch(result.channel, data);
+        processReport(packet);
     }
 }
 
@@ -67,8 +73,17 @@ void TcpManager::onServerCreating(const int &port)
     }
 }
 
+void TcpManager::onCheckableChanged(bool checkable)
+{
+    m_is16Bit = checkable;
+}
+
 void TcpManager::onClientConnected()
 {
+    qDebug() << "Клиент подключен";
+
+    m_ppsTimer.start(1000);
+
     m_tcpSocket = m_tcpServer->nextPendingConnection();
     connect(m_tcpSocket, &QTcpSocket::readyRead, this, &TcpManager::onReadyRead);
     connect(m_tcpSocket, &QTcpSocket::disconnected, this, [this]() {
@@ -84,7 +99,7 @@ void TcpManager::onReadyRead()
         if (!m_headerReaded) {
             m_headerBytes = m_tcpSocket->read(HEADER_SIZE);
             m_header = deserializeHeader(m_headerBytes);
-            m_dataSize = qMin<quint32>(m_header.countBytes, 10000);
+            m_dataSize = m_header.countBytes;
             m_headerReaded = true;
         }
 
@@ -128,7 +143,61 @@ Header TcpManager::deserializeHeader(QByteArray& data)
 
     return header;
 }
+
+void TcpManager::processReport(const Packet &packet)
+{
+    QDataStream stream(packet.data);
+    stream.setByteOrder(QDataStream::LittleEndian);
+
+    Report result(m_is16Bit);
+    stream >> result;
+    m_packetCounter++;
+
+    QVector<QPair<int, int>> data;
+    data.reserve(result.count);
+
+    if (m_is16Bit) {
+        for (const auto &item : result.info_16) {
+            data.append({item[0], item[1]});
+        }
+    } else {
+        for (const auto &item : result.info_8) {
+            data.append({item[0], item[1]});
+        }
+
+        int16_t max = 0;
+        for (int i = 0; i < 16 && i < data.size(); ++i) {
+            max |= ((data[i].first & 1) << i);
+        }
+
+        result.info_16.clear();
+
+        if (max != 0) {
+            for (const auto& item : data) {
+                std::array<qint16, 2> newItem = {
+                    static_cast<qint16>(item.first / 127.0 * max),
+                    static_cast<qint16>(item.second / 127.0 * max)
+                };
+                result.info_16.append(newItem);
+            }
+        } else {
+            for (const auto& item : data) {
+                std::array<qint16, 2> newItem = {
+                    static_cast<qint16>(item.first),
+                    static_cast<qint16>(item.second)
+                };
+                result.info_16.append(newItem);
+            }
+        }
+    }
+
+    emit countMessage(result);
+
+    // m_binParser->appendChannelDataBatch(result.channel, data);
+}
+
 void TcpManager::onClientDisconnected()
 {
+    m_ppsTimer.start(1000);
     qInfo() << "Клиент отключился от сервера";
 }

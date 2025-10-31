@@ -1,2 +1,39 @@
-/build
-../AppOne
+# Build artifacts
+*.o
+*.obj
+*.lo
+*.la
+*.moc
+*.ui.h
+*.qrc.h
+*.rcc
+*.qm
+*.ts
+*.pro.user*
+*.pro.shared*
+*.pri.user*
+*.pri.shared*
+debug/
+release/
+build/
+bin/
+lib/
+tmp/
+*.exe
+*.dll
+*.so
+*.dylib
+*.app
+
+# Qt Creator specific
+.qmake.stash
+.qtc_clangd/
+.qtc_cmake/
+.qtc_csi/
+.qtc_qt4/
+
+# User-specific files
+*.user
+*.bak
+*~
+*.swp
