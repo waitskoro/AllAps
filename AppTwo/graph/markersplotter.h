@@ -5,10 +5,6 @@
 #include "plotter.h"
 #include "graphtracer.h"
 
-namespace Ui {
-class FrameSpector;
-}
-
 class MarkersPlotter : public Plotter
 {
     Q_OBJECT

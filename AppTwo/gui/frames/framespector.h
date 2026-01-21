@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QFrame>
+
+#include "graph/spectrogram.h"
 #include "graph/markersplotter.h"
 
 namespace Ui {
@@ -18,16 +20,23 @@ public:
     explicit FrameSpector(QWidget *parent = nullptr);
     ~FrameSpector();
 
-    bool getRescale();
-
-    void setHistorySize(int value);
-    void setMinLevel(double value);
-    void setMaxLevel(double value);
-    void setColorScheme(const QString &text);
-    void addSpectrum(const QVector<double>& spectrum);
-
     void setVisibleWidget(int index, bool visible);
-    void setData(const QVector<double> &freq, const QVector<double> &ampDist);
+
+    bool getRescale() { return m_plotter->getRescale(); };
+    void setHistorySize(int value) { m_spectrogram->setMaxHistory(value); }
+    void setMinLevel(double value) { m_spectrogram->setMinLevel(value); }
+    void setMaxLevel(double value) { m_spectrogram->setMaxLevel(value); }
+
+    void setColorScheme(const QString &text) {
+        m_spectrogram->setColorMap(text);
+    }
+    void addSpectrum(const QVector<double>& spectrum) {
+        m_spectrogram->addSpectrum(spectrum);
+    }
+
+    void setData(const QVector<double> &freq, const QVector<double> &ampDist) {
+        m_plotter->setData(freq, ampDist);
+    }
 
 private:
     Ui::FrameSpector *ui;

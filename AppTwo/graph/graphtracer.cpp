@@ -57,8 +57,6 @@ void GraphTracer::setPosition(double pos)
 
     tracer->setGraphKey(pos);
     m_plotter->replot();
-
-    emit markerChanged(m_markers.size(), QString::number(yValue, 'f', 2));
 }
 
 void GraphTracer::setPositionByPixel(double x, double y, int r)

@@ -22,9 +22,8 @@ public:
 
 private:
     Ui::FramePower *ui;
+    PowerPlotter *m_plotter;
 
     int m_currentChannel;
-
-    PowerPlotter *m_plotter;
 };
 

@@ -1,24 +1,10 @@
 #include "framesettings.h"
-#include "ui_framesettings.h"
 
 FrameSettings::FrameSettings(QWidget *parent)
     : QFrame(parent)
     , ui(new Ui::FrameSettings)
 {
     ui->setupUi(this);
-
-    connect(ui->pushButtonVisible, &QPushButton::clicked, [this]() {
-        bool isVisible = !ui->widget->isVisible();
-        ui->widget->setVisible(isVisible);
-
-        if (isVisible) {
-            ui->pushButtonVisible->setText("<<");
-            setMaximumWidth(285);
-        } else {
-            ui->pushButtonVisible->setText(">>");
-            setMaximumWidth(45);
-        }
-    });
 
     connectSettings();
 }
@@ -28,23 +14,13 @@ FrameSettings::~FrameSettings()
     delete ui;
 }
 
-double FrameSettings::minLevel()
-{
-    return ui->minLevel->value();
-}
-
-double FrameSettings::maxLevel()
-{
-    return ui->maxLevel->value();
-}
-
-int FrameSettings::historySize()
-{
-    return ui->spectrogramHistory->value();
-}
-
 void FrameSettings::connectSettings()
 {
+    connect(ui->pushButtonVisible, &QPushButton::clicked,
+            this, &FrameSettings::onButtonVisibleClicked);
+
+    // =========================================================================
+
     connect(ui->checkGraphI, &QCheckBox::clicked,
             this, &FrameSettings::checkGraghIChanged);
 
@@ -78,4 +54,18 @@ void FrameSettings::connectSettings()
 
     connect(ui->colorSheme, &QComboBox::currentTextChanged,
             this, &FrameSettings::colorSchemeChanged);
+}
+
+void FrameSettings::onButtonVisibleClicked()
+{
+    bool isVisible = !ui->widget->isVisible();
+    ui->widget->setVisible(isVisible);
+
+    if (isVisible) {
+        ui->pushButtonVisible->setText("<<");
+        setMaximumWidth(285);
+    } else {
+        ui->pushButtonVisible->setText(">>");
+        setMaximumWidth(45);
+    }
 }

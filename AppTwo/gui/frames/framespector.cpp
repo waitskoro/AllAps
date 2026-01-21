@@ -2,8 +2,6 @@
 #include "ui_framespector.h"
 
 #include "commonfunctions.h"
-#include "graph/spectrogram.h"
-#include "graph/markersplotter.h"
 
 FrameSpector::FrameSpector(QWidget *parent)
     : QFrame(parent)
@@ -46,36 +44,6 @@ FrameSpector::~FrameSpector()
     delete ui;
 }
 
-bool FrameSpector::getRescale()
-{
-    return m_plotter->getRescale();
-}
-
-void FrameSpector::setHistorySize(int value)
-{
-    m_spectrogram->setMaxHistory(value);
-}
-
-void FrameSpector::setMinLevel(double value)
-{
-    m_spectrogram->setMinLevel(value);
-}
-
-void FrameSpector::setMaxLevel(double value)
-{
-    m_spectrogram->setMaxLevel(value);
-}
-
-void FrameSpector::setColorScheme(const QString &text)
-{
-    m_spectrogram->setColorMap(text);
-}
-
-void FrameSpector::addSpectrum(const QVector<double>& spectrum)
-{
-    m_spectrogram->addSpectrum(spectrum);
-}
-
 void FrameSpector::setVisibleWidget(int index, bool visible)
 {
     ui->splitter->widget(index)->setVisible(visible);
@@ -86,12 +54,6 @@ void FrameSpector::setVisibleWidget(int index, bool visible)
         !ui->splitter->widget(1)->isVisible()) {
         setVisible(false);
     }
-}
-
-void FrameSpector::setData(const QVector<double> &freq,
-                           const QVector<double> &ampDist)
-{
-    m_plotter->setData(freq, ampDist);
 }
 
 void FrameSpector::updateSpectrogram()
