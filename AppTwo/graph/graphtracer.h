@@ -18,7 +18,6 @@ signals:
 private:
     QCPGraph *m_graph = nullptr;
     QCustomPlot *m_plotter = nullptr;
-
     QVector<QCPItemTracer*> m_markers;
 
 private:

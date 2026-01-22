@@ -40,14 +40,10 @@ void GraphTracer::setPosition(double pos)
 
     m_markers.push_back(tracer);
 
-    // Номерной заголовок для маркера
     QCPItemText *textLabel = new QCPItemText(m_plotter);
     textLabel->setPositionAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     textLabel->position->setParentAnchor(tracer->position);
     textLabel->position->setCoords(10, 10);
-
-    // Получаем значение Y в данной позиции
-    double yValue = m_graph->data()->at(m_graph->findBegin(pos))->value;
 
     textLabel->setText(QString::number(m_markers.size()));
     textLabel->setPen(QPen(Qt::darkRed));
