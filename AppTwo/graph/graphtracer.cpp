@@ -5,47 +5,51 @@ GraphTracer::GraphTracer(QCPGraph* graph, QObject *parent)
     , m_graph(graph)
     , m_plotter(graph->parentPlot())
 {
-    connect(m_plotter, &QCustomPlot::mousePress,
-            this, &GraphTracer::onMousePress);
+    connect(m_plotter,
+            &QCustomPlot::mousePress,
+            this,
+            &GraphTracer::onMousePress);
+
+    connect(m_plotter,
+            &QCustomPlot::afterReplot,
+            this,
+            &GraphTracer::onReplot);
 }
 
-double GraphTracer::getValue()
+void GraphTracer::onReplot()
 {
-    return m_markers.last()->position->value();
-}
+    for (int i = 0; i < m_markers.size(); i++) {
+        auto *tracer = m_markers[i];
 
-double GraphTracer::getKey()
-{
-    return m_markers.last()->position->key();
-}
-
-void GraphTracer::setColor(QColor color)
-{
-    m_color = color;
+        if (tracer && tracer->graph()) {
+            emit markerChanged(i, QString::number(tracer->position->value(), 'f', 2));
+        }
+    }
 }
 
 void GraphTracer::setPosition(double pos)
 {
-    QPen pen(m_color);
+    QPen pen("red");
     pen.setWidthF(3);
 
     QCPItemTracer *tracer = new QCPItemTracer(m_plotter);
     tracer->setGraph(m_graph);
     tracer->setStyle(QCPItemTracer::tsSquare);
     tracer->setPen(pen);
-    tracer->setBrush(QBrush(m_color));
+    tracer->setBrush(QBrush(pen.color()));
 
     m_markers.push_back(tracer);
 
-    // Номерной заголовок для маркера
     QCPItemText *textLabel = new QCPItemText(m_plotter);
     textLabel->setPositionAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     textLabel->position->setParentAnchor(tracer->position);
-    textLabel->position->setCoords(10, 0);
-    textLabel->setText(QString::number(m_markers.count()));
-    textLabel->setPen(QPen(Qt::darkRed)); // Цвет рамки и текста
-    textLabel->setBrush(Qt::white); // Цвет фона
-    textLabel->setPadding(QMargins(2, 1, 2, 1)); // Отступы внутри рамки
+    textLabel->position->setCoords(10, 10);
+
+    textLabel->setText(QString::number(m_markers.size()));
+    textLabel->setPen(QPen(Qt::darkRed));
+    textLabel->setBrush(Qt::white);
+    textLabel->setPadding(QMargins(2, 1, 2, 1));
+    textLabel->setPadding(QMargins(4, 3, 4, 3));
 
     tracer->setGraphKey(pos);
     m_plotter->replot();
@@ -96,56 +100,15 @@ void GraphTracer::reset()
     for (auto *marker : m_markers)
         marker->deleteLater();
 
-    m_dataMarkers.clear();
-
     m_markers.clear();
     m_plotter->replot();
 }
 
 void GraphTracer::onMousePress(QMouseEvent *event)
 {
-    if (!m_usage)
-        return;
-
-    int x = event->pos().x();
-    int y = event->pos().y();
-
     if (event->button() == Qt::RightButton) {
+        int x = event->pos().x();
+        int y = event->pos().y();
         setPositionByPixel(x, y);
-        return;
-    }
-}
-
-void GraphTracer::setUsage(bool usage)
-{
-    m_usage = usage;
-}
-
-QVector<DataMarker> GraphTracer::getAllMarkersData()
-{
-    return m_dataMarkers;
-}
-
-void GraphTracer::onDataUpdate()
-{
-    if (m_markers.isEmpty())
-        return;
-
-    while (m_dataMarkers.size() < m_markers.size()) {
-        m_dataMarkers.push_back(DataMarker());
-    }
-
-    int countData = 0;
-
-    for (int i = 0; i < m_markers.count(); i++) {
-        if (m_dataMarkers[i].data.isEmpty()) {
-            for (int j = 0; j < countData; j++) {
-                m_dataMarkers[i].data.push_back("");
-            }
-        } else {
-            countData = m_dataMarkers[i].data.count();
-        }
-
-        m_dataMarkers[i].data.push_back(QString::number(m_markers[i]->position->value()));
     }
 }

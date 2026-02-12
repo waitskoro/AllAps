@@ -1164,6 +1164,10 @@ void QCPLayer::draw(QCPPainter *painter)
 */
 void QCPLayer::drawToPaintBuffer()
 {
+  if (!mParentPlot || !mParentPlot->isVisible() || mParentPlot->width() <= 0 || mParentPlot->height() <= 0) {
+    return;
+  }
+
   if (QSharedPointer<QCPAbstractPaintBuffer> pb = mPaintBuffer.toStrongRef())
   {
     if (QCPPainter *painter = pb->startPainting())
@@ -1196,6 +1200,10 @@ void QCPLayer::drawToPaintBuffer()
 */
 void QCPLayer::replot()
 {
+  if (!mParentPlot || !mParentPlot->isVisible() || mParentPlot->width() <= 0 || mParentPlot->height() <= 0) {
+    return;
+  }
+
   if (mMode == lmBuffered && !mParentPlot->hasInvalidatedPaintBuffers())
   {
     if (QSharedPointer<QCPAbstractPaintBuffer> pb = mPaintBuffer.toStrongRef())

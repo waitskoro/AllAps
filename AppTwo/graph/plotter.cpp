@@ -16,7 +16,6 @@ void Plotter::clearGraph()
     m_plotter->replot();
 }
 
-
 void Plotter::setData(const QVector<double> &x, const QVector<double> &y)
 {
     m_graph->setData(x, y);

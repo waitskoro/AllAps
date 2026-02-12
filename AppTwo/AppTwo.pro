@@ -17,6 +17,11 @@ SOURCES += \
     graph/minfft/minfft.c \
     graph/plotter.cpp \
     graph/powerplotter.cpp \
+    graph/spectrogram.cpp \
+    gui/frames/frameiq.cpp \
+    gui/frames/framepower.cpp \
+    gui/frames/framesettings.cpp \
+    gui/frames/framespector.cpp \
     info/infolistdelegate.cpp \
     info/infomanager.cpp \
     main.cpp \
@@ -35,6 +40,12 @@ HEADERS += \
     graph/minfft/minfft.h \
     graph/plotter.h \
     graph/powerplotter.h \
+    graph/spectrogram.h \
+    gui/frames/commonfunctions.h \
+    gui/frames/frameiq.h \
+    gui/frames/framepower.h \
+    gui/frames/framesettings.h \
+    gui/frames/framespector.h \
     info/enums.h \
     info/infolistdelegate.h \
     info/infomanager.h \
@@ -46,6 +57,10 @@ HEADERS += \
     src/tcpmanager.h
 
 FORMS += \
+    gui/frames/frameiq.ui \
+    gui/frames/framepower.ui \
+    gui/frames/framesettings.ui \
+    gui/frames/framespector.ui \
     mainwindow.ui
 
 # Default rules for deployment.

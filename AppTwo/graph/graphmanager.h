@@ -27,13 +27,9 @@ public:
 private:
     Dsp *m_dsp;
     Ui::MainWindow *m_ui;
-    Plotter *m_plotterI;
-    Plotter *m_plotterQ;
-    MarkersPlotter *m_dftPlotter;
-    PowerPlotter *m_powerPlotter;
 
     QMap<int, std::pair<double, double>> m_azimutAngleOnChannel;
 
-    void handleStopButton(QPushButton* button, Plotter* plotter);
+    void onCurrentIndexChanged(int index);
 };
 

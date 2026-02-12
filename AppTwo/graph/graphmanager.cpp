@@ -16,49 +16,80 @@ void GraphManager::setUi(Ui::MainWindow *ui)
 {
     m_ui = ui;
 
-    m_plotterI = new Plotter(m_ui->plotterI, this);
-    m_plotterQ = new Plotter(m_ui->plotterQ, this);
-    m_dftPlotter = new MarkersPlotter(m_ui->plotterSpector, this);
-    m_powerPlotter = new PowerPlotter(m_ui->plotterPower, this);
+    m_ui->frameSpector->setMaxLevel(m_ui->frameSettings->maxLevel());
+    m_ui->frameSpector->setMinLevel(m_ui->frameSettings->minLevel());
+    m_ui->frameSpector->setHistorySize(m_ui->frameSettings->historySize());
 
-    m_dftPlotter->setUi(ui);
-    // Отображение маркеров на графике спектра
-    m_dftPlotter->setMarkersUsage(true);
+    connect(ui->comboBoxChannel,
+            &QComboBox::currentIndexChanged,
+            this,
+            &GraphManager::onCurrentIndexChanged);
 
-    connect(m_ui->stopI, &QPushButton::clicked,
-            [this]() { handleStopButton(m_ui->stopI, m_plotterI); });
-    connect(m_ui->stopQ, &QPushButton::clicked,
-            [this]() { handleStopButton(m_ui->stopQ, m_plotterQ); });
-    connect(m_ui->stopPower, &QPushButton::clicked,
-            [this]() { handleStopButton(m_ui->stopPower, m_powerPlotter); });
-    connect(m_ui->stopSpectrum, &QPushButton::clicked,
-            [this]() { handleStopButton(m_ui->stopSpectrum, m_dftPlotter); });
+    // =========================================================================
 
-    connect(m_ui->pushButtonPwrClean, &QPushButton::clicked, [this, ui] () {
-        m_powerPlotter->clearData(ui->comboBoxChannel->currentIndex() + 1);
-    });
+    connect(ui->frameSettings,
+            &FrameSettings::checkGraghIChanged,
+            [ui] (bool checked) {
+                ui->frameIQ->setVisibleWidget(0, checked);
+            });
 
-    connect(ui->comboBoxChannel, &QComboBox::currentIndexChanged, [this, ui]() {
-        int channel = ui->comboBoxChannel->currentIndex() + 1;
+    connect(ui->frameSettings,
+            &FrameSettings::checkGraghQChanged,
+            [ui](bool checked) {
+                ui->frameIQ->setVisibleWidget(1, checked);
+            });
 
-        m_powerPlotter->setCurrentChannel(channel);
+    connect(ui->frameSettings,
+            &FrameSettings::checkGraghPowerChanged,
+            [ui](bool checked) {
+                ui->framePower->setVisible(checked);
+            });
 
-        auto it = m_azimutAngleOnChannel.find(channel);
-        if (it != m_azimutAngleOnChannel.end()) {
-            double azimuth = it->first;
-            double angle = it->second;
+    connect(ui->frameSettings,
+            &FrameSettings::checkSpectrogramChanged,
+            [ui](bool checked) {
+                ui->frameSpector->setVisibleWidget(0, checked);
+            });
 
-            m_ui->label_azimut->setText(QString::number(azimuth, 'f', 1));
-            m_ui->label_angle->setText(QString::number(angle, 'f', 1));
-        } else {
-            m_ui->label_azimut->setText("0.0");
-            m_ui->label_angle->setText("0.0");
-        }
-    });
+    connect(ui->frameSettings,
+            &FrameSettings::checkGraghSpectorChanged,
+            [ui](bool checked) {
+                ui->frameSpector->setVisibleWidget(1, checked);
+            });
 
-    connect(ui->spinBoxRange, &QSpinBox::valueChanged, [this] (int i) {
-        m_powerPlotter->setRangeGraph(i);
-    });
+    // =========================================================================
+
+    connect(ui->frameSettings,
+            &FrameSettings::powerRangeChanged,
+            [ui](int value) {
+                ui->framePower->setRangeGraph(value);
+            });
+
+    // =========================================================================
+
+    connect(ui->frameSettings,
+            &FrameSettings::colorSchemeChanged,
+            [ui](const QString &scheme) {
+                ui->frameSpector->setColorScheme(scheme);
+            });
+
+    connect(ui->frameSettings,
+            &FrameSettings::minLevelChanged,
+            [ui](double value) {
+                ui->frameSpector->setMinLevel(value);
+            });
+
+    connect(ui->frameSettings,
+            &FrameSettings::maxLevelChanged,
+            [ui](double value) {
+                 ui->frameSpector->setMaxLevel(value);
+            });
+
+    connect(ui->frameSettings,
+            &FrameSettings::spectrogramHistoryChanged,
+            [ui](int value) {
+                ui->frameSpector->setHistorySize(value);
+            });
 }
 
 void GraphManager::setAzimutAngle(int channel, double azimut, double angle)
@@ -71,12 +102,6 @@ void GraphManager::setAzimutAngle(int channel, double azimut, double angle)
     }
 }
 
-void GraphManager::handleStopButton(QPushButton* button, Plotter* plotter) {
-    plotter->setRescale();
-    bool isRescale = plotter->getRescale();
-    button->setText(isRescale ? "Стоп" : "Запуск");
-}
-
 void GraphManager::onSamplesReaded(int channel, QVector<std::complex<double>> dataComplex)
 {
     if (dataComplex.size() == 0)
@@ -84,17 +109,36 @@ void GraphManager::onSamplesReaded(int channel, QVector<std::complex<double>> da
 
     m_dsp->input(dataComplex, 1./110.e3);
 
-    m_powerPlotter->addData(channel, m_dsp->powerFreqDb());
+    m_ui->framePower->addData(channel, m_dsp->powerFreqDb());
 
     if (channel != m_ui->comboBoxChannel->currentIndex() + 1)
         return;
 
-    if (m_plotterI->getRescale())
-        m_plotterI->setData(m_dsp->timeVector(), m_dsp->i());
+    if (m_ui->frameIQ->getRescaleI())
+        m_ui->frameIQ->setDataI(m_dsp->timeVector(), m_dsp->i());
 
-    if (m_plotterQ->getRescale())
-        m_plotterQ->setData(m_dsp->timeVector(), m_dsp->q());
+    if (m_ui->frameIQ->getRescaleQ())
+        m_ui->frameIQ->setDataQ(m_dsp->timeVector(), m_dsp->q());
 
-    if (m_dftPlotter->getRescale())
-        m_dftPlotter->setData(m_dsp->freqVector(), m_dsp->ampDistDb());
+    if (m_ui->frameSpector->getRescale())
+        m_ui->frameSpector->setData(m_dsp->freqVector(), m_dsp->ampDistDb());
+
+    m_ui->frameSpector->addSpectrum(m_dsp->ampDistDb());
+}
+
+void GraphManager::onCurrentIndexChanged(int index)
+{
+    m_ui->framePower->setCurrentChannel(index);
+
+    auto it = m_azimutAngleOnChannel.find(index);
+    if (it != m_azimutAngleOnChannel.end()) {
+        double azimuth = it->first;
+        double angle = it->second;
+
+        m_ui->label_azimut->setText(QString::number(azimuth, 'f', 1));
+        m_ui->label_angle->setText(QString::number(angle, 'f', 1));
+    } else {
+        m_ui->label_azimut->setText("0.0");
+        m_ui->label_angle->setText("0.0");
+    }
 }
