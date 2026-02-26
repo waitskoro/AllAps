@@ -3,7 +3,7 @@ QT       += core gui network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++11
-
+#CONFIG += sanitizer sanitize_address
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
@@ -17,11 +17,11 @@ SOURCES += \
     graph/minfft/minfft.c \
     graph/plotter.cpp \
     graph/powerplotter.cpp \
-    graph/spectrogram.cpp \
     gui/frames/frameiq.cpp \
     gui/frames/framepower.cpp \
     gui/frames/framesettings.cpp \
     gui/frames/framespector.cpp \
+    gui/frames/spectrogramdialog.cpp \
     info/infolistdelegate.cpp \
     info/infomanager.cpp \
     main.cpp \
@@ -40,12 +40,12 @@ HEADERS += \
     graph/minfft/minfft.h \
     graph/plotter.h \
     graph/powerplotter.h \
-    graph/spectrogram.h \
     gui/frames/commonfunctions.h \
     gui/frames/frameiq.h \
     gui/frames/framepower.h \
     gui/frames/framesettings.h \
     gui/frames/framespector.h \
+    gui/frames/spectrogramdialog.h \
     info/enums.h \
     info/infolistdelegate.h \
     info/infomanager.h \
@@ -61,6 +61,7 @@ FORMS += \
     gui/frames/framepower.ui \
     gui/frames/framesettings.ui \
     gui/frames/framespector.ui \
+    gui/frames/spectrogramdialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.

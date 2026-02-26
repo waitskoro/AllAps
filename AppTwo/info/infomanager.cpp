@@ -7,6 +7,7 @@
 
 InfoManager::InfoManager(QObject *parent)
     : QObject(parent)
+    , m_cleanupTimer(QTimer())
     , m_delegate(new InfoListDelegate())
     , m_model(new QStandardItemModel(this))
 {
@@ -16,6 +17,16 @@ InfoManager::InfoManager(QObject *parent)
             &InfoManager::checkDataFreshness);
 
     m_cleanupTimer.start(1000);
+}
+
+InfoManager::~InfoManager()
+{
+    disconnect(&m_cleanupTimer,
+               &QTimer::timeout,
+               this,
+               &InfoManager::checkDataFreshness);
+
+    delete m_delegate;
 }
 
 void InfoManager::addInfo(bool isQint16, const Report &msg)

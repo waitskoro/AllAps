@@ -10,6 +10,12 @@ MainWindowManager::MainWindowManager(QObject *parent)
     , m_graphManager(new GraphManager(this))
 {}
 
+MainWindowManager::~MainWindowManager()
+{
+    delete m_infoManager;
+    delete m_graphManager;
+}
+
 void MainWindowManager::setUi(Ui::MainWindow *ui)
 {
     m_ui = ui;
