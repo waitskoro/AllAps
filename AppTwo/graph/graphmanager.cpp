@@ -6,19 +6,22 @@
 #include "plotter.h"
 #include "powerplotter.h"
 #include "markersplotter.h"
+#include "gui/frames/spectrogramdialog.h"
 
 GraphManager::GraphManager(QObject *parent)
     : QObject(parent)
     , m_dsp(new Dsp(this))
+    , m_spectrogramDialog(new SpectrogramDialog())
+{
+    m_spectrogramDialog->setAttribute(Qt::WA_QuitOnClose, false);
+}
+
+GraphManager::~GraphManager()
 {}
 
 void GraphManager::setUi(Ui::MainWindow *ui)
 {
     m_ui = ui;
-
-    m_ui->frameSpector->setMaxLevel(m_ui->frameSettings->maxLevel());
-    m_ui->frameSpector->setMinLevel(m_ui->frameSettings->minLevel());
-    m_ui->frameSpector->setHistorySize(m_ui->frameSettings->historySize());
 
     connect(ui->comboBoxChannel,
             &QComboBox::currentIndexChanged,
@@ -46,12 +49,6 @@ void GraphManager::setUi(Ui::MainWindow *ui)
             });
 
     connect(ui->frameSettings,
-            &FrameSettings::checkSpectrogramChanged,
-            [ui](bool checked) {
-                ui->frameSpector->setVisibleWidget(0, checked);
-            });
-
-    connect(ui->frameSettings,
             &FrameSettings::checkGraghSpectorChanged,
             [ui](bool checked) {
                 ui->frameSpector->setVisibleWidget(1, checked);
@@ -67,29 +64,8 @@ void GraphManager::setUi(Ui::MainWindow *ui)
 
     // =========================================================================
 
-    connect(ui->frameSettings,
-            &FrameSettings::colorSchemeChanged,
-            [ui](const QString &scheme) {
-                ui->frameSpector->setColorScheme(scheme);
-            });
-
-    connect(ui->frameSettings,
-            &FrameSettings::minLevelChanged,
-            [ui](double value) {
-                ui->frameSpector->setMinLevel(value);
-            });
-
-    connect(ui->frameSettings,
-            &FrameSettings::maxLevelChanged,
-            [ui](double value) {
-                 ui->frameSpector->setMaxLevel(value);
-            });
-
-    connect(ui->frameSettings,
-            &FrameSettings::spectrogramHistoryChanged,
-            [ui](int value) {
-                ui->frameSpector->setHistorySize(value);
-            });
+    connect(ui->frameSettings, &FrameSettings::spectrogramView,
+            m_spectrogramDialog, &SpectrogramDialog::show);
 }
 
 void GraphManager::setAzimutAngle(int channel, double azimut, double angle)
@@ -102,12 +78,12 @@ void GraphManager::setAzimutAngle(int channel, double azimut, double angle)
     }
 }
 
-void GraphManager::onSamplesReaded(int channel, QVector<std::complex<double>> dataComplex)
+void GraphManager::onSamplesReaded(int channel, const QVector<std::complex<double>> &data)
 {
-    if (dataComplex.size() == 0)
+    if (data.size() == 0)
         return;
 
-    m_dsp->input(dataComplex, 1./110.e3);
+    m_dsp->input(data, 1./110.e3);
 
     m_ui->framePower->addData(channel, m_dsp->powerFreqDb());
 
@@ -123,7 +99,8 @@ void GraphManager::onSamplesReaded(int channel, QVector<std::complex<double>> da
     if (m_ui->frameSpector->getRescale())
         m_ui->frameSpector->setData(m_dsp->freqVector(), m_dsp->ampDistDb());
 
-    m_ui->frameSpector->addSpectrum(m_dsp->ampDistDb());
+    if (m_spectrogramDialog->isVisible())
+        m_spectrogramDialog->addSpectrum(m_dsp->ampDistDb());
 }
 
 void GraphManager::onCurrentIndexChanged(int index)

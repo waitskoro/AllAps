@@ -22,6 +22,7 @@ class MainWindowManager : public QObject
     Q_OBJECT
 public:
     explicit MainWindowManager(QObject *parent = nullptr);
+    ~MainWindowManager();
 
     void setUi(Ui::MainWindow *ui);
     void setWidget(QWidget *widget);

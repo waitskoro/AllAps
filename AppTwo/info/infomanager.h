@@ -14,6 +14,7 @@ class InfoManager : public QObject
     Q_OBJECT
 public:
     explicit InfoManager(QObject *parent = nullptr);
+    ~InfoManager();
 
     void addInfo(bool isQint16, const Report &msg);
     void setListView(QListView *listView);

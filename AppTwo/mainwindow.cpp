@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete m_tcpManager;
+    delete m_mainWindowManager;
     delete ui;
 }
 

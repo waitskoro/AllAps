@@ -33,9 +33,6 @@ void FrameSettings::connectSettings()
     connect(ui->checkGraphSpector, &QCheckBox::clicked,
             this, &FrameSettings::checkGraghSpectorChanged);
 
-    connect(ui->checkSpectrogram, &QCheckBox::clicked,
-            this, &FrameSettings::checkSpectrogramChanged);
-
     // =========================================================================
 
     connect(ui->spinPowerRange, &QSpinBox::valueChanged,
@@ -43,17 +40,8 @@ void FrameSettings::connectSettings()
 
     // =========================================================================
 
-    connect(ui->minLevel, &QDoubleSpinBox::valueChanged,
-            this, &FrameSettings::minLevelChanged);
-
-    connect(ui->maxLevel, &QDoubleSpinBox::valueChanged,
-            this, &FrameSettings::maxLevelChanged);
-
-    connect(ui->spectrogramHistory, &QSpinBox::valueChanged,
-            this, &FrameSettings::spectrogramHistoryChanged);
-
-    connect(ui->colorSheme, &QComboBox::currentTextChanged,
-            this, &FrameSettings::colorSchemeChanged);
+    connect(ui->spectrogramBtn, &QPushButton::clicked,
+            this, &FrameSettings::spectrogramView);
 }
 
 void FrameSettings::onButtonVisibleClicked()

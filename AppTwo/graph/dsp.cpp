@@ -5,7 +5,7 @@
 #include "qdebug.h"
 
 namespace {
-int SIZE = 1024;
+int SIZE = 1024 * 4;
 }
 
 Dsp::Dsp(QObject *parent)
@@ -88,7 +88,7 @@ void Dsp::div(const QVector<double> &in, QVector<double> &out, int div)
 
 void Dsp::dftTransform(const ComplexVector &in, ComplexVector &out)
 {
-    const int size = 1024;
+    const int size = SIZE;
 
     out.resize(size);
 
