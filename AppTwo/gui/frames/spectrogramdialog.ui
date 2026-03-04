@@ -24,13 +24,13 @@
     <widget class="QLabel" name="timeView">
      <property name="minimumSize">
       <size>
-       <width>100</width>
+       <width>0</width>
        <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>50</width>
        <height>16777215</height>
       </size>
      </property>
@@ -57,7 +57,23 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetMinimumSize</enum>
      </property>
-     <item row="3" column="0" colspan="2">
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="speed">
+       <property name="minimum">
+        <number>50</number>
+       </property>
+       <property name="maximum">
+        <number>1000</number>
+       </property>
+       <property name="value">
+        <number>100</number>
+       </property>
+       <property name="displayIntegerBase">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="2">
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -69,19 +85,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Множитель</string>
-       </property>
-      </widget>
      </item>
      <item row="0" column="1">
       <widget class="QDoubleSpinBox" name="minLevel">
@@ -141,17 +144,109 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="speed">
-       <property name="minimum">
-        <number>50</number>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
        </property>
-       <property name="maximum">
-        <number>1000</number>
+       <property name="text">
+        <string>Множитель</string>
        </property>
-       <property name="displayIntegerBase">
-        <number>10</number>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Сетка</string>
        </property>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0" colspan="2">
+         <widget class="QCheckBox" name="checkBox">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Отрисовка сетки</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Кол-во верт. линий</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Кол-во горизонт. линий</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="spinBoxVertLines">
+          <property name="value">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="spinBoxHorizontLines">
+          <property name="value">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Цвет</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="comboBoxColor">
+          <item>
+           <property name="text">
+            <string>Красный</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Зеленый</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Синий</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Жирность линий</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="spinBoxWidht"/>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>

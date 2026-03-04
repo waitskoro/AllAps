@@ -7,7 +7,6 @@
 SpectrogramDialog::SpectrogramDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::SpectrogramDialog)
-    , m_spectrogram(new Spectrogram())
     , m_maxHistory(512)
 {
     ui->setupUi(this);
@@ -22,7 +21,7 @@ SpectrogramDialog::SpectrogramDialog(QWidget *parent)
 
     m_showDates = true;
     m_updateEnabled = true;
-    m_dateFormat = "hh:mm:ss::zz";
+    m_dateFormat = "  mm:ss";
 
     m_timer.start();
 
@@ -49,9 +48,6 @@ void SpectrogramDialog::addSpectrum(const QVector<double> &spectrum)
         m_spectrogramData.removeFirst();
         m_dateTimestamps.removeFirst();
     }
-
-//    updateImage();
-//    updateTimeline();
 }
 
 void SpectrogramDialog::updateImage()
@@ -89,6 +85,11 @@ void SpectrogramDialog::updateImage()
         }
     }
 
+    if (ui->checkBox->isChecked()) {
+        QPainter painter(&image);
+        drawGrid(painter);
+    }
+
     ui->spectrogram->setPixmap(QPixmap::fromImage(image));
 }
 
@@ -119,7 +120,41 @@ void SpectrogramDialog::updateTimeline()
 
 void SpectrogramDialog::drawGrid(QPainter &painter)
 {
+    painter.save();
 
+    QColor color = "white";
+
+    if (ui->comboBoxColor->currentText() == "Красный") {
+        color = Qt::red;
+    } else if (ui->comboBoxColor->currentText() == "Зеленый") {
+        color = Qt::green;
+    } else if (ui->comboBoxColor->currentText() == "Синий") {
+        color = Qt::blue;
+    }
+
+    QPen gridPen(color);
+    gridPen.setWidth(ui->spinBoxWidht->value());
+    gridPen.setStyle(Qt::DashDotDotLine);
+    painter.setPen(gridPen);
+
+    QRect rect = painter.window();
+    if (rect.isEmpty())
+        rect = painter.viewport();
+
+    int numVerticalLines = ui->spinBoxVertLines->value();
+    for (int i = 1; i < numVerticalLines; i++) {
+        int x = rect.left() + (i * rect.width()) / numVerticalLines;
+        painter.drawLine(x, rect.top(), x, rect.bottom());
+    }
+
+    int numHorizontalLines = ui->spinBoxHorizontLines->value();
+    for (int i = 1; i < numHorizontalLines; i++) {
+        int y = rect.top() + (i * rect.height()) / numHorizontalLines;
+        painter.drawLine(rect.left(), y, rect.right(), y);
+    }
+
+    painter.drawRect(rect);
+    painter.restore();
 }
 
 void SpectrogramDialog::drawDates(QPainter& painter)

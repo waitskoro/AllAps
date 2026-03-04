@@ -13,8 +13,6 @@ namespace Ui {
 class SpectrogramDialog;
 }
 
-class Spectrogram;
-
 class SpectrogramDialog : public QDialog
 {
     Q_OBJECT
@@ -42,7 +40,6 @@ private:
     QTimer m_timer;
 
     Ui::SpectrogramDialog *ui;
-    Spectrogram *m_spectrogram;
 
     QList<QVector<double>> m_spectrogramData;
     QList<QDateTime> m_dateTimestamps;
