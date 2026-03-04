@@ -12,6 +12,12 @@ FrameIQ::FrameIQ(QFrame *parent)
     m_plotterI = new Plotter(ui->plotterI, this);
     m_plotterQ = new Plotter(ui->plotterQ, this);
 
+    m_plotterI->setXLabel("t, время");
+    m_plotterQ->setXLabel("t, время");
+
+    m_plotterI->setYLabel("i");
+    m_plotterQ->setYLabel("q");
+
     connect(ui->buttonStopI, &QPushButton::clicked, [this] {
         handleStopButton(ui->buttonStopI, m_plotterI);
     });

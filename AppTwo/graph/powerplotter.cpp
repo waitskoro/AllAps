@@ -3,8 +3,8 @@
 PowerPlotter::PowerPlotter(QCustomPlot* plotter, QObject *parent)
     : Plotter(plotter, parent)
 {
-    setXLabel("f, Гц");
-    setYLabel("дБ");
+    setYLabel("Дб");
+    setXLabel("t, время");
 
     QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
     dateTicker->setDateTimeFormat("hh:mm:ss");

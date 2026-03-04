@@ -23,6 +23,10 @@ FrameSpector::FrameSpector(QWidget *parent)
 
     connect(m_plotter, &MarkersPlotter::markerChanged,
             this, &FrameSpector::onMarkerChanged);
+
+
+    m_plotter->setYLabel("дБ");
+    m_plotter->setXLabel("f, Гц");
 }
 
 FrameSpector::~FrameSpector()
