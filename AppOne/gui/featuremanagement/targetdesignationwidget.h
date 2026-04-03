@@ -39,6 +39,19 @@ private:
     void onTargetSend();
 
     void paintEvent(QPaintEvent *event);
+
+private:
+    QTimer* m_retransmitTimer;
+    bool m_isTestModeActive;
+    QDateTime m_originalStartDate;
+    QDateTime m_originalEndDate;
+    QDateTime m_lastDate;
+
+private slots:
+    void stopTestMode();
+    void startTestMode();
+    void sendAllTargets();
+    void retransmitTargets();
 };
 
 }

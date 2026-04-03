@@ -17,6 +17,7 @@ public:
     explicit DateTarget(QWidget *parent = nullptr);
 
     Dates dates();
+    void setDates(Dates);
 
 private:
     void init();

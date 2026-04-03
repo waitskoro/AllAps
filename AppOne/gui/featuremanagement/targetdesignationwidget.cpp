@@ -5,8 +5,10 @@
 #include "generalinfotarget.h"
 #include "targetdesignations.h"
 
+#include <QTimer>
 #include <QPainter>
 #include <QMessageBox>
+#include <QRandomGenerator>
 #include <QStandardItemModel>
 
 using namespace View;
@@ -19,8 +21,13 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
     , m_dates(new DateTarget(this))
     , m_targets(new TargetDesignations(this))
     , m_generalInfo(new GeneralInfoTarget(this))
+    , m_retransmitTimer(new QTimer(this))
+    , m_isTestModeActive(false)
 {
     initUI();
+
+    connect(m_retransmitTimer, &QTimer::timeout, this, &TargetDesignationWidget::retransmitTargets);
+
 
     connect(m_exit,
             &QPushButton::clicked,
@@ -39,53 +46,12 @@ TargetDesignationWidget::TargetDesignationWidget(QWidget *parent)
             });
 
     connect(m_testButton, &QPushButton::clicked, [this](){
-        auto endDate = m_dates->dates().end;
-        auto startDate = m_dates->dates().start;
-
-        Application::TargetDesignations target;
-
-        target.centerFrequency = m_generalInfo->freq();
-        target.spacecraftNumber = m_generalInfo->spacecraftNumber();
-
-        for (int sector = 0; sector < 4; sector++) {
-            qint16 azimuth = 0;
-            switch(sector) {
-                case 0: azimuth = 0; break;
-                case 1: azimuth = 90.0; break;
-                case 2: azimuth = 180.0; break;
-                case 3: azimuth = 270.0; break;
-            }
-
-            qint16 elevation = m_targets->angle();
-
-            if (elevation < 0)
-                elevation = 0;
-
-            for (int polarization = 0; polarization < 2; polarization++) {
-                int channel = sector * 2 + polarization;
-
-                target.channelNumber = channel + 1;
-                target.directionOfPolarizaion = polarization + 1;
-
-                target.planStartTime = fromDateToDouble(startDate);
-                target.planEndTime = fromDateToDouble(endDate);
-
-                target.count = 2;
-                target.coordinates = new qint16*[target.count];
-
-                for(quint16 coordIndex = 0; coordIndex < target.count; coordIndex++) {
-                    target.coordinates[coordIndex] = new qint16[2];
-                    target.coordinates[coordIndex][0] = azimuth * 10;
-                    target.coordinates[coordIndex][1] = elevation * 10;
-                }
-
-                emit createTargetTest(target);
-
-                for(quint16 coordIndex = 0; coordIndex < target.count; coordIndex++) {
-                    delete[] target.coordinates[coordIndex];
-                }
-                delete[] target.coordinates;
-            }
+        if (m_isTestModeActive) {
+            // Если уже активно - останавливаем
+            stopTestMode();
+        } else {
+            // Запускаем режим тестирования
+            startTestMode();
         }
     });
 }
@@ -151,6 +117,136 @@ void TargetDesignationWidget::paintEvent(QPaintEvent *event)
     m_testButton->update();
 }
 
+void TargetDesignationWidget::startTestMode()
+{
+    m_isTestModeActive = true;
+    m_testButton->setText(" Остановить отправку ");
+    m_testButton->setStyleSheet("background-color: #CEA898;"
+                                "font-size: 20px;");
+
+    // Сохраняем исходные даты
+    m_originalStartDate = m_dates->dates().start;
+    m_originalEndDate = m_dates->dates().end;
+
+    // Первая отправка
+    sendAllTargets();
+
+    // Запускаем таймер для проверки каждую секунду
+    m_retransmitTimer->start(1000); // Проверяем каждую секунду
+}
+
+void TargetDesignationWidget::stopTestMode()
+{
+    m_isTestModeActive = false;
+    m_retransmitTimer->stop();
+    m_testButton->setText(" Множественное создание ");
+    m_testButton->setStyleSheet("");
+
+    qInfo() << "Режим автоматической отправки остановлен";
+}
+
+
+void TargetDesignationWidget::sendAllTargets()
+{
+    auto endDate = QDateTime::currentDateTime().addSecs(125);
+    auto startDate = QDateTime::currentDateTime().addSecs(5);
+
+    Application::TargetDesignations target;
+
+    target.centerFrequency = m_generalInfo->freq();
+    target.spacecraftNumber = m_generalInfo->spacecraftNumber();
+
+    int azimut = 0;
+    int el = 0;
+
+    for (int i = 0; i < 12; i++) {
+
+        target.directionOfPolarizaion = 1;
+        target.channelNumber = i+ 1;
+        target.planStartTime = fromDateToDouble(startDate);
+        target.planEndTime = fromDateToDouble(endDate);
+
+        target.count = 120;
+        target.coordinates = new qint16*[target.count];
+
+        if (i == 4) {
+            azimut = 180;
+            el = 20;
+        } else if (i == 8) {
+            azimut = 270;
+            el = 40;
+        }
+
+        for(quint16 i = 0; i < target.count; i++) {
+            target.coordinates[i] = new qint16[2];
+            target.coordinates[i][0] = azimut * 10;
+            target.coordinates[i][1] = el * 10;
+        }
+        emit createTargetTest(target);
+    }
+
+    m_lastDate = endDate;
+
+    qInfo() << "Все 12 каналов отправлены";
+}
+
+void TargetDesignationWidget::retransmitTargets()
+{
+    if (!m_isTestModeActive)
+        return;
+
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+
+    qint64 secondsRemaining = currentDateTime.secsTo(m_lastDate);
+
+    if (secondsRemaining <= 60 && secondsRemaining > 0) {
+        qInfo() << "До окончания плана осталось" << secondsRemaining
+                << "секунд. Выполняем переотправку...";
+
+        // Переотправляем целеуказания
+        sendAllTargets();
+
+        // Обновляем дату начала на текущее время
+        QDateTime newStartDate = currentDateTime;
+        QDateTime newEndDate = m_originalEndDate;
+
+        // Проверяем, не нужно ли продлить план
+        if (newStartDate >= newEndDate) {
+            // Если план уже закончился, продлеваем его на исходную длительность
+            qint64 originalDuration = m_originalStartDate.secsTo(m_originalEndDate);
+            newEndDate = newStartDate.addSecs(originalDuration);
+
+            qInfo() << "План истек. Продлеваем до:" << newEndDate.toString("dd.MM.yyyy HH:mm:ss");
+        }
+
+        // Обновляем даты в m_dates
+        Dates newDates;
+        newDates.start = newStartDate;
+        newDates.end = newEndDate;
+        m_dates->setDates(newDates);
+
+        qInfo() << "Дата начала обновлена:" << newStartDate.toString("dd.MM.yyyy HH:mm:ss");
+        qInfo() << "Дата окончания:" << newEndDate.toString("dd.MM.yyyy HH:mm:ss");
+    }
+    else if (secondsRemaining <= 0) {
+        // Если план уже завершился, автоматически продлеваем
+        qInfo() << "План завершен. Автоматическое продление...";
+
+        QDateTime newStartDate = currentDateTime;
+        qint64 originalDuration = m_originalStartDate.secsTo(m_originalEndDate);
+        QDateTime newEndDate = newStartDate.addSecs(originalDuration);
+
+        Dates newDates;
+        newDates.start = newStartDate;
+        newDates.end = newEndDate;
+        m_dates->setDates(newDates);
+
+        // Отправляем сразу после продления
+        sendAllTargets();
+
+        qInfo() << "План продлен до:" << newEndDate.toString("dd.MM.yyyy HH:mm:ss");
+    }
+}
 void TargetDesignationWidget::onTargetSend()
 {
     double freq = m_generalInfo->freq();

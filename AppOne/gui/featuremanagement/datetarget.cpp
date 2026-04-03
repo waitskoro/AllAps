@@ -62,3 +62,11 @@ Dates DateTarget::dates()
 
     return dates;
 }
+
+void DateTarget::setDates(Dates dates)
+{
+    m_endDate->setDate(dates.end.date());
+    m_endTime->setDate(dates.end.date());
+    m_startDate->setDate(dates.start.date());
+    m_startTime->setDate(dates.start.date());
+}
